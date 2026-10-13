@@ -281,10 +281,9 @@ button.chapter-grid-card,a.chapter-grid-card--ticket{font:inherit;text-align:lef
 .chapter-dialog[open]::backdrop{opacity:1}
 .chapter-dialog-panel{background:var(--cream);border:1px solid var(--line);border-radius:18px;box-shadow:0 40px 80px -48px rgba(20,32,27,.55);display:flex;flex-direction:column;max-height:min(88vh,920px);min-width:0}
 #chapter-dialog .chapter-dialog-panel{display:flex;flex-direction:column}
-.chapter-dialog-head{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:18px 20px 12px;border-bottom:1px solid var(--line);align-items:start}
-.chapter-dialog-kicker{grid-column:1/-1;color:var(--bronze)}
+.chapter-dialog-head{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:clamp(1rem,2vw,1.15rem) clamp(1.1rem,2.2vw,1.35rem) .75rem;border-bottom:1px solid var(--hairline);align-items:start;background:linear-gradient(180deg,rgba(220,239,230,.45),rgba(247,250,248,.92))}
+.chapter-dialog-kicker{grid-column:1/-1;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze);font-weight:600}
 .chapter-dialog-title{font:300 clamp(1.45rem,2.6vw,2.1rem)/1.08 var(--head);color:var(--green);margin:0;letter-spacing:-.03em;max-width:18ch}
-.chapter-dialog-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze);font-weight:600}
 .chapter-dialog-close{border:1px solid var(--line);background:#fff;color:var(--ink);width:44px;height:44px;min-width:44px;min-height:44px;border-radius:10px;font-size:22px;line-height:1;cursor:pointer;touch-action:manipulation}
 .chapter-dialog-close:hover{border-color:var(--green)}
 .chapter-dialog-body{padding:8px 20px 20px;overflow:auto;overscroll-behavior:contain}
