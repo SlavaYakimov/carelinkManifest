@@ -162,26 +162,26 @@ def teaser_from_text(text: str) -> str:
     return first_sentence(plain)
 
 
-def render_landing_card_li(card_id: str, num: int, title: str, image_src: str, alt: str):
+def render_landing_card_li(card_id: str, _num: int, title: str, image_src: str, alt: str):
     if not title or not str(title).strip():
         title = 'Без названия'
+    if not alt or not str(alt).strip():
+        alt = title
     media = ''
     if image_src:
         media = (
-            f'<figure class="chapter-grid-media">'
+            f'<figure class="chapter-grid-media landing-card-media">'
             f'{img_picture(image_src, alt, "chapter-grid-img", loading="eager")}'
             f'</figure>'
         )
+    aria = html.escape(title, quote=True)
     return (
         f'<li class="chapter-grid-cell">'
-        f'<a class="chapter-grid-card chapter-grid-card--title-only" '
-        f'href="#card-{html.escape(card_id)}" data-landing-card="{html.escape(card_id)}">'
-        f'<div class="chapter-grid-head">'
-        f'<span class="mono chapter-grid-num">{num:02d}</span>'
-        f'<h3 class="chapter-grid-title">{html.escape(title)}</h3>'
-        f'</div>'
+        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn" '
+        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
         f'{media}'
-        f'</a></li>'
+        f'<span class="landing-card-read">Прочитать</span>'
+        f'</button></li>'
     )
 
 
@@ -201,7 +201,7 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
     media = ''
     if img:
         media = (
-            f'<figure class="finale-cta-media">'
+            f'<figure class="chapter-grid-media landing-card-media finale-cta-media">'
             f'{img_picture(img, alt, "finale-cta-img", None, "eager")}'
             f'</figure>'
         )
@@ -212,14 +212,14 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
         cta.get('modal_title', phrase),
         modal_body,
     )
+    aria = html.escape(phrase, quote=True)
     return (
         f'<li class="chapter-grid-cell finale-cta-cell">'
-        f'<article class="finale-cta-card">'
+        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn finale-cta-btn" '
+        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
         f'{media}'
-        f'<h3 class="finale-cta-title">{html.escape(phrase)}</h3>'
-        f'<button type="button" class="finale-cta-read" data-landing-card="{html.escape(card_id)}">'
-        f'Прочитать</button>'
-        f'</article></li>'
+        f'<span class="landing-card-read">Прочитать</span>'
+        f'</button></li>'
     )
 
 
