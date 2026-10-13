@@ -8,8 +8,9 @@
 |---|---|
 | `index.html` | Готовая страница для GitHub Pages: обычный HTML без сборки, редакционная вёрстка |
 | `assets/style.css` | Стили. Палитра: тёмно-зелёный `#1f5c4a`, бронза `#8a6a3b`, кремовый `#f7faf8`, чернила `#14201b`, мятный `#dcefe6` |
-| `assets/carelink-owl-avatar-128.png` | Официальная сова с книгой (128×128, фон `#1f5c4a`), хедер и favicon |
-| `assets/carelink-owl-avatar-32.png` | Favicon 32×32 |
+| `assets/carelink-owl-avatar.svg` | Официальная сова с книгой (CarelinkMemory `a280f1e`), хедер и footer через `<img>` |
+| `assets/carelink-owl-avatar-128.png` | Favicon PNG 128 (из SVG) |
+| `assets/carelink-owl-avatar-32.png` | Favicon PNG 32 (из SVG) |
 | `assets/owl.svg` | Упрощённый силуэт (legacy), не используется в хедере |
 | `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
 | `images/` | Шесть иллюстраций (01–06) |
