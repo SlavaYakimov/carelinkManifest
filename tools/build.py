@@ -4,6 +4,7 @@ import re, html, pathlib, json, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from chapter_versions import ensure_chapter_versions, load_v1_markdown, version_inventory
+from drawer_enrich import merge_sections, write_gaps_report
 _raw_md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
 FINALE_MARKER = '<!-- landing:finale -->'
 finale_chunk = None
@@ -302,7 +303,7 @@ def parse_scenario_drawer(body: str) -> tuple[str, dict]:
             if label == 'Сейчас':
                 main_parts.append(text)
             else:
-                sections['challenges'] = text
+                sections['problems'] = text
         else:
             main_parts.append(part.strip())
     main = '\n\n'.join(main_parts)
@@ -390,6 +391,7 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
             prev = sections.get(key, '')
             sections[key] = (prev + str(frag)).strip()
             html_keys = html_keys | frozenset({key})
+    sections = merge_sections(card_id, sections, BLOCKS_DATA)
     drawer_short = cta.get('drawer_short') or cta.get('modal_title') or phrase
     drawer_body = render_landing_drawer_body(
         card_id,
@@ -455,6 +457,7 @@ def render_finale_section(chunk):
         fin_sections['solutions'] = '\n\n'.join(paras[1:])
     if foot:
         fin_sections['values'] = foot
+    fin_sections = merge_sections(card_id, fin_sections, BLOCKS_DATA)
     drawer_body = render_landing_drawer_body(
         card_id,
         FINALE_CARD_IMAGE,
@@ -934,16 +937,21 @@ def render_challenges_section():
             f'<p class="challenge-desc">{inline(p["description"])}</p>'
             f'</div></li>'
         )
+        prob_sections = merge_sections(
+            card_id,
+            {
+                'problems': p['description'],
+                'solutions': p.get('response', ''),
+            },
+            BLOCKS_DATA,
+        )
         drawer_body = render_landing_drawer_body(
             card_id,
             p.get('image', ''),
             p['title'],
             p['title'],
             first_sentence(p['description']),
-            {
-                'problems': p['description'],
-                'solutions': p.get('response', ''),
-            },
+            prob_sections,
         )
         kicker = f'Проблема · {i:02d}/{n_prob:02d}'
         stash_landing_card(card_id, kicker, p['title'], drawer_body)
@@ -972,6 +980,7 @@ def render_challenges_section():
         )
         card_id = f'scenario-{i}'
         main, sections = parse_scenario_drawer(ex['body'])
+        sections = merge_sections(card_id, sections, BLOCKS_DATA)
         drawer_body = render_landing_drawer_body(
             card_id,
             ex.get('image', ''),
@@ -1028,16 +1037,21 @@ def render_solutions_section():
     n_feat = len(featured)
     for i, f in enumerate(featured, 1):
         card_id = f'solution-featured-{i}'
+        sol_sections = merge_sections(
+            card_id,
+            {
+                'problems': f'Связанная проблема: «{f["problem_ref"]}».',
+                'solutions': f['description'],
+            },
+            BLOCKS_DATA,
+        )
         drawer_body = render_landing_drawer_body(
             card_id,
             f.get('image', ''),
             f['title'],
             f['title'],
             first_sentence(f['description']),
-            {
-                'problems': f'Связанная проблема: «{f["problem_ref"]}».',
-                'solutions': f['description'],
-            },
+            sol_sections,
         )
         kicker = f'Решение · {i:02d}/{n_feat:02d}'
         stash_landing_card(card_id, kicker, f['title'], drawer_body)
@@ -1319,8 +1333,15 @@ for rep in blocks_report:
             empty_v3.append(f"ch{rep['chapter']}:{k}")
 if empty_v3:
     print('v3 placeholders:', ', '.join(empty_v3))
+drawer_labels = dict(DRAWER_SECTIONS)
+write_gaps_report(
+    LANDING_DRAWER_GAPS,
+    drawer_labels,
+    ROOT / 'tools' / 'landing-drawer-gaps.json',
+)
 if LANDING_DRAWER_GAPS:
     print('\n=== Landing drawer empty sections (flag in PR, not on site) ===')
     for cid, sec in LANDING_DRAWER_GAPS:
-        label = dict(DRAWER_SECTIONS).get(sec, sec)
-        print(f'  {cid} · {label}')
+        print(f'  {cid} · {drawer_labels.get(sec, sec)}')
+else:
+    print('\n=== Landing drawer: all mapped sections filled ===')
