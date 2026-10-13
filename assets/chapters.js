@@ -201,11 +201,18 @@
     if (push !== false) setHash(n);
     if (!dialog.open) {
       lastFocus = document.activeElement;
+      dialog.classList.remove('is-visible');
       dialog.showModal();
       lockScroll(true);
       dialog.addEventListener('keydown', trapFocus);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          dialog.classList.add('is-visible');
+        });
+      });
+    } else {
+      dialog.classList.add('is-visible');
     }
-    dialog.classList.add('is-visible');
     var verTab = panelStructure.querySelector('[data-version-tab="' + DEFAULT_VERSION + '"]');
     if (verTab && !panelStructure.hidden) verTab.focus();
     else tabStructure.focus();

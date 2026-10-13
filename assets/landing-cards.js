@@ -63,11 +63,17 @@
       lockScroll(true);
       document.addEventListener('keydown', trapFocus);
       document.addEventListener('keydown', onEscape);
+      bodyEl.classList.remove('is-swapping');
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           root.classList.add('is-open');
           btnClose.focus();
         });
+      });
+    } else {
+      bodyEl.classList.add('is-swapping');
+      requestAnimationFrame(function () {
+        bodyEl.classList.remove('is-swapping');
       });
     }
   }

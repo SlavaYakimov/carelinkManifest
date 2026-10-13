@@ -2,9 +2,13 @@
 :root{--ease-out-ui:cubic-bezier(.23,1,.32,1)}
 
 @media(hover:hover) and (pointer:fine){
-.chapter-grid-card{transition:background .22s var(--ease-out-ui),transform .22s var(--ease-out-ui),box-shadow .22s var(--ease-out-ui)}
-.chapter-grid-card:hover{transform:translateY(-3px)}
+.chapter-grid-card,.finale-cta-card{transition:background .22s var(--ease-out-ui),transform .22s var(--ease-out-ui),box-shadow .22s var(--ease-out-ui)}
+.chapter-grid-card:hover,.finale-cta-card:hover{transform:translateY(-3px)}
+.finale-cta-media img,.chapter-grid-card--image-btn .landing-card-media img{transition:transform .35s var(--ease-out-ui)}
+.finale-cta-card:hover .finale-cta-media img,.chapter-grid-card--image-btn:hover .landing-card-media img{transform:scale(1.03)}
 }
+
+.chapter-grid-card:active,.finale-cta-card:active,.landing-card-read:active{transform:scale(.98)}
 
 .chapter-dialog-panel{
 opacity:0;
@@ -16,6 +20,11 @@ transition:opacity .24s var(--ease-out-ui),transform .24s var(--ease-out-ui);
 opacity:1;
 transform:scale(1);
 }
+
+.landing-drawer-body{
+transition:opacity .2s var(--ease-out-ui);
+}
+.landing-drawer-body.is-swapping{opacity:.55}
 
 .chapter-tablist [role=tab],
 .chapter-version-tablist [role=tab]{
@@ -31,8 +40,12 @@ to{opacity:1;transform:none}
 }
 
 @media(prefers-reduced-motion:reduce){
-.chapter-grid-card{transition:background .15s ease!important;transform:none!important}
-.chapter-grid-card:hover{transform:none!important}
+.chapter-grid-card,.finale-cta-card{transition:background .15s ease!important;transform:none!important}
+.chapter-grid-card:hover,.finale-cta-card:hover{transform:none!important}
+.finale-cta-media img,.chapter-grid-card--image-btn .landing-card-media img{transition:none!important;transform:none!important}
+.chapter-grid-card:active,.finale-cta-card:active,.landing-card-read:active{transform:none!important}
 .chapter-dialog-panel{transform:none!important;transition:opacity .15s ease!important}
+.landing-drawer-body{transition:none!important}
+.landing-drawer-body.is-swapping{opacity:1!important}
 .chapter-tabpanel.is-tab-enter{animation:none!important}
 }
