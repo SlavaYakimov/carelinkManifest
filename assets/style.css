@@ -66,12 +66,33 @@ button.chapter-grid-card{font:inherit;text-align:left;width:100%;cursor:pointer;
 button.chapter-grid-card--image-btn:focus-visible .landing-card-read{outline:3px solid rgba(138,106,59,.55);outline-offset:2px}
 @media(hover:hover) and (pointer:fine){button.chapter-grid-card--image-btn:hover .landing-card-read{border-color:var(--green-d);background:rgba(220,239,230,.85)}}
 .solutions-lead{margin:0 0 clamp(24px,4vw,32px);color:var(--mut);max-width:48ch;font-size:15px;border-left:1px solid rgba(138,106,59,.45);padding-left:16px}
-.landing-card-dialog-body .solution-problem-ref-modal{margin:1em 0 0;color:var(--mut);font-size:15px}
+.landing-drawer-body .solution-problem-ref-modal,.landing-card-dialog-body .solution-problem-ref-modal{margin:1em 0 0;color:var(--mut);font-size:15px}
 .landing-block-legacy{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.landing-card-dialog-body{font-size:16px;line-height:1.65;color:var(--ink)}
-.landing-card-dialog-body .landing-card-modal-lead{font-size:17px;line-height:1.6;margin:0 0 1.2em}
-.landing-card-dialog-body .landing-card-modal-sub{font:600 15px/1.3 var(--head);margin:1.4em 0 .5em;color:var(--green)}
-.landing-card-dialog .chapter-dialog-foot{display:none}
+.landing-drawer-body,.landing-card-dialog-body{font-size:16px;line-height:1.65;color:var(--ink)}
+.landing-drawer-body .landing-card-modal-lead,.landing-card-dialog-body .landing-card-modal-lead{font-size:17px;line-height:1.6;margin:0 0 1.2em}
+.landing-drawer-body .landing-card-modal-sub,.landing-card-dialog-body .landing-card-modal-sub{font:600 15px/1.3 var(--head);margin:1.4em 0 .5em;color:var(--green)}
+/* landing card drawer (problems, scenarios, solutions, finale) */
+.landing-drawer{position:fixed;inset:0;z-index:240;display:flex;justify-content:flex-end;pointer-events:none}
+.landing-drawer[hidden]{display:none!important}
+.landing-drawer.is-open{pointer-events:auto}
+.landing-drawer-overlay{position:absolute;inset:0;border:none;padding:0;margin:0;cursor:pointer;background:rgba(20,32,27,.58);opacity:0;transition:opacity .28s cubic-bezier(.23,1,.32,1)}
+.landing-drawer.is-open .landing-drawer-overlay{opacity:1}
+.landing-drawer-sheet{position:relative;z-index:1;display:flex;flex-direction:column;width:100%;max-width:100%;height:100%;height:100dvh;min-width:0;background:linear-gradient(180deg,#f7faf8 0%,#fbf6ee 100%);border-left:1px solid rgba(31,92,74,.22);box-shadow:-24px 0 64px -32px rgba(20,32,27,.45);transform:translate3d(100%,0,0);transition:transform .32s cubic-bezier(.23,1,.32,1);will-change:transform}
+.landing-drawer.is-open .landing-drawer-sheet{transform:translate3d(0,0,0)}
+.landing-drawer-head{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:18px 20px 12px;border-bottom:1px solid rgba(31,92,74,.18);align-items:start;background:rgba(220,239,230,.25)}
+.landing-drawer-kicker{grid-column:1/-1;color:var(--bronze);font-size:11px;letter-spacing:.08em}
+.landing-drawer-title{font:200 clamp(22px,3.2vw,34px)/1.08 var(--head);color:var(--green);margin:0;letter-spacing:-.03em;padding-right:8px}
+.landing-drawer-close{grid-column:2;grid-row:1/span 2;align-self:start}
+.landing-drawer-body{padding:16px 20px 28px;overflow:auto;overscroll-behavior:contain;flex:1;min-height:0}
+@media(min-width:561px){
+.landing-drawer-sheet{width:clamp(480px,36vw,560px);max-width:560px}
+}
+@media(max-width:560px){
+.landing-drawer-sheet{width:100%;max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+.landing-drawer-overlay,.landing-drawer-sheet{transition:none!important}
+}
 .landing-finale-in{max-width:min(1440px,100%);margin:0 auto;text-align:left}
 .landing-finale-title--section{text-align:left;max-width:32ch}
 .landing-finale-lead{margin:0 0 clamp(24px,4vw,32px);color:var(--mut);max-width:48ch;font-size:15px;border-left:1px solid rgba(138,106,59,.45);padding-left:16px}
@@ -198,7 +219,6 @@ button.chapter-grid-card--image-btn:focus-visible .landing-card-read{outline:3px
 .js .read-chapters .chapter{display:none}
 /* chapter dialog */
 .chapter-dialog{border:none;padding:0;margin:auto;background:transparent;max-width:min(920px,calc(100% - 40px));width:100%}
-.landing-card-dialog.chapter-dialog{max-width:min(920px,calc(100% - 40px))}
 #chapter-dialog.chapter-dialog{max-width:none;width:100%;height:100%;max-height:none;margin:0}
 #chapter-dialog .chapter-dialog-panel{border-radius:0;border:none;max-height:none;height:100dvh;width:100%;box-shadow:none}
 #chapter-dialog .chapter-dialog-head,#chapter-dialog .chapter-dialog-foot{max-width:min(760px,100%);margin:0 auto;width:100%;box-sizing:border-box;padding-left:max(var(--section-x),env(safe-area-inset-left));padding-right:max(var(--section-x),env(safe-area-inset-right))}
@@ -257,10 +277,6 @@ body.dialog-open{overflow:hidden}
 .struct-blocks--v3 .struct-block p{margin:0 0 .85em}
 .struct-blocks--v3 .struct-block p:last-child{margin-bottom:0}
 .struct-blocks--v2 .struct-block{font-size:14px;line-height:1.55}
-@media(max-width:560px){
-.landing-card-dialog.chapter-dialog{max-width:none;width:100%;height:100%;max-height:none;margin:0}
-.landing-card-dialog .chapter-dialog-panel{border-radius:0;border:none;max-height:none;height:100vh;height:100dvh}
-}
 @media(prefers-reduced-motion:reduce){
 .chapter-dialog::backdrop,.chapter-dialog-panel{transition:none!important}
 }

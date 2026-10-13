@@ -985,16 +985,17 @@ page = f'''<!doctype html>
 {finale_html}
 </main>
 <div id="landing-card-store" hidden aria-hidden="true">{''.join(landing_card_store)}</div>
-<dialog class="chapter-dialog landing-card-dialog" id="landing-card-dialog" aria-modal="true" aria-labelledby="landing-card-dialog-title">
-  <div class="chapter-dialog-panel">
-    <header class="chapter-dialog-head">
-      <span class="mono chapter-dialog-kicker" id="landing-card-dialog-kicker"></span>
-      <h2 class="chapter-dialog-title" id="landing-card-dialog-title"></h2>
-      <button type="button" class="chapter-dialog-close" aria-label="Закрыть">×</button>
+<div class="landing-drawer" id="landing-card-drawer" hidden aria-hidden="true">
+  <button type="button" class="landing-drawer-overlay" id="landing-card-drawer-overlay" aria-label="Закрыть панель" tabindex="-1"></button>
+  <div class="landing-drawer-sheet" role="dialog" aria-modal="true" aria-labelledby="landing-card-drawer-title" id="landing-card-drawer-panel">
+    <header class="landing-drawer-head">
+      <span class="mono landing-drawer-kicker" id="landing-card-drawer-kicker"></span>
+      <h2 class="landing-drawer-title" id="landing-card-drawer-title"></h2>
+      <button type="button" class="landing-drawer-close chapter-dialog-close" id="landing-card-drawer-close" aria-label="Закрыть">×</button>
     </header>
-    <div class="chapter-dialog-body landing-card-dialog-body" id="landing-card-dialog-body"></div>
+    <div class="landing-drawer-body landing-card-dialog-body" id="landing-card-drawer-body"></div>
   </div>
-</dialog>
+</div>
 <dialog class="chapter-dialog" id="chapter-dialog" aria-modal="true" aria-labelledby="chapter-dialog-title">
   <div class="chapter-dialog-panel">
     <header class="chapter-dialog-head">
