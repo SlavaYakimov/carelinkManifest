@@ -188,13 +188,24 @@ body.has-site-header .chapters-panel {
 }
 
 .carelink-page .bundle-mini > button {
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 44px !important;
+  min-height: 44px !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   box-sizing: border-box;
+}
+
+.carelink-page .chapters-panel li > button {
+  min-height: 44px;
+  padding-block: 0.55rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.carelink-page .chapters-set[aria-hidden='true'] .chapter-card {
+  pointer-events: none;
 }
 
 .carelink-page .detail-dialog-close {
@@ -227,6 +238,28 @@ body.has-site-header .chapters-panel {
   scroll-padding-inline: 1rem;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+.values-mini .agenda-mini-read,
+.values-mini button[data-detail-open],
+.skills-section .agenda-mini-read {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.foot-nav a {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 8px;
+  box-sizing: border-box;
 }
 
 @media (prefers-reduced-motion: reduce) {
