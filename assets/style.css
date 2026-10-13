@@ -115,7 +115,8 @@ button.chapter-grid-card--image-btn:focus-visible .landing-card-read{outline:3px
 .landing-finale-lead{margin:0 0 clamp(24px,4vw,32px);color:var(--mut);max-width:48ch;font-size:15px;border-left:1px solid rgba(138,106,59,.45);padding-left:16px}
 .landing-card-grid--finale-cta{max-width:none;width:100%}
 .finale-cta-cell{background:var(--cream);display:flex}
-.finale-cta-btn{padding:clamp(14px,2vw,18px)}
+.finale-cta-btn{padding:clamp(16px,2vw,22px) clamp(16px,2vw,20px) clamp(14px,2vw,18px);gap:12px}
+.finale-cta-title{font:600 clamp(15px,1.1vw,18px)/1.35 var(--head);margin:0;color:var(--ink);letter-spacing:-.02em;flex:0;text-wrap:balance;overflow-wrap:anywhere}
 .finale-cta-read,.landing-card-read{transition:background .22s var(--ease),border-color .22s var(--ease)}
 .challenges-title{font:400 clamp(22px,2.4vw,30px)/1.35 var(--head);letter-spacing:-.02em;color:var(--ink);margin:0 0 18px;max-width:28ch}
 .challenges-intro{color:var(--mut);max-width:var(--measure);margin:0 0 clamp(28px,4vw,40px);font-size:clamp(16px,.25vw + 15px,18px);line-height:1.6}

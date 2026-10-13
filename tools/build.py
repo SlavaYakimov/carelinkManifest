@@ -295,6 +295,11 @@ def classify_finale_paragraph(p_inner: str) -> str:
         )
     ):
         return 'values'
+    if any(
+        needle in plain
+        for needle in ('риск', 'соблазн', 'границ', 'если не', 'опасность', 'может стать')
+    ):
+        return 'challenges'
     if 'концепт' in plain and any(
         needle in plain for needle in ('v1', 'дорожн', 'чекап', 'главный чат', 'ритуал', 'офлайн')
     ):
@@ -337,11 +342,17 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
         )
     modal_html = cta.get('modal_html', '')
     main_html, sections, html_keys = parse_finale_modal(modal_html)
+    for key, frag in (cta.get('drawer_sections') or {}).items():
+        if frag and str(frag).strip():
+            prev = sections.get(key, '')
+            sections[key] = (prev + str(frag)).strip()
+            html_keys = html_keys | frozenset({key})
+    drawer_short = cta.get('drawer_short') or cta.get('modal_title') or phrase
     drawer_body = render_landing_drawer_body(
         card_id,
         img,
         alt,
-        cta.get('modal_title', phrase),
+        drawer_short,
         main_html,
         sections,
         main_is_html=True,
@@ -354,11 +365,13 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
         drawer_body,
     )
     aria = html.escape(phrase, quote=True)
+    title_html = f'<p class="finale-cta-title">{inline(phrase)}</p>'
     return (
         f'<li class="chapter-grid-cell finale-cta-cell">'
-        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn finale-cta-btn" '
+        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn finale-cta-btn finale-cta-card" '
         f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
         f'{media}'
+        f'{title_html}'
         f'<span class="landing-card-read">Прочитать</span>'
         f'</button></li>'
     )
