@@ -517,10 +517,11 @@ def render_challenges_section():
             f'<li class="challenge-item">'
             f'<span class="mono challenge-num">{i:02d}</span>'
             f'<div class="challenge-body">'
+            f'<span class="badge challenge-problem-badge">Проблема</span>'
             f'<h3 class="challenge-title">{html.escape(p["title"])}</h3>'
             f'<p class="challenge-desc">{inline(p["description"])}</p>'
             f'<p class="challenge-response">'
-            f'<span class="mono challenge-response-lbl">Ответ Carelink</span>'
+            f'<span class="mono challenge-response-lbl">Связь с Carelink</span>'
             f'{inline(p["response"])}</p>'
             f'</div></li>'
         )
@@ -533,15 +534,18 @@ def render_challenges_section():
             f'<p>{inline(ex["body"])}</p>'
             f'</aside>'
         )
+    examples_note = d.get('examples_note', '')
+    note_html = f'<p class="challenges-examples-note">{inline(examples_note)}</p>' if examples_note else ''
     return (
-        f'<section class="challenges" id="vyzovy" aria-labelledby="challenges-title">'
+        f'<section class="challenges" id="problemy" aria-labelledby="challenges-title">'
         f'<div class="challenges-in">'
-        f'<span class="mono challenges-kicker">Проблемы семьи</span>'
-        f'<h2 id="challenges-title" class="challenges-title">Вызовы</h2>'
+        f'<span class="mono challenges-kicker">Перед главами</span>'
+        f'<h2 id="challenges-title" class="challenges-title">Проблемы</h2>'
         f'<p class="challenges-intro">{inline(d["intro"])}</p>'
         f'<ol class="challenge-list">{"".join(problems)}</ol>'
         f'<div class="challenge-examples">'
-        f'<span class="mono challenges-examples-lbl">Сценарии</span>'
+        f'<span class="mono challenges-examples-lbl">Вымышленные сценарии</span>'
+        f'{note_html}'
         f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
         f'</div></div></section>'
     )
@@ -568,7 +572,7 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#problemy">Проблемы</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
@@ -581,6 +585,7 @@ page = f'''<!doctype html>
   </div>
   <figure class="hero-img"><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"></figure>
 </section>
+{challenges_html}
 <section class="chapter-index" aria-labelledby="chapter-index-title">
   <div class="chapter-index-in">
     <span class="mono chapter-index-kicker">Лендинг глав</span>
@@ -589,7 +594,6 @@ page = f'''<!doctype html>
   </div>
 </section>
 {finale_html}
-{challenges_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
   <article class="article read-stream">

@@ -27,12 +27,14 @@ a{color:var(--green)}
 .challenge-list{list-style:none;margin:0;padding:0;display:grid;gap:20px}
 .challenge-item{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:20px 22px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 12px 40px -32px rgba(31,92,74,.35)}
 .challenge-num{color:var(--bronze);padding-top:4px}
+.challenge-problem-badge{margin-bottom:10px;color:var(--green);border-color:rgba(31,92,74,.45);background:rgba(31,92,74,.06)}
 .challenge-title{font:600 clamp(19px,1.6vw,24px)/1.25 var(--head);margin:0 0 10px;color:var(--ink)}
 .challenge-desc{margin:0 0 14px;color:var(--mut)}
 .challenge-response{margin:0;padding-top:12px;border-top:1px dashed var(--line);font-size:clamp(15px,.2vw + 14px,17px)}
 .challenge-response-lbl{display:block;margin-bottom:8px;color:var(--green);font-size:10px}
 .challenge-examples{margin-top:48px;padding-top:32px;border-top:1px solid rgba(31,92,74,.15)}
-.challenges-examples-lbl{color:var(--bronze);display:block;margin-bottom:18px}
+.challenges-examples-lbl{color:var(--bronze);display:block;margin-bottom:10px}
+.challenges-examples-note{color:var(--mut);font-size:15px;max-width:62ch;margin:0 0 20px;line-height:1.55}
 .challenge-examples-grid{display:grid;gap:16px}
 @media(min-width:720px){.challenge-examples-grid{grid-template-columns:repeat(3,1fr)}}
 .challenge-example{margin:0;padding:18px 20px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-left:4px solid var(--bronze)}
