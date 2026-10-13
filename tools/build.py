@@ -1221,16 +1221,17 @@ page = f'''<!doctype html>
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#razrabotka">Разработка</a><a href="#product-arch">Архитектура</a><a href="#final-value">Ценность</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
+  <a class="top-cta mono" href="#glavy"><span>К главам</span><span class="top-cta-arrow" aria-hidden="true">→</span></a>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <div class="hero-in" data-reveal>
-    <h1>{H1}</h1>
-    <p class="stand">{inline(stand)}</p>
-    <div class="chips">{meta_html}</div>
+    <h1 id="hero-title">{H1}</h1>
+    <p class="stand hero-summary">{inline(stand)}</p>
+    <div class="chips hero-meta" aria-label="Темы манифеста">{meta_html}</div>
   </div>
-  <figure class="hero-img"><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"></figure>
+  <figure class="hero-img" data-reveal><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"><figcaption class="visually-hidden">Вся семья за вечерним чаем</figcaption></figure>
 </section>
 {challenges_html}
 {solutions_html}
@@ -1292,9 +1293,10 @@ page = f'''<!doctype html>
   </div>
 </dialog>
 <footer class="foot">
-  <a class="brand" href="#top">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <span class="mono">© 2026 Carelink · Слава Якимов</span>
-  <span class="mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
+  <a class="brand foot-brand" href="#top">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <p class="foot-copy mono">© 2026 Carelink · Слава Якимов</p>
+  <nav class="foot-nav mono" aria-label="Разделы в подвале"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#final-value">Ценность</a></nav>
+  <span class="foot-note mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>
 <script src="assets/site.js" defer></script>
 <script src="assets/chapters.js" defer></script>
