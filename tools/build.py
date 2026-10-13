@@ -885,6 +885,7 @@ page = f'''<!doctype html>
 <link rel="icon" href="assets/carelink-owl-128.png" type="image/png" sizes="128x128">
 <link rel="apple-touch-icon" href="assets/carelink-owl-128.png">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/motion.css">
 </head>
 <body>
 <a class="skip" href="#glava-1">К тексту</a>
