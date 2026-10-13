@@ -4,6 +4,15 @@ import re, html, pathlib, json, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from chapter_versions import ensure_chapter_versions, load_v1_markdown, version_inventory
+from manifesto_sections import (
+    build_detail_store_entries,
+    render_agenda_section,
+    render_chapters_manifesto,
+    render_detail_dialog_shell,
+    render_manifesto_hero,
+    render_skills_section,
+    render_values_row,
+)
 from drawer_enrich import merge_sections, write_gaps_report
 _raw_md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
 FINALE_MARKER = '<!-- landing:finale -->'
@@ -1213,6 +1222,35 @@ product_arch_html = render_product_architecture_section()
 if finale_chunk:
     finale_html = render_finale_section(finale_chunk)
 
+manifest_detail_store = []
+manifest_hero_html = render_manifesto_hero(inline)
+manifest_agenda_html = render_agenda_section(inline, img_picture, manifest_detail_store)
+manifest_chapters_html = render_chapters_manifesto(inline, img_picture, manifest_detail_store)
+manifest_values_html = render_values_row(inline, img_picture, manifest_detail_store)
+manifest_skills_html = render_skills_section(inline, img_picture, manifest_detail_store)
+build_detail_store_entries(manifest_detail_store, stash_landing_card)
+detail_dialog_html = render_detail_dialog_shell()
+
+chapter_index_legacy_html = (
+    f'<section class="chapter-index landing-block-legacy landing-block-legacy--hidden" id="glavy" aria-hidden="true">'
+    f'<div class="chapter-index-in section-panel" data-reveal>'
+    f'<p class="section-label">Главы</p>'
+    f'<h2 class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>'
+    f'<p class="chapter-index-lead">Архивная сетка глав (до Figma Make).</p>'
+    f'</div>'
+    f'<div class="chapter-index-bleed section-panel" data-reveal>'
+    f'<ol class="chapter-grid chapter-grid--bleed ticket-grid">{landing_html}</ol>'
+    f'</div></section>'
+)
+challenges_legacy_html = (
+    f'<div class="landing-block-legacy landing-block-legacy--hidden" id="vyzovy-legacy" aria-hidden="true">'
+    f'{challenges_html}{solutions_html}</div>'
+)
+finale_legacy_html = (
+    f'<div class="landing-block-legacy landing-block-legacy--hidden" id="final-value-legacy-wrap" aria-hidden="true">'
+    f'{finale_html}</div>'
+) if finale_html else ''
+
 page = f'''<!doctype html>
 <html lang="ru">
 <head>
@@ -1225,40 +1263,30 @@ page = f'''<!doctype html>
 <meta property="og:image" content="images/hero-family-table.jpg">
 <link rel="icon" href="assets/carelink-owl-128.png" type="image/png" sizes="128x128">
 <link rel="apple-touch-icon" href="assets/carelink-owl-128.png">
+<link rel="stylesheet" href="assets/fonts-slava.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/motion.css">
+<link rel="stylesheet" href="assets/figma-make-parity.css">
+<link rel="stylesheet" href="assets/manifesto.css">
 </head>
-<body>
+<body class="has-site-header">
 <a class="skip" href="#top">К основному содержимому</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#razrabotka">Разработка</a><a href="#product-arch">Архитектура</a><a href="#final-value">Ценность</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#agenda">Повестка</a><a href="#glavy-manifest">Главы</a><a href="#cennosti">Ценности</a><a href="#navyki">Навыки</a><a href="#razrabotka">Разработка</a><a href="#product-arch">Архитектура</a><a href="#top">Лонгрид</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <a class="top-cta mono" href="#glavy"><span>К главам</span><span class="top-cta-arrow" aria-hidden="true">→</span></a>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">
-<section class="hero" aria-labelledby="hero-title">
-  <div class="hero-in" data-reveal>
-    <h1 id="hero-title">{H1}</h1>
-    <p class="stand hero-summary">{inline(stand)}</p>
-    <div class="chips hero-meta" aria-label="Темы манифеста">{meta_html}</div>
-  </div>
-  <figure class="hero-img" data-reveal><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"><figcaption class="visually-hidden">Вся семья за вечерним чаем</figcaption></figure>
-</section>
-{challenges_html}
-{solutions_html}
-<section class="chapter-index" id="glavy" aria-labelledby="chapter-index-title">
-  <div class="chapter-index-in section-panel" data-reveal>
-    <p class="section-label">Главы</p>
-    <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
-    <p class="chapter-index-lead">Выберите главу — откроется окно со структурой, иллюстрацией и исходным текстом (вкладки «Структура» и «Исходный текст»).</p>
-  </div>
-  <div class="chapter-index-bleed section-panel" data-reveal>
-    <ol class="chapter-grid chapter-grid--bleed ticket-grid">{landing_html}</ol>
-  </div>
-</section>
+<div class="carelink-page">
+{manifest_hero_html}
+{manifest_agenda_html}
+{manifest_chapters_html}
+</div>
+{challenges_legacy_html}
+{chapter_index_legacy_html}
 {development_html}
 {product_arch_html}
 <div class="layout">
@@ -1269,9 +1297,12 @@ page = f'''<!doctype html>
     <div class="read-tail">{sources_html}</div>
   </article>
 </div>
-{finale_html}
+{manifest_values_html}
+{manifest_skills_html}
+{finale_legacy_html}
 </main>
 <div id="landing-card-store" hidden aria-hidden="true">{''.join(landing_card_store)}</div>
+{detail_dialog_html}
 <div class="landing-drawer" id="landing-card-drawer" hidden aria-hidden="true">
   <button type="button" class="landing-drawer-overlay" id="landing-card-drawer-overlay" aria-label="Закрыть панель" tabindex="-1"></button>
   <div class="landing-drawer-sheet" role="dialog" aria-modal="true" aria-labelledby="landing-card-drawer-title" id="landing-card-drawer-panel">
@@ -1309,12 +1340,14 @@ page = f'''<!doctype html>
 <footer class="foot">
   <a class="brand foot-brand" href="#top">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <p class="foot-copy mono">© 2026 Carelink · Слава Якимов</p>
-  <nav class="foot-nav mono" aria-label="Разделы в подвале"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#final-value">Ценность</a></nav>
+  <nav class="foot-nav mono" aria-label="Разделы в подвале"><a href="#agenda">Повестка</a><a href="#glavy-manifest">Главы</a><a href="#cennosti">Ценности</a><a href="#navyki">Навыки</a><a href="#top">Наверх</a></nav>
   <span class="foot-note mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>
 <script src="assets/site.js" defer></script>
 <script src="assets/chapters.js" defer></script>
 <script src="assets/landing-cards.js" defer></script>
+<script src="assets/manifesto.js" defer></script>
+<script src="assets/detail-modal.js" defer></script>
 </body>
 </html>
 '''

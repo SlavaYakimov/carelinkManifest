@@ -1,0 +1,21 @@
+Remaining visual / product diffs vs https://ribbon-rake-92617748.figma.site/ (after parity pass)
+
+INTENTIONAL (Carelink extensions)
+- Fixed site header with owl brand, word-count meta, extra nav (Разработка, Архитектура, Лонгрид)
+- Long-read article + TOC + legacy hidden blocks below landing
+- #cennosti six-value row + #navyki skills (not on Figma Make page)
+- Native #detail-dialog modal (Figma uses in-app bundle/chapter detail overlays)
+- Font mapping: Playfair Display + Echo 2 / Cosmetics MS stacks (Figma uses Space Grotesk, Manrope, Cormorant SC, Noto Serif)
+
+LIKELY STILL VISUAL
+- Mini-card / chapter card titles: Figma final CSS uses Cormorant SC at 1.625rem; we map h3 to Playfair per Slava spec
+- Sticky offset: our bundle/chapters stages use top: var(--header-h); Figma full-viewport sticky
+- Hero h1 weight/size: Figma Space Grotesk 500; Playfair 700 override
+- Bundle panel nav: chain layout matches; hover/focus states may differ slightly
+- Scroll-jack feel: reimplemented in manifesto.js; verify drag + wheel on real devices
+
+CONTENT
+- Modal body text comes from manifest JSON/ARTICLE; should match if descriptions synced
+- Sixth value card + skills copy still flagged «требует подтверждения» in PR
+
+Compare PNGs: /opt/cursor/artifacts/screenshots/compare/*-{figma,ours}-{1440,390}.png

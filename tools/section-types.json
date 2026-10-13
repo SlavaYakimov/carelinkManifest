@@ -132,6 +132,30 @@
     "label": "Глава 14"
   },
   {
+    "type": "feature",
+    "label": "Глава 15"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 16"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 17"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 18"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 19"
+  },
+  {
+    "type": "feature",
+    "label": "Глава 20"
+  },
+  {
     "type": "sources",
     "label": "Об источниках"
   }
