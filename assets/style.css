@@ -67,6 +67,17 @@ a{color:var(--green)}
 .chapter-card-text{display:flex;flex-direction:column;gap:6px;min-width:0}
 .chapter-card-title{font:600 clamp(18px,1.5vw,22px)/1.25 var(--head);color:var(--ink)}
 .chapter-card-teaser{font-size:clamp(14px,.2vw + 13px,16px);line-height:1.5;color:var(--mut)}
+/* landing finale */
+.landing-finale{padding:clamp(72px,11vw,120px) clamp(20px,5vw,56px);background:linear-gradient(180deg,var(--mint) 0%,var(--cream) 55%,#eef5f0 100%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.landing-finale-in{max-width:720px;margin:0 auto;text-align:center}
+.landing-finale-kicker{display:inline-flex;align-items:center;gap:10px;color:var(--bronze);margin-bottom:20px}
+.landing-finale-owl{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--green);flex-shrink:0}
+.landing-finale-owl svg{display:block}
+.landing-finale-title{font:200 clamp(32px,4.8vw,52px)/1.08 var(--head);letter-spacing:-.03em;color:var(--green);margin:0 0 clamp(28px,4vw,40px);text-wrap:balance}
+.landing-finale-body{font:400 clamp(17px,.35vw + 16px,20px)/1.75 Inter,sans-serif;color:var(--ink);text-align:left;max-width:62ch;margin:0 auto}
+.landing-finale-body p{margin:0 0 1.35em}
+.landing-finale-body p:last-child{margin-bottom:0}
+.landing-finale-foot{margin:clamp(32px,5vw,48px) auto 0;max-width:58ch;font-size:14px;line-height:1.6;color:var(--mut);text-align:center}
 .read-lead,.read-tail,.read-chapters{min-width:0}
 .js .read-chapters .chapter{display:none}
 /* chapter dialog */
@@ -182,6 +193,8 @@ body{background:var(--cream);color:var(--ink)}
 .challenges{background:linear-gradient(165deg,#1a2822 0%,#1f241c 48%,#121a17 100%);border-color:var(--line)}
 .challenge-item{background:#151f1b;border-color:var(--line)}
 .challenge-example{background:rgba(21,31,27,.85)}
+.landing-finale{background:linear-gradient(180deg,#1a3329 0%,#121a17 55%,#151f1b 100%)}
+.landing-finale-body{color:var(--ink)}
 .chapter-card,.chapter-dialog-close,.btn-nav{background:#151f1b}
 .chapter-dialog-panel{background:#121a17}
 .block--concept{background:rgba(26,51,41,.65)}

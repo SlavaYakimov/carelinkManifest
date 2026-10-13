@@ -2,11 +2,19 @@
 """ARTICLE.md -> index.html (без внешних зависимостей). Запуск: python3 tools/build.py"""
 import re, html, pathlib, json
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
+_raw_md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
+FINALE_MARKER = '<!-- landing:finale -->'
+finale_chunk = None
+md = _raw_md
+if FINALE_MARKER in _raw_md:
+    _head, _tail = _raw_md.split(FINALE_MARKER, 1)
+    finale_chunk, _sources_rest = _tail.split('### Об источниках', 1)
+    md = _head + '### Об источниках' + _sources_rest
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
+finale_html = ''
 IMG_WIDTH, IMG_HEIGHT = 1280, 720
 
 
@@ -56,6 +64,7 @@ blocks_report = []
 source_report = []
 
 OWL = ('<svg viewBox="0 0 512 512" width="24" height="24" fill="#fff" aria-hidden="true"><path fill-rule="evenodd" d="M132 60 L196 132 Q256 116 316 132 L380 60 L392 168 Q440 226 440 300 Q440 410 352 456 Q306 480 256 480 Q206 480 160 456 Q72 410 72 300 Q72 226 120 168 Z M190 168 a70 70 0 1 0 0.1 0 Z M322 168 a70 70 0 1 0 0.1 0 Z M256 270 L238 300 L256 336 L274 300 Z M214 372 q14 18 28 0 q-14 8 -28 0 Z M270 372 q14 18 28 0 q-14 8 -28 0 Z M242 404 q14 18 28 0 q-14 8 -28 0 Z M186 404 q14 18 28 0 q-14 8 -28 0 Z M298 404 q14 18 28 0 q-14 8 -28 0 Z"/><circle cx="190" cy="238" r="34"/><circle cx="322" cy="238" r="34"/><circle fill="none" stroke="#fff" stroke-width="10" cx="190" cy="238" r="50"/><circle fill="none" stroke="#fff" stroke-width="10" cx="322" cy="238" r="50"/></svg>')
+OWL_FINALE = OWL.replace('width="24" height="24"', 'width="22" height="22"')
 
 ICON = {
     'concept': '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Zm-2 15v2h4v-2h-4Z"/></svg>',
@@ -108,6 +117,38 @@ def inline(t):
     t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
     t = re.sub(r'(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', r'<em>\1</em>', t)
     return t
+
+
+def render_finale_section(chunk):
+    title = ''
+    paras = []
+    foot = ''
+    for line in chunk.strip().split('\n'):
+        l = line.strip()
+        if not l or l.startswith('---'):
+            continue
+        if l.startswith('## '):
+            title = l[3:].strip()
+            continue
+        if len(l) >= 2 and l.startswith('*') and l.endswith('*') and not l.startswith('**'):
+            foot = l.strip('*').strip()
+            continue
+        paras.append(l)
+    body = ''.join(f'<p>{inline(p)}</p>' for p in paras)
+    foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
+    return (
+        f'<section class="landing-finale" id="final-value" aria-labelledby="landing-finale-title">'
+        f'<div class="landing-finale-in">'
+        f'<span class="mono landing-finale-kicker">'
+        f'<span class="landing-finale-owl" aria-hidden="true">{OWL_FINALE}</span>Финальная ценность</span>'
+        f'<h2 id="landing-finale-title" class="landing-finale-title">{html.escape(title)}</h2>'
+        f'<div class="landing-finale-body">{body}</div>{foot_html}'
+        f'</div></section>'
+    )
+
+
+if finale_chunk:
+    finale_html = render_finale_section(finale_chunk)
 
 
 def classify_h3(title, chap):
@@ -519,6 +560,7 @@ page = f'''<!doctype html>
     <ol class="chapter-landing">{landing_html}</ol>
   </div>
 </section>
+{finale_html}
 {challenges_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
