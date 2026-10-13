@@ -185,11 +185,139 @@ def render_landing_card_li(card_id: str, _num: int, title: str, image_src: str, 
     )
 
 
+DRAWER_SECTIONS = (
+    ('hypothesis', 'Гипотеза'),
+    ('challenges', 'Вызовы'),
+    ('problems', 'Проблемы'),
+    ('solutions', 'Решения'),
+    ('mission', 'Миссия'),
+    ('values', 'Ценности'),
+)
+LANDING_DRAWER_GAPS: list[tuple[str, str]] = []
+
+
+def note_drawer_gaps(card_id: str, sections: dict) -> None:
+    for key, _ in DRAWER_SECTIONS:
+        if not (sections.get(key) or '').strip():
+            LANDING_DRAWER_GAPS.append((card_id, key))
+
+
+def drawer_block(text: str, *, as_html: bool = False) -> str:
+    if not text or not str(text).strip():
+        return ''
+    if as_html or str(text).lstrip().startswith('<'):
+        return str(text)
+    chunks = [p.strip() for p in str(text).split('\n\n') if p.strip()]
+    return ''.join(f'<p>{inline(p)}</p>' for p in chunks)
+
+
+def render_landing_drawer_body(
+    card_id: str,
+    image_src: str,
+    image_alt: str,
+    short: str,
+    main: str,
+    sections: dict | None = None,
+    *,
+    main_is_html: bool = False,
+    section_html: frozenset[str] | None = None,
+) -> str:
+    sections = dict(sections or {})
+    html_sections = section_html or frozenset()
+    note_drawer_gaps(card_id, sections)
+    parts = []
+    if image_src:
+        parts.append(
+            f'<figure class="landing-drawer-hero">{img_picture(image_src, image_alt, "landing-drawer-hero-img", None, "lazy")}</figure>'
+        )
+    if short and short.strip():
+        parts.append(f'<p class="landing-drawer-short">{inline(short.strip())}</p>')
+    if main and str(main).strip():
+        parts.append(f'<div class="landing-drawer-main">{drawer_block(main, as_html=main_is_html)}</div>')
+    for key, label in DRAWER_SECTIONS:
+        raw = (sections.get(key) or '').strip()
+        if not raw:
+            continue
+        parts.append(
+            f'<section class="landing-drawer-section landing-drawer-section--{key}">'
+            f'<h3 class="landing-drawer-section-title">{label}</h3>'
+            f'<div class="landing-drawer-section-body">{drawer_block(raw, as_html=key in html_sections)}</div>'
+            f'</section>'
+        )
+    return ''.join(parts)
+
+
+def parse_scenario_drawer(body: str) -> tuple[str, dict]:
+    sections: dict[str, str] = {}
+    main_parts: list[str] = []
+    for part in re.split(r'\n\n+', body.strip()):
+        m = re.match(r'\*\*(Сейчас|Узнаёте себя):\*\*\s*(.*)', part, re.S)
+        if m:
+            label, text = m.group(1), m.group(2).strip()
+            if label == 'Сейчас':
+                main_parts.append(text)
+            else:
+                sections['challenges'] = text
+        else:
+            main_parts.append(part.strip())
+    main = '\n\n'.join(main_parts)
+    hyp = extract_hypothesis_clause(body)
+    if hyp:
+        sections['hypothesis'] = hyp
+    return main, sections
+
+
+def extract_hypothesis_clause(text: str) -> str:
+    paren = re.search(r'\([^)]*Концепт[^)]*\)', text)
+    if paren:
+        return paren.group(0).strip('()')
+    for sent in re.split(r'(?<=[.!?])\s+', text):
+        if 'Концепт' in sent or 'концепт' in sent.lower():
+            return sent.strip()
+    return ''
+
+
+def classify_finale_paragraph(p_inner: str) -> str:
+    plain = re.sub(r'<[^>]+>', '', p_inner).lower()
+    if 'уже сейчас' in plain:
+        return 'mission'
+    if any(
+        needle in plain
+        for needle in (
+            'мы сами создаём',
+            'в её собственных руках',
+            'в наших руках',
+            'safety override',
+            'не «платформа решает',
+            'не судим',
+        )
+    ):
+        return 'values'
+    if 'концепт' in plain and any(
+        needle in plain for needle in ('v1', 'дорожн', 'чекап', 'главный чат', 'ритуал', 'офлайн')
+    ):
+        return 'hypothesis'
+    return 'solutions'
+
+
+def parse_finale_modal(modal_html: str) -> tuple[str, dict, frozenset[str]]:
+    sections: dict[str, list[str]] = {}
+    lead_m = re.search(r'<p class="landing-card-modal-lead">(.*?)</p>', modal_html, re.S)
+    main_html = ''
+    if lead_m:
+        main_html = f'<p class="landing-card-modal-lead">{lead_m.group(1).strip()}</p>'
+    for p_inner in re.findall(r'<p>(.*?)</p>', modal_html, re.S):
+        kind = classify_finale_paragraph(p_inner)
+        sections.setdefault(kind, []).append(f'<p>{p_inner}</p>')
+    flat = {k: ''.join(v) for k, v in sections.items()}
+    return main_html, flat, frozenset(flat.keys())
+
+
 def stash_landing_card(card_id: str, kicker: str, title: str, body_html: str):
     landing_card_store.append(
         f'<article class="landing-card-source" id="{html.escape(card_id)}" '
         f'data-kicker="{html.escape(kicker)}" data-title="{html.escape(title)}">'
-        f'<div class="landing-card-modal-body">{body_html}</div></article>'
+        f'<div class="landing-card-modal-body landing-drawer-content">{body_html}</div></article>'
     )
 
 
@@ -205,12 +333,23 @@ def render_finale_cta_li(cta: dict, num: int, total: int):
             f'{img_picture(img, alt, "finale-cta-img", None, "eager")}'
             f'</figure>'
         )
-    modal_body = cta.get('modal_html', '')
+    modal_html = cta.get('modal_html', '')
+    main_html, sections, html_keys = parse_finale_modal(modal_html)
+    drawer_body = render_landing_drawer_body(
+        card_id,
+        img,
+        alt,
+        cta.get('modal_title', phrase),
+        main_html,
+        sections,
+        main_is_html=True,
+        section_html=html_keys,
+    )
     stash_landing_card(
         card_id,
         cta.get('modal_kicker', f'Призыв {num:02d} / {total:02d}'),
         cta.get('modal_title', phrase),
-        modal_body,
+        drawer_body,
     )
     aria = html.escape(phrase, quote=True)
     return (
@@ -240,9 +379,23 @@ def render_finale_section(chunk):
         paras.append(l)
     body = ''.join(f'<p>{inline(p)}</p>' for p in paras)
     foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
-    full_body = body + foot_html
     card_id = 'landing-finale-1'
-    stash_landing_card(card_id, 'Финальная ценность', title or 'Инструмент, чтобы создавать свою реальность', full_body)
+    fin_title = title or 'Инструмент, чтобы создавать свою реальность'
+    fin_sections: dict[str, str] = {}
+    if len(paras) > 1:
+        fin_sections['solutions'] = '\n\n'.join(paras[1:])
+    if foot:
+        fin_sections['values'] = foot
+    drawer_body = render_landing_drawer_body(
+        card_id,
+        FINALE_CARD_IMAGE,
+        'Семейный очаг — метафора общей реальности',
+        fin_title,
+        paras[0] if paras else '\n\n'.join(paras),
+        fin_sections,
+    )
+    stash_landing_card(card_id, 'Финальная ценность', fin_title, drawer_body)
+    full_body = body + foot_html
     ctas = FINALE_CTAS_DATA.get('ctas', [])
     n_cta = len(ctas)
     cta_cards = [
@@ -704,13 +857,18 @@ def render_challenges_section():
             f'<p class="challenge-desc">{inline(p["description"])}</p>'
             f'</div></li>'
         )
-        modal_body = (
-            f'<span class="badge challenge-problem-badge">Проблема</span>'
-            f'<p class="landing-card-modal-lead">{inline(p["description"])}</p>'
-            f'<h4 class="landing-card-modal-sub">Ответ манифеста</h4>'
-            f'<p>{inline(p.get("response", ""))}</p>'
+        drawer_body = render_landing_drawer_body(
+            card_id,
+            p.get('image', ''),
+            p['title'],
+            p['title'],
+            first_sentence(p['description']),
+            {
+                'problems': p['description'],
+                'solutions': p.get('response', ''),
+            },
         )
-        stash_landing_card(card_id, f'Проблема {i:02d} / {n_prob:02d}', p['title'], modal_body)
+        stash_landing_card(card_id, f'Проблема {i:02d} / {n_prob:02d}', p['title'], drawer_body)
         img = p.get('image', '')
         alt = p['title']
         problem_cards.append(render_landing_card_li(card_id, i, p['title'], img, alt))
@@ -725,12 +883,20 @@ def render_challenges_section():
             f'</aside>'
         )
         card_id = f'scenario-{i}'
-        body_parts = [f'<p>{inline(block.strip())}</p>' for block in ex['body'].split('\n\n') if block.strip()]
+        main, sections = parse_scenario_drawer(ex['body'])
+        drawer_body = render_landing_drawer_body(
+            card_id,
+            ex.get('image', ''),
+            ex['title'],
+            ex['title'],
+            main,
+            sections,
+        )
         stash_landing_card(
             card_id,
             f'Сценарий {i:02d} / {len(d["examples"]):02d}',
             ex['title'],
-            f'<span class="badge challenge-example-badge">Сценарий</span>{"".join(body_parts)}',
+            drawer_body,
         )
         scenario_cards.append(
             render_landing_card_li(card_id, i, ex['title'], ex.get('image', ''), ex['title'])
@@ -769,14 +935,18 @@ def render_solutions_section():
     n_feat = len(featured)
     for i, f in enumerate(featured, 1):
         card_id = f'solution-featured-{i}'
-        modal_body = (
-            f'<span class="badge solution-way-badge">Способ</span>'
-            f'<p class="landing-card-modal-lead">{inline(f["description"])}</p>'
-            f'<p class="solution-problem-ref-modal">'
-            f'<span class="mono solution-problem-lbl">К проблеме</span> '
-            f'{html.escape(f["problem_ref"])}</p>'
+        drawer_body = render_landing_drawer_body(
+            card_id,
+            f.get('image', ''),
+            f['title'],
+            f['title'],
+            first_sentence(f['description']),
+            {
+                'problems': f'Связанная проблема: «{f["problem_ref"]}».',
+                'solutions': f['description'],
+            },
         )
-        stash_landing_card(card_id, f'Решение {i:02d} / {n_feat:02d}', f['title'], modal_body)
+        stash_landing_card(card_id, f'Решение {i:02d} / {n_feat:02d}', f['title'], drawer_body)
         featured_cards.append(
             render_landing_card_li(card_id, i, f['title'], f.get('image', ''), f['title'])
         )
@@ -1047,3 +1217,8 @@ for rep in blocks_report:
             empty_v3.append(f"ch{rep['chapter']}:{k}")
 if empty_v3:
     print('v3 placeholders:', ', '.join(empty_v3))
+if LANDING_DRAWER_GAPS:
+    print('\n=== Landing drawer empty sections (flag in PR, not on site) ===')
+    for cid, sec in LANDING_DRAWER_GAPS:
+        label = dict(DRAWER_SECTIONS).get(sec, sec)
+        print(f'  {cid} · {label}')
