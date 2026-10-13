@@ -1,0 +1,38 @@
+/* Motion — Emil Kowalski / animate skill: ease-out entrances, transform+opacity, reduced-motion */
+:root{--ease-out-ui:cubic-bezier(.23,1,.32,1)}
+
+@media(hover:hover) and (pointer:fine){
+.chapter-grid-card{transition:background .22s var(--ease-out-ui),transform .22s var(--ease-out-ui),box-shadow .22s var(--ease-out-ui)}
+.chapter-grid-card:hover{transform:translateY(-3px)}
+}
+
+.chapter-dialog-panel{
+opacity:0;
+transform:scale(.97);
+transition:opacity .24s var(--ease-out-ui),transform .24s var(--ease-out-ui);
+}
+.chapter-dialog[open] .chapter-dialog-panel,
+.chapter-dialog.is-visible .chapter-dialog-panel{
+opacity:1;
+transform:scale(1);
+}
+
+.chapter-tablist [role=tab],
+.chapter-version-tablist [role=tab]{
+transition:color .15s ease-out,border-color .15s ease-out,background .15s ease-out;
+}
+
+.chapter-tabpanel.is-tab-enter{
+animation:carelink-tab-in .18s var(--ease-out-ui);
+}
+@keyframes carelink-tab-in{
+from{opacity:.55;transform:translateY(4px)}
+to{opacity:1;transform:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+.chapter-grid-card{transition:background .15s ease!important;transform:none!important}
+.chapter-grid-card:hover{transform:none!important}
+.chapter-dialog-panel{transform:none!important;transition:opacity .15s ease!important}
+.chapter-tabpanel.is-tab-enter{animation:none!important}
+}

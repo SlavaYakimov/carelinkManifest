@@ -16,6 +16,7 @@
   var tabs = [tabStructure, tabSource];
   var total = document.querySelectorAll('.read-chapters .chapter').length;
   var current = null;
+  var lastFocus = null;
   var focusables = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
   var DEFAULT_VERSION = '3';
 
@@ -54,6 +55,17 @@
     document.body.classList.toggle('dialog-open', on);
   }
 
+  function flashTabPanel(panel) {
+    if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    panel.classList.remove('is-tab-enter');
+    void panel.offsetWidth;
+    panel.classList.add('is-tab-enter');
+    panel.addEventListener('animationend', function onEnd() {
+      panel.classList.remove('is-tab-enter');
+      panel.removeEventListener('animationend', onEnd);
+    });
+  }
+
   function selectTab(idx) {
     tabs.forEach(function (tab, i) {
       var on = i === idx;
@@ -64,6 +76,7 @@
     panelSource.hidden = idx !== 1;
     panelStructure.classList.toggle('is-active', idx === 0);
     panelSource.classList.toggle('is-active', idx === 1);
+    flashTabPanel(idx === 0 ? panelStructure : panelSource);
   }
 
   function onTabKeydown(e, idx) {
@@ -104,6 +117,14 @@
       if (pan.getAttribute('data-version-panel') === id) pan.removeAttribute('hidden');
       else pan.setAttribute('hidden', '');
     });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var active = wrapper.querySelector('[data-version-panel="' + id + '"]');
+      if (active) {
+        active.classList.remove('is-tab-enter');
+        void active.offsetWidth;
+        active.classList.add('is-tab-enter');
+      }
+    }
   }
 
   function initVersionTabs(container) {
@@ -179,6 +200,7 @@
     if (!fillDialog(n)) return;
     if (push !== false) setHash(n);
     if (!dialog.open) {
+      lastFocus = document.activeElement;
       dialog.showModal();
       lockScroll(true);
       dialog.addEventListener('keydown', trapFocus);
@@ -198,6 +220,10 @@
     dialog.classList.remove('is-visible');
     clearHash();
     current = null;
+    if (lastFocus && typeof lastFocus.focus === 'function') {
+      try { lastFocus.focus(); } catch (err) { /* ignore */ }
+      lastFocus = null;
+    }
   });
   btnClose.addEventListener('click', function () { dialog.close(); });
   btnPrev.addEventListener('click', function () { if (current > 1) openChapter(current - 1); });
