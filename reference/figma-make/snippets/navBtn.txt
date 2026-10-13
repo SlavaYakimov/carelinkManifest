@@ -1,0 +1,1 @@
+<button type="button" class=""><b>Вызов</b><strong>Атомизация людей внутри семьи</strong></button>

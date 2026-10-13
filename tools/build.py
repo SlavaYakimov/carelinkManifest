@@ -1266,9 +1266,10 @@ page = f'''<!doctype html>
 <link rel="stylesheet" href="assets/fonts-slava.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/motion.css">
+<link rel="stylesheet" href="assets/figma-make-parity.css">
 <link rel="stylesheet" href="assets/manifesto.css">
 </head>
-<body>
+<body class="has-site-header">
 <a class="skip" href="#top">К основному содержимому</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
@@ -1279,10 +1280,12 @@ page = f'''<!doctype html>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">
+<div class="carelink-page">
 {manifest_hero_html}
 {manifest_agenda_html}
-{challenges_legacy_html}
 {manifest_chapters_html}
+</div>
+{challenges_legacy_html}
 {chapter_index_legacy_html}
 {development_html}
 {product_arch_html}
