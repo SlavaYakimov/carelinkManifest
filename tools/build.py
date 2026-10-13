@@ -102,7 +102,7 @@ def owl_img(width, png=False):
     src = OWL_PNG if png else OWL_SVG
     return (
         f'<img src="{src}" alt="" width="{width}" height="{height}" class="owl-mark" '
-        f'decoding="async" loading="lazy">'
+        f'decoding="async" loading="lazy" aria-hidden="true" role="presentation">'
     )
 
 

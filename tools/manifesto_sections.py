@@ -13,12 +13,20 @@ def _load(name):
     return json.loads((ROOT / 'tools' / name).read_text(encoding='utf-8'))
 
 
-def render_narrative_intro(h2, text, inline_fn, section_id=''):
+def render_narrative_intro(h2, text, inline_fn, section_id='', *, skip_href=''):
     sid = f' id="{section_id}"' if section_id else ''
+    skip = ''
+    if skip_href:
+        skip = (
+            f'<p class="narrative-intro__skip">'
+            f'<a href="{html.escape(skip_href, quote=True)}">'
+            f'Пропустить интерактивное листание — перейти к ценностям</a></p>'
+        )
     return (
         f'<section class="narrative-intro"{sid} data-reveal>'
         f'<h2>{html.escape(h2)}</h2>'
         f'<p>{inline_fn(text)}</p>'
+        f'{skip}'
         f'</section>'
     )
 
@@ -89,7 +97,9 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
             f'</div></li>'
         )
 
-    intro = render_narrative_intro(data['intro_h2'], data['intro_text'], inline_fn, 'agenda-intro')
+    intro = render_narrative_intro(
+        data['intro_h2'], data['intro_text'], inline_fn, 'agenda-intro', skip_href='#cennosti'
+    )
     return (
         intro
         + f'<section class="bundle-scroll" id="agenda" aria-label="CareLink — вызовы, сценарии и решения">'
@@ -137,7 +147,8 @@ def render_manifesto_hero(inline_fn):
     return (
         f'<section class="carelink-hero" aria-labelledby="hero-title">'
         f'<img class="carelink-hero__image" src="images/hero-family-table.jpg" '
-        f'alt="Вся семья за вечерним чаем" width="1280" height="720">'
+        f'alt="Вся семья за вечерним чаем" width="1280" height="720" '
+        f'fetchpriority="high" decoding="async">'
         f'<div class="carelink-hero__overlay" aria-hidden="true"></div>'
         f'<div class="carelink-hero__content" data-reveal>'
         f'<p class="carelink-hero__kicker">Манифест CareLink · Для тех, кто рядом</p>'
