@@ -72,10 +72,10 @@
   btnClose.addEventListener('click', function () { dialog.close(); });
 
   document.addEventListener('click', function (e) {
-    var link = e.target.closest('[data-landing-card]');
-    if (!link) return;
-    e.preventDefault();
-    openCard(link.getAttribute('data-landing-card'));
+    var trigger = e.target.closest('[data-landing-card]');
+    if (!trigger) return;
+    if (trigger.tagName === 'A') e.preventDefault();
+    openCard(trigger.getAttribute('data-landing-card'));
   });
 
   addEventListener('hashchange', function () {

@@ -943,7 +943,7 @@ page = f'''<!doctype html>
 <link rel="stylesheet" href="assets/motion.css">
 </head>
 <body>
-<a class="skip" href="#glava-1">К тексту</a>
+<a class="skip" href="#top">К основному содержимому</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
