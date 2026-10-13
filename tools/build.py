@@ -260,52 +260,117 @@ def render_landing_card_li(
     )
 
 
-def render_agenda_carousel_slide(
+NEO_SPEAKERS_PER_SLIDE = 3
+
+
+def render_speaker_poster_button(
     card_id: str,
-    schedule_kind: str,
-    num: int,
     title: str,
+    subtitle: str,
+    image_src: str,
+    alt: str,
+    kanji: str,
+    *,
+    focus_x: str = '50%',
+):
+    img_html = img_picture(image_src, alt, '', loading='lazy') if image_src else ''
+    return (
+        f'<li><button type="button" class="speaker-person" data-landing-card="{html.escape(card_id)}" '
+        f'style="--speaker-focus-x: {focus_x}; --speaker-focus-y: 48%;" '
+        f'data-kanji="{html.escape(kanji)}" aria-label="{html.escape(subtitle + " — " + title)}">'
+        f'{img_html}'
+        f'<div class="speaker-meta"><span>{html.escape(title)}</span>'
+        f'<small>{html.escape(subtitle)}</small></div></button></li>'
+    )
+
+
+def render_speaker_poster_chapter_link(
+    chapter_num: int,
+    title: str,
+    subtitle: str,
     image_src: str,
     alt: str,
     *,
-    teaser: str = '',
-    data_group: str = '',
+    focus_x: str = '50%',
 ):
-    if not title or not str(title).strip():
-        title = 'Без названия'
-    if not alt or not str(alt).strip():
-        alt = title
-    media = ''
-    if image_src:
-        media = (
-            f'<figure class="agenda-slide-media">'
-            f'{img_picture(image_src, alt, "chapter-grid-img", loading="lazy")}'
-            f'</figure>'
-        )
-    teaser_html = (
-        f'<p class="agenda-slide-teaser">{inline(teaser)}</p>'
-        if teaser and teaser.strip()
-        else ''
-    )
-    aria_bits = [f'{schedule_kind} {num:02d}', title]
-    if teaser and teaser.strip():
-        aria_bits.append(teaser.strip())
-    aria = html.escape(' — '.join(aria_bits), quote=True)
-    group_attr = f' data-agenda-group="{html.escape(data_group)}"' if data_group else ''
+    img_html = img_picture(image_src, alt, '', chapter_num, 'lazy') if image_src else ''
+    kanji = f'{chapter_num:02d}'
     return (
-        f'<li class="agenda-carousel-slide"{group_attr}>'
-        f'<article class="agenda-schedule-row">'
-        f'<time class="agenda-schedule-label mono" datetime="">'
-        f'<span>{html.escape(schedule_kind)}</span>{num:02d}'
-        f'</time>'
-        f'<span class="agenda-schedule-rail" aria-hidden="true"></span>'
-        f'<button type="button" class="agenda-schedule-card mirai-ticket landing-card-ticket" '
-        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
-        f'<h3 class="agenda-slide-title landing-card-title">{html.escape(title)}</h3>'
-        f'{teaser_html}'
-        f'{media}'
-        f'{landing_card_cta_html()}'
-        f'</button></article></li>'
+        f'<li><a class="speaker-person" href="#glava-{chapter_num}" data-chapter="{chapter_num}" '
+        f'style="--speaker-focus-x: {focus_x}; --speaker-focus-y: 48%;" '
+        f'data-kanji="{kanji}" aria-label="{html.escape(title)}">'
+        f'{img_html}'
+        f'<div class="speaker-meta"><span>{html.escape(title)}</span>'
+        f'<small>{html.escape(subtitle)}</small></div></a></li>'
+    )
+
+
+def build_speaker_track(person_items: list[str], per_slide: int = NEO_SPEAKERS_PER_SLIDE) -> str:
+    slides = []
+    for i in range(0, len(person_items), per_slide):
+        chunk = person_items[i : i + per_slide]
+        slide_idx = i // per_slide
+        active = ' is-active' if slide_idx == 0 else ''
+        hidden = 'false' if slide_idx == 0 else 'true'
+        slides.append(
+            f'<article class="speaker-slide{active}" aria-hidden="{hidden}">'
+            f'<ul class="speaker-grid">{"".join(chunk)}</ul></article>'
+        )
+    return ''.join(slides)
+
+
+def build_speaker_dots(count: int, attr_name: str, *, labels: list[str] | None = None) -> str:
+    per = NEO_SPEAKERS_PER_SLIDE
+    labels = labels or []
+    dots = []
+    for i in range(count):
+        lbl = labels[i] if i < len(labels) else f'Элемент {i + 1}'
+        dots.append(
+            f'<button class="speaker-dot{" is-active" if i == 0 else ""}" type="button" '
+            f'{attr_name}="{i + 1}" data-slide="{i // per}" '
+            f'aria-label="{html.escape(lbl)}"'
+            f'{" aria-current=\"true\"" if i == 0 else ""}></button>'
+        )
+    return ''.join(dots)
+
+
+def render_neo_speakers_pin(
+    pin_id: str,
+    section_class: str,
+    title_id: str,
+    section_label: str,
+    title: str,
+    intro_html: str,
+    panel_extra: str,
+    person_items: list[str],
+    dot_attr: str,
+    dot_labels: list[str],
+    *,
+    carousel_label: str,
+) -> str:
+    n = len(person_items)
+    track = build_speaker_track(person_items)
+    dots_track = build_speaker_dots(n, dot_attr, labels=dot_labels)
+    dots_panel = build_speaker_dots(n, dot_attr, labels=dot_labels)
+    return (
+        f'<div class="speakers-scroll-pin" id="{pin_id}" data-speakers-scroll-pin '
+        f'style="--speaker-count: {n}">'
+        f'<section class="speakers speakers--carelink {section_class}" aria-labelledby="{title_id}">'
+        f'<div class="speaker-carousel is-visible section-panel" data-reveal '
+        f'aria-roledescription="carousel" aria-label="{html.escape(carousel_label)}">'
+        f'<div class="speaker-controls" aria-label="Навигация по карточкам">{dots_track}</div>'
+        f'<div class="speaker-track">{track}</div>'
+        f'</div>'
+        f'<div class="section-intro section-panel" data-reveal>'
+        f'<p class="section-label">{html.escape(section_label)}</p>'
+        f'<h2 id="{title_id}">{html.escape(title)}</h2>'
+        f'{intro_html}'
+        f'{panel_extra}'
+        f'<div class="speaker-controls speaker-controls--panel mono" aria-label="Оглавление">'
+        f'{dots_panel}</div>'
+        f'<p class="speakers-scroll-hint mono" aria-hidden="true">Прокрутите страницу ↓</p>'
+        f'</div>'
+        f'</section></div>'
     )
 
 
@@ -1000,58 +1065,45 @@ words = len(re.findall(r'[\wёЁ-]+', re.sub(r'[`*#>!\[\]()]', ' ', md)))
 
 
 def render_chapters_carousel_section(chapters, num_chapters: int) -> str:
-    dots = []
-    slides = []
+    persons = []
+    labels = []
     for ch in chapters:
         n = ch['num']
         im = chapter_image_meta(n)
         src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
         alt = im.get('alt') or ch['title']
         focus_x = '44%' if n % 2 else '52%'
-        dots.append(
-            f'<button class="speaker-dot{" is-active" if n == 1 else ""}" type="button" '
-            f'data-chapter="{n}" data-slide="{(n - 1) // 2}" '
-            f'aria-label="Глава {n:02d}: {html.escape(ch["title"])}"'
-            f'{" aria-current=\"true\"" if n == 1 else ""}></button>'
+        role = chapter_role_label(n)
+        labels.append(f'Глава {n:02d}: {ch["title"]}')
+        persons.append(
+            render_speaker_poster_chapter_link(
+                n,
+                ch['title'],
+                role,
+                src,
+                alt,
+                focus_x=focus_x,
+            )
         )
-        person = (
-            f'<li><a class="speaker-person" href="#glava-{n}" data-chapter="{n}" '
-            f'style="--speaker-focus-x: {focus_x}; --speaker-focus-y: 48%;" '
-            f'data-kanji="{n:02d}" aria-label="{html.escape(ch["title"])}">'
-            f'{img_picture(src, alt, "speaker-person-img", n, "lazy") if src else ""}'
-            f'<div class="speaker-meta"><span>{html.escape(ch["title"])}</span>'
-            f'<small>{html.escape(chapter_role_label(n))}</small></div></a></li>'
-        )
-        if (n - 1) % 2 == 0:
-            slides.append([person])
-        else:
-            slides[-1].append(person)
-    slide_html = []
-    for idx, pair in enumerate(slides):
-        active = ' is-active' if idx == 0 else ''
-        hidden = 'false' if idx == 0 else 'true'
-        slide_html.append(
-            f'<article class="speaker-slide{active}" aria-label="Главы {idx * 2 + 1}–{idx * 2 + len(pair)}" '
-            f'aria-hidden="{hidden}">'
-            f'<ul class="speaker-grid speaker-grid--duo">{"".join(pair)}</ul></article>'
-        )
-    n_ch = len(chapters)
-    scroll_h = f'calc(100vh + (var(--chapter-count, {n_ch}) - 1) * 55vh)'
+    intro = (
+        f'<p class="speakers-intro-lead">Выберите главу — откроется окно со структурой, '
+        f'иллюстрацией и исходным текстом (вкладки «Структура» и «Исходный текст»).</p>'
+    )
+    pin = render_neo_speakers_pin(
+        'glavy',
+        'speakers--chapters',
+        'chapter-index-title',
+        'Главы',
+        f'{num_chapters} глав манифеста',
+        intro,
+        '',
+        persons,
+        'data-chapter',
+        labels,
+        carousel_label='Карусель глав манифеста',
+    )
     return (
-        f'<div class="chapters-scroll-pin chapter-index" id="glavy" style="--chapter-count: {n_ch}">'
-        f'<section class="speakers speakers--chapters" id="glavy-carousel" aria-labelledby="chapter-index-title">'
-        f'<div class="section-intro section-panel" data-reveal>'
-        f'<p class="section-label">Главы</p>'
-        f'<h2 id="chapter-index-title" class="chapter-index-title">{num_chapters} глав манифеста</h2>'
-        f'<p class="chapter-index-lead">Выберите главу — откроется окно со структурой, иллюстрацией и исходным текстом.</p>'
-        f'<div class="speaker-controls speaker-controls--toc" aria-label="Оглавление глав">'
-        f'{"".join(dots)}</div>'
-        f'</div>'
-        f'<div class="speaker-carousel section-panel" data-reveal aria-roledescription="carousel" '
-        f'aria-label="Карусель глав">'
-        f'<div class="speaker-track" id="speaker-track">{"".join(slide_html)}</div>'
-        f'<p class="chapters-scroll-hint mono" aria-hidden="true">Прокрутите страницу ↓</p>'
-        f'</div></section></div>'
+        f'{pin}'
         f'<div class="chapter-index-bleed section-panel landing-block-legacy" id="glavy-grid-legacy" data-reveal>'
         f'<ol class="chapter-grid chapter-grid--bleed ticket-grid">{landing_html}</ol>'
         f'</div>'
@@ -1063,7 +1115,10 @@ def render_challenges_section():
     n_prob = len(d['problems'])
     problems = []
     problem_cards = []
-    agenda_slides = []
+    persons = []
+    labels = []
+    jump_marks: list[tuple[str, int]] = []
+    seq = 0
     for i, p in enumerate(d['problems'], 1):
         card_id = f'problem-{i}'
         problems.append(
@@ -1106,20 +1161,26 @@ def render_challenges_section():
                 teaser=teaser_from_text(p['description']),
             )
         )
-        agenda_slides.append(
-            render_agenda_carousel_slide(
+        if i == 1:
+            jump_marks.append(('problems', seq))
+        seq += 1
+        subtitle = f'Проблема {i:02d}/{n_prob:02d}'
+        labels.append(f'{subtitle} — {p["title"]}')
+        focus_x = '44%' if i % 2 else '52%'
+        persons.append(
+            render_speaker_poster_button(
                 card_id,
-                'Вызов',
-                i,
                 p['title'],
+                subtitle,
                 img,
                 alt,
-                teaser=teaser_from_text(p['description']),
-                data_group='problems',
+                f'{seq:02d}',
+                focus_x=focus_x,
             )
         )
     examples = []
     scenario_cards = []
+    n_ex = len(d['examples'])
     for i, ex in enumerate(d['examples'], 1):
         examples.append(
             f'<aside class="challenge-example">'
@@ -1139,8 +1200,7 @@ def render_challenges_section():
             main,
             sections,
         )
-        n_sc = len(d['examples'])
-        kicker = f'Сценарий · {i:02d}/{n_sc:02d}'
+        kicker = f'Сценарий · {i:02d}/{n_ex:02d}'
         stash_landing_card(card_id, kicker, ex['title'], drawer_body)
         scenario_cards.append(
             render_landing_card_li(
@@ -1153,16 +1213,21 @@ def render_challenges_section():
                 teaser=teaser_from_text(main),
             )
         )
-        agenda_slides.append(
-            render_agenda_carousel_slide(
+        if i == 1:
+            jump_marks.append(('scenarios', seq))
+        seq += 1
+        subtitle = f'Сценарий {i:02d}/{n_ex:02d}'
+        labels.append(f'{subtitle} — {ex["title"]}')
+        focus_x = '48%' if i % 2 else '54%'
+        persons.append(
+            render_speaker_poster_button(
                 card_id,
-                'Сценарий',
-                i,
                 ex['title'],
+                subtitle,
                 ex.get('image', ''),
                 ex['title'],
-                teaser=teaser_from_text(main),
-                data_group='scenarios',
+                f'{seq:02d}',
+                focus_x=focus_x,
             )
         )
     solution_cards = []
@@ -1199,52 +1264,49 @@ def render_challenges_section():
                 teaser=teaser_from_text(f['description']),
             )
         )
-        agenda_slides.append(
-            render_agenda_carousel_slide(
+        if i == 1:
+            jump_marks.append(('solutions', seq))
+        seq += 1
+        subtitle = f'Решение {i:02d}/{n_feat:02d}'
+        labels.append(f'{subtitle} — {f["title"]}')
+        focus_x = '46%' if i % 2 else '50%'
+        persons.append(
+            render_speaker_poster_button(
                 card_id,
-                'Решение',
-                i,
                 f['title'],
+                subtitle,
                 f.get('image', ''),
                 f['title'],
-                teaser=teaser_from_text(f['description']),
-                data_group='solutions',
+                f'{seq:02d}',
+                focus_x=focus_x,
             )
         )
     examples_note = d.get('examples_note', '')
-    n_ex = len(d['examples'])
     note_html = (
-        f'<p class="challenges-examples-note manifest-agenda-note">{inline(examples_note)}</p>'
-        if examples_note
-        else ''
+        f'<p class="speakers-intro-note">{inline(examples_note)}</p>' if examples_note else ''
     )
     solutions_intro = d.get('solutions_intro', '')
     solutions_lead = (
-        'Каждая карточка — один способ из манифеста. Нажмите «Прочитать» — справа откроется '
+        'Каждая карточка — один способ из манифеста. Нажмите на постер — справа откроется '
         'панель с полным текстом и связью с проблемой.'
     )
-    n_total = len(agenda_slides)
-    carousel = (
-        f'<div class="manifest-agenda-carousel" data-agenda-carousel role="region" '
-        f'aria-roledescription="carousel" aria-label="Вызовы, сценарии и решения — {n_total} карточек">'
-        f'<div class="manifest-agenda-carousel-controls">'
-        f'<button type="button" class="agenda-carousel-btn agenda-carousel-btn--prev" '
-        f'data-agenda-prev aria-label="Предыдущая карточка">←</button>'
-        f'<p class="agenda-carousel-status mono" data-agenda-status aria-live="polite">'
-        f'1 / {n_total}</p>'
-        f'<button type="button" class="agenda-carousel-btn agenda-carousel-btn--next" '
-        f'data-agenda-next aria-label="Следующая карточка">→</button>'
-        f'</div>'
-        f'<div class="agenda-carousel-viewport" data-agenda-viewport tabindex="0">'
-        f'<ol class="agenda-carousel-track">{"".join(agenda_slides)}</ol>'
-        f'</div></div>'
-    )
+    jump_idx = {name: idx for name, idx in jump_marks}
     toc_row = (
-        f'<ul class="manifest-agenda-toc-row mono" aria-label="Блоки карусели">'
-        f'<li><button type="button" data-agenda-jump="problems">Проблемы · {n_prob}</button></li>'
-        f'<li><button type="button" data-agenda-jump="scenarios">Сценарии · {n_ex}</button></li>'
-        f'<li><button type="button" data-agenda-jump="solutions">Решения · {n_feat}</button></li>'
+        f'<ul class="speakers-toc-row mono" aria-label="Блоки вызовов">'
+        f'<li><button type="button" data-speakers-jump="{jump_idx.get("problems", 0)}">'
+        f'Проблемы · {n_prob}</button></li>'
+        f'<li><button type="button" data-speakers-jump="{jump_idx.get("scenarios", n_prob)}">'
+        f'Сценарии · {n_ex}</button></li>'
+        f'<li><button type="button" data-speakers-jump="{jump_idx.get("solutions", n_prob + n_ex)}">'
+        f'Решения · {n_feat}</button></li>'
         f'</ul>'
+    )
+    intro_html = (
+        f'<p class="speakers-intro-lead">{inline(d["intro"])}</p>'
+        f'<p class="speakers-intro-lead">{inline(solutions_intro)}</p>'
+        f'<p class="speakers-intro-lead speakers-intro-lead--muted">{inline(solutions_lead)}</p>'
+        f'{note_html}'
+        f'{toc_row}'
     )
     legacy_grids = (
         f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--problems">'
@@ -1254,26 +1316,26 @@ def render_challenges_section():
         f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--solutions">'
         f'{"".join(solution_cards)}</ol>'
     )
+    pin = render_neo_speakers_pin(
+        'vyzovy',
+        'speakers--vyzovy',
+        'challenges-title',
+        'Вызовы',
+        'Проблемы семьи, сценарии и три опоры',
+        intro_html,
+        '',
+        persons,
+        'data-challenge',
+        labels,
+        carousel_label='Вызовы — проблемы, сценарии и решения',
+    )
     return (
-        f'<section class="challenges manifest-vyzovy" id="vyzovy" aria-labelledby="challenges-title">'
-        f'<div class="agenda-block manifest-agenda-block">'
-        f'<div class="agenda-panel manifest-agenda-panel section-panel" data-reveal>'
-        f'<p class="section-label">Вызовы</p>'
-        f'<h2 id="challenges-title" class="challenges-title manifest-agenda-subtitle">'
-        f'Проблемы семьи, сценарии и три опоры</h2>'
-        f'<p class="challenges-intro manifest-agenda-intro">{inline(d["intro"])}</p>'
-        f'<p class="solutions-intro manifest-agenda-solutions-intro">{inline(solutions_intro)}</p>'
-        f'<p class="solutions-lead manifest-agenda-solutions-lead">{inline(solutions_lead)}</p>'
-        f'{note_html}'
-        f'{toc_row}'
-        f'</div>'
-        f'<div class="manifest-agenda-stage section-panel" data-reveal>{carousel}</div>'
-        f'</div>'
+        f'{pin}'
         f'<div class="landing-block-legacy" id="vyzovy-legacy">'
         f'<ol class="challenge-list">{"".join(problems)}</ol>'
         f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
         f'{legacy_grids}'
-        f'</div></section>'
+        f'</div>'
     )
 
 
@@ -1516,8 +1578,7 @@ page = f'''<!doctype html>
 <script src="assets/site.js" defer></script>
 <script src="assets/chapters.js" defer></script>
 <script src="assets/landing-cards.js" defer></script>
-<script src="assets/agenda-carousel.js" defer></script>
-<script src="assets/chapters-carousel.js" defer></script>
+<script src="assets/speakers-scroll.js" defer></script>
 </body>
 </html>
 '''
