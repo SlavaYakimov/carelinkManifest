@@ -4,6 +4,8 @@ import re, html, pathlib, json
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
+CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
+NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
 PLACEHOLDER = 'Не сформулировано — требует подтверждения'
 STRUCT_LABELS = (
     ('image', 'Картинка'),
@@ -58,6 +60,7 @@ CHAPTER_DEFAULT = {
     1: 'concept', 2: 'concept', 3: 'concept', 4: 'concept',
     5: 'concept', 6: 'feature', 7: 'feature', 8: 'concept',
     9: 'risk', 10: 'feature', 11: 'concept', 12: 'concept', 13: 'feature',
+    14: 'concept',
 }
 
 section_log = []
@@ -336,7 +339,7 @@ for b in body:
         active = 'chapter'
         cur_ch = {'num': chap, 'title': name, 'teaser': None, 'lines': [], 'fig': None}
         chapter_list.append(cur_ch)
-        emit(f'<section class="chapter" id="{sid}" data-chapter="{chap}" tabindex="-1"><header class="ch-h"><span class="mono">Глава {chap:02d} / 13</span><h2>{inline(name)}</h2></header><div class="chapter-pane-source">')
+        emit(f'<section class="chapter" id="{sid}" data-chapter="{chap}" tabindex="-1"><header class="ch-h"><span class="mono">Глава {chap:02d} / {NUM_CHAPTERS}</span><h2>{inline(name)}</h2></header><div class="chapter-pane-source">')
         sec_open = True
         pending_marker = None
     elif k == 'h' and b[1] == 3 and b[2] == 'Об источниках':
@@ -397,6 +400,47 @@ t1, _, t2 = title.partition(': ')
 H1 = (f'<span>{html.escape(t1)}</span> <span class="thin">{html.escape(t2)}</span>' if t2 else f'<span>{html.escape(t1)}</span>')
 words = len(re.findall(r'[\wёЁ-]+', re.sub(r'[`*#>!\[\]()]', ' ', md)))
 
+
+def render_challenges_section():
+    d = CHALLENGES_DATA
+    problems = []
+    for i, p in enumerate(d['problems'], 1):
+        problems.append(
+            f'<li class="challenge-item">'
+            f'<span class="mono challenge-num">{i:02d}</span>'
+            f'<div class="challenge-body">'
+            f'<h3 class="challenge-title">{html.escape(p["title"])}</h3>'
+            f'<p class="challenge-desc">{inline(p["description"])}</p>'
+            f'<p class="challenge-response">'
+            f'<span class="mono challenge-response-lbl">Ответ Carelink</span>'
+            f'{inline(p["response"])}</p>'
+            f'</div></li>'
+        )
+    examples = []
+    for ex in d['examples']:
+        examples.append(
+            f'<aside class="challenge-example">'
+            f'<span class="badge challenge-example-badge">Пример</span>'
+            f'<h4 class="challenge-example-title">{html.escape(ex["title"])}</h4>'
+            f'<p>{inline(ex["body"])}</p>'
+            f'</aside>'
+        )
+    return (
+        f'<section class="challenges" id="vyzovy" aria-labelledby="challenges-title">'
+        f'<div class="challenges-in">'
+        f'<span class="mono challenges-kicker">Проблемы семьи</span>'
+        f'<h2 id="challenges-title" class="challenges-title">Вызовы</h2>'
+        f'<p class="challenges-intro">{inline(d["intro"])}</p>'
+        f'<ol class="challenge-list">{"".join(problems)}</ol>'
+        f'<div class="challenge-examples">'
+        f'<span class="mono challenges-examples-lbl">Сценарии</span>'
+        f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
+        f'</div></div></section>'
+    )
+
+
+challenges_html = render_challenges_section()
+
 page = f'''<!doctype html>
 <html lang="ru">
 <head>
@@ -415,8 +459,9 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink"><span class="owl">{OWL}</span><span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
-  <span class="mono top-r">{words} слов · 13 глав</span>
+  <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">
 <section class="hero">
@@ -430,10 +475,11 @@ page = f'''<!doctype html>
 <section class="chapter-index" aria-labelledby="chapter-index-title">
   <div class="chapter-index-in">
     <span class="mono chapter-index-kicker">Лендинг глав</span>
-    <h2 id="chapter-index-title" class="chapter-index-title">13 глав манифеста</h2>
+    <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
     <ol class="chapter-landing">{landing_html}</ol>
   </div>
 </section>
+{challenges_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
   <article class="article read-stream">
@@ -446,7 +492,7 @@ page = f'''<!doctype html>
 <dialog class="chapter-dialog" id="chapter-dialog" aria-labelledby="chapter-dialog-title">
   <div class="chapter-dialog-panel">
     <header class="chapter-dialog-head">
-      <span class="mono chapter-dialog-kicker" id="chapter-dialog-kicker">Глава 01 / 13</span>
+      <span class="mono chapter-dialog-kicker" id="chapter-dialog-kicker">Глава 01 / {NUM_CHAPTERS}</span>
       <h2 class="chapter-dialog-title" id="chapter-dialog-title"></h2>
       <button type="button" class="chapter-dialog-close" aria-label="Закрыть главу">×</button>
     </header>
