@@ -5,7 +5,38 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
+CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
+IMG_WIDTH, IMG_HEIGHT = 1280, 720
+
+
+def chapter_image_meta(num):
+    return CHAPTER_IMAGES.get(str(num), {})
+
+
+def resolve_chapter_image_src(num, meta_src='', fig=None):
+    src = (meta_src or '').strip()
+    if src in ('', 'auto'):
+        if fig and fig.get('src'):
+            src = fig['src']
+        else:
+            src = chapter_image_meta(num).get('src', '')
+    return src
+
+
+def img_picture(src, alt, img_class=''):
+    if not src:
+        return ''
+    esc_src, esc_alt = html.escape(src), html.escape(alt)
+    webp = re.sub(r'\.jpe?g$', '.webp', src, flags=re.I)
+    webp_tag = ''
+    if webp != src and (ROOT / webp).is_file():
+        webp_tag = f'<source type="image/webp" srcset="{html.escape(webp)}">'
+    cls = f' class="{img_class}"' if img_class else ''
+    return (
+        f'<picture>{webp_tag}<img src="{esc_src}" alt="{esc_alt}" loading="lazy" decoding="async" '
+        f'width="{IMG_WIDTH}" height="{IMG_HEIGHT}"{cls}></picture>'
+    )
 PLACEHOLDER = 'Не сформулировано — требует подтверждения'
 STRUCT_LABELS = (
     ('image', 'Картинка'),
@@ -171,13 +202,12 @@ def build_structure_pane(ch):
     for key, label in STRUCT_LABELS:
         filled = False
         if key == 'image':
-            src = meta.get('image') or ''
             fig = ch.get('fig')
-            if src == 'auto' and fig:
-                src = fig['src']
+            src = resolve_chapter_image_src(ch['num'], meta.get('image') or '', fig)
             if src:
-                alt = fig['alt'] if fig else ''
-                inner = f'<figure class="struct-fig"><img src="{html.escape(src)}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"></figure>'
+                im = chapter_image_meta(ch['num'])
+                alt = (fig['alt'] if fig and fig.get('alt') else '') or im.get('alt', '')
+                inner = f'<figure class="struct-fig">{img_picture(src, alt)}</figure>'
                 filled = True
             else:
                 inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
@@ -321,7 +351,10 @@ def render_content(b):
         num, _, rest = cap.partition(' · ')
         if active == 'chapter' and cur_ch is not None and 'fig' not in cur_ch:
             cur_ch['fig'] = {'src': src, 'alt': alt}
-        emit(f'<figure class="ill"><img src="{src}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"><figcaption><span class="mono">{inline(num)}</span><span>{inline(rest)}</span></figcaption></figure>')
+        emit(
+            f'<figure class="ill">{img_picture(src, alt)}'
+            f'<figcaption><span class="mono">{inline(num)}</span><span>{inline(rest)}</span></figcaption></figure>'
+        )
 
 
 for b in body:
@@ -383,9 +416,16 @@ for ch in chapter_list:
 landing_items = []
 for ch in chapter_list:
     n = ch['num']
+    im = chapter_image_meta(n)
+    src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
+    alt = im.get('alt') or (ch.get('fig') or {}).get('alt', ch['title'])
+    thumb = (
+        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img")}</span>'
+        if src else ''
+    )
     landing_items.append(
         f'<li><a class="chapter-card" href="#glava-{n}" data-chapter="{n}">'
-        f'<span class="mono chapter-num">{n:02d}</span>'
+        f'<span class="mono chapter-num">{n:02d}</span>{thumb}'
         f'<span class="chapter-card-text"><span class="chapter-card-title">{html.escape(ch["title"])}</span>'
         f'<span class="chapter-card-teaser">{html.escape(ch["teaser"])}</span></span></a></li>'
     )
