@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototype · Карусель «Вызовы / сценарии / решения»</title>
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(../fonts/inter-cyrillic-400.woff2) format("woff2");unicode-range:U+0400-04FF}
+@font-face{font-family:Manrope;font-weight:200 800;font-display:swap;src:url(../fonts/manrope-variable.woff2) format("woff2")}
+:root{
+  --green:#1f5c4a;--green-d:#163f33;--bronze:#8a6a3b;--cream:#f7faf8;--ink:#14201b;--mint:#dcefe6;
+  --mut:#3d4843;--line:#d3e2da;--mono:ui-monospace,Menlo,Consolas,monospace;--head:Manrope,Inter,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);--agenda-date-col:4.75rem;--agenda-column-gap:.65rem;--agenda-rail-col:.9rem;
+  --agenda-marker-size:.88rem;--agenda-marker-top:.35rem;--agenda-line-bleed:1.35rem;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:400 16px/1.55 Inter,system-ui,sans-serif;background:var(--cream);
+  background:radial-gradient(circle at 72% 4%,rgba(220,239,230,.65),transparent 16rem),var(--cream)}
+.mono{font-family:var(--mono)}
+.proto-banner{padding:10px 16px;background:#2a2218;color:#fbf6ee;font:600 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;text-align:center}
+.proto-banner a{color:#c9a56a}
+.manifest-agenda-block{display:grid;grid-template-columns:minmax(16rem,32vw) 1fr;min-height:clamp(24rem,52vh,40rem);
+  border:1px solid var(--line);max-width:1440px;margin:0 auto}
+.manifest-agenda-panel{position:relative;padding:clamp(1.25rem,2.5vw,2.25rem);color:#e8f0ec;overflow:hidden;
+  background:radial-gradient(circle at 100% 0,rgba(201,165,106,.28),transparent 14rem),
+  linear-gradient(135deg,#1a2822,#121a17)}
+.manifest-agenda-panel::after{content:"";position:absolute;right:-9rem;top:-2rem;width:18rem;aspect-ratio:1;border-radius:50%;
+  background:linear-gradient(180deg,#c9a56a,#8a6a3b);opacity:.55;mix-blend-mode:multiply;pointer-events:none}
+.manifest-agenda-panel > *{position:relative;z-index:1}
+.section-label{margin:0 0 .65rem;font:300 clamp(1.6rem,3vw,2.6rem)/1 var(--head);letter-spacing:.06em;text-transform:uppercase;color:var(--mint)}
+.manifest-agenda-subtitle{margin:0 0 1rem;max-width:18rem;font:400 1.05rem/1.42 var(--head);color:#e8f0ec}
+.manifest-agenda-intro,.manifest-agenda-lead{margin:0 0 .85rem;max-width:22rem;font-size:14px;line-height:1.5;color:rgba(232,240,236,.82);
+  border-left:1px solid rgba(201,165,106,.45);padding-left:12px}
+.manifest-agenda-toc{list-style:none;margin:clamp(1rem,2vw,1.5rem) 0 0;padding:0;display:grid;gap:.55rem;
+  --agenda-date-col:5.5rem}
+.manifest-agenda-toc li{position:relative;display:grid;grid-template-columns:var(--agenda-date-col) var(--agenda-rail-col) minmax(0,1fr);
+  column-gap:var(--agenda-column-gap);align-items:start}
+.manifest-agenda-toc li::before{content:"";grid-column:2;grid-row:1;justify-self:center;width:var(--agenda-marker-size);aspect-ratio:1;
+  margin-top:var(--agenda-marker-top);border:1px solid #c9a56a;border-radius:50%;background:#1a2822;box-shadow:0 0 0 .14rem #1a2822}
+.manifest-agenda-toc li:not(:last-child)::after{content:"";position:absolute;left:calc(var(--agenda-date-col) + var(--agenda-column-gap) + (var(--agenda-rail-col)/2));
+  top:calc(var(--agenda-marker-top) + var(--agenda-marker-size)/2);width:1px;height:calc(100% + var(--agenda-line-bleed));background:rgba(201,165,106,.7)}
+.manifest-agenda-toc-btn{grid-column:3;border:0;background:transparent;color:#c9a56a;font:700 11px/1.35 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;text-align:left;padding:.35rem 0;cursor:pointer;min-height:44px}
+.manifest-agenda-toc-btn:hover,.manifest-agenda-toc-btn:focus-visible{color:#fbf6ee;text-decoration:underline}
+.manifest-agenda-stage{display:flex;flex-direction:column;min-height:0;background:linear-gradient(165deg,rgba(232,242,236,.95),rgba(251,246,238,.9))}
+.manifest-agenda-carousel{display:flex;flex-direction:column;flex:1;min-height:0;padding:clamp(1rem,2vw,1.5rem)}
+.manifest-agenda-carousel-controls{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:.75rem}
+.agenda-carousel-btn{min-width:44px;min-height:44px;border-radius:999px;border:1px solid rgba(31,92,74,.35);background:rgba(255,255,255,.85);
+  color:var(--green-d);font-size:18px;cursor:pointer}
+.agenda-carousel-btn:disabled{opacity:.35;cursor:not-allowed}
+.agenda-carousel-status{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);min-width:5rem;text-align:center}
+.agenda-carousel-viewport{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:12px;
+  -webkit-overflow-scrolling:touch;outline:none;border-radius:4px}
+.agenda-carousel-viewport:focus-visible{outline:3px solid rgba(138,106,59,.55);outline-offset:2px}
+.agenda-carousel-track{list-style:none;margin:0;padding:0 6px;display:flex;gap:clamp(12px,2vw,20px);height:100%;align-items:stretch}
+.agenda-carousel-slide{flex:0 0 calc((100% - clamp(12px,2vw,20px)) / 2);scroll-snap-align:start;min-width:0;display:flex}
+.agenda-schedule-row{display:grid;grid-template-columns:var(--agenda-date-col) var(--agenda-rail-col) minmax(0,1fr);
+  column-gap:var(--agenda-column-gap);align-items:start;width:100%;padding-top:.25rem}
+.agenda-schedule-label{grid-column:1;grid-row:1;color:var(--bronze);font-size:clamp(.68rem,.9vw,.78rem);font-weight:700;text-transform:uppercase;line-height:1.2}
+.agenda-schedule-label span{display:block;color:var(--green);font-weight:600}
+.agenda-schedule-rail{grid-column:2;grid-row:1;justify-self:center;width:1px;align-self:stretch;min-height:2.5rem;
+  background:linear-gradient(180deg,var(--bronze),rgba(138,106,59,.15))}
+.agenda-schedule-card{grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:10px;padding:clamp(14px,2vw,20px);
+  background:var(--cream);border:1px solid rgba(31,92,74,.16);border-radius:4px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset;min-height:100%}
+.agenda-slide-title{margin:0;font:600 clamp(15px,1.1vw,18px)/1.32 var(--head);color:var(--ink);letter-spacing:-.02em}
+.agenda-slide-teaser{margin:0;font-size:14px;line-height:1.5;color:var(--mut);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.agenda-slide-media{margin:0;border-radius:2px;overflow:hidden;border:1px solid rgba(31,92,74,.15);aspect-ratio:16/10;background:var(--mint)}
+.agenda-slide-media img{display:block;width:100%;height:100%;object-fit:cover}
+.agenda-slide-cta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0;padding-top:12px;border-top:1px solid rgba(31,92,74,.12);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.agenda-slide-read{display:inline-flex;padding:10px 18px;border-radius:999px;border:1px solid rgba(31,92,74,.45);background:rgba(220,239,230,.65);color:var(--green-d);font-weight:600;font-size:13px;letter-spacing:0;text-transform:none}
+.agenda-slide-hint{color:var(--mut);max-width:10em;text-align:right}
+@media(max-width:719px){
+  .manifest-agenda-block{grid-template-columns:1fr}
+  .agenda-carousel-slide{flex-basis:calc(100% - 12px)}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<p class="proto-banner">Rough prototype · Emil-style carousel · не в проде · <a href="https://impeccable.style/neo-mirai/#agenda">ref #agenda</a></p>
+<div class="manifest-agenda-block">
+  <div class="manifest-agenda-panel">
+    <p class="section-label">Вызовы</p>
+    <h1 class="manifest-agenda-subtitle">Проблемы семьи, сценарии и три опоры</h1>
+    <p class="manifest-agenda-intro">Шесть проблем, которые манифест и материалы проекта называют прямо или показывают через образ «рядом, но врозь». Ниже — кратко, без обещаний «исправить семью».</p>
+    <p class="manifest-agenda-lead">Карусель: две карточки в кадре на desktop, одна на 390px. Метки как в расписании — Вызов / Сценарий / Решение.</p>
+    <ol class="manifest-agenda-toc" aria-label="Оглавление блоков">
+      <li><button type="button" class="manifest-agenda-toc-btn" data-agenda-jump="problems">Проблемы · 6</button></li>
+      <li><button type="button" class="manifest-agenda-toc-btn" data-agenda-jump="scenarios">Сценарии · 3</button></li>
+      <li><button type="button" class="manifest-agenda-toc-btn" data-agenda-jump="solutions">Решения · 3</button></li>
+    </ol>
+  </div>
+  <div class="manifest-agenda-stage">
+    <div class="manifest-agenda-carousel" data-agenda-carousel role="region" aria-roledescription="carousel" aria-label="Вызовы, сценарии и решения">
+      <div class="manifest-agenda-carousel-controls">
+        <button type="button" class="agenda-carousel-btn" data-agenda-prev aria-label="Предыдущая карточка">←</button>
+        <p class="agenda-carousel-status mono" data-agenda-status aria-live="polite">1 / 12</p>
+        <button type="button" class="agenda-carousel-btn" data-agenda-next aria-label="Следующая карточка">→</button>
+      </div>
+      <div class="agenda-carousel-viewport" data-agenda-viewport tabindex="0">
+        <ol class="agenda-carousel-track"><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>01</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Атомизация людей внутри семьи</h3><p class="agenda-slide-teaser">Люди физически рядом, но живут в разных потоках: лента, усталость, «своё пространство». В документах Carelink это названо атомизацией:…</p><figure class="agenda-slide-media"><img src="../images/family-apart.jpg" alt="Атомизация людей внутри семьи" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>02</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Индивидуализм превращается в стены между близкими</h3><p class="agenda-slide-teaser">Когда «у каждого своя правда» не обсуждается, свобода оборачивается стенами: семья смотрит на одну жизнь с разных «планет», как в метафоре…</p><figure class="agenda-slide-media"><img src="../images/family-different-views.jpg" alt="Индивидуализм превращается в стены между близкими" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>03</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Кризисные данные уходят за рубеж</h3><p class="agenda-slide-teaser">В страхе или острой ситуации семья пишет о здоровье и близких в чаты и сервисы, где нет прозрачности по юрисдикции — доверие есть, контроля…</p><figure class="agenda-slide-media"><img src="../images/care-across-distance.jpg" alt="Кризисные данные уходят за рубеж" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>04</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Нет инструмента для версионности семейных правил</h3><p class="agenda-slide-teaser">Правила «живут в воздухе»: «мы же договорились» — но нет общего текста, даты и того, кто согласился. Поправки стирают память; в источниках…</p><figure class="agenda-slide-media"><img src="../images/family-house-rules.jpg" alt="Нет инструмента для версионности семейных правил" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>05</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Нет офлайн-решения для приватности</h3><p class="agenda-slide-teaser">Самые личные черновики и разговоры не должны зависеть от постоянной сети и чужого облака — иначе «приватность» остаётся обещанием на…</p><figure class="agenda-slide-media"><img src="../images/family-private-diary.jpg" alt="Нет офлайн-решения для приватности" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="problems"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Вызов</span>06</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">ИИ воспринимается как судья, а не помощник</h3><p class="agenda-slide-teaser">Помощник с оценками, рангами и вердиктом «кто прав» превращает заботу в экзамен — семья ждёт приговора, а не протокола разговора.</p><figure class="agenda-slide-media"><img src="../images/ai-secretary.jpg" alt="ИИ воспринимается как судья, а не помощник" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="scenarios"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Сценарий</span>01</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Переезд и тишина в наушниках</h3><p class="agenda-slide-teaser">Сейчас: после переезда в другой город семья сидит за одним столом, но каждый в своих наушниках; «обсудить школу или ремонт» значит…</p><figure class="agenda-slide-media"><img src="../images/family-conversation-start.jpg" alt="Переезд и тишина в наушниках" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="scenarios"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Сценарий</span>02</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Подросток молчит</h3><p class="agenda-slide-teaser">Сейчас: родители не знают, что подросток проходит через трудный период — он не рассказывает; заметки и черновики остаются на его устройстве…</p><figure class="agenda-slide-media"><img src="../images/family-many-voices.jpg" alt="Подросток молчит" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="scenarios"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Сценарий</span>03</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Договорённости в одной голове</h3><p class="agenda-slide-teaser">Сейчас: кто забирает ребёнка, недельный бюджет и домашние правила помнит один человек; остальные узнают постфактум или спорят с чужой…</p><figure class="agenda-slide-media"><img src="../images/family-money-trust.jpg" alt="Договорённости в одной голове" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="solutions"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Решение</span>01</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Семейное единство через Carelink</h3><p class="agenda-slide-teaser">Carelink задуман как цифровая инфраструктура для Рода, а не как морализаторство: общее место для данных и договорённостей, приглашение…</p><figure class="agenda-slide-media"><img src="../" alt="Семейное единство через Carelink" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="solutions"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Решение</span>02</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Разговоры как способ решения</h3><p class="agenda-slide-teaser">Манифест ставит на диалог, а не на приговор: открытое обсуждение, Пятничный Пульс, вход «через разговор» (гл. 5), семейный путь из семи…</p><figure class="agenda-slide-media"><img src="../" alt="Разговоры как способ решения" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li><li class="agenda-carousel-slide" data-agenda-group="solutions"><article class="agenda-schedule-row"><time class="agenda-schedule-label mono" datetime=""><span>Решение</span>03</time><span class="agenda-schedule-rail" aria-hidden="true"></span><div class="agenda-schedule-card mirai-ticket" tabindex="0" role="button"><h3 class="agenda-slide-title">Общий семейный календарь</h3><p class="agenda-slide-teaser">Направление, не готовая функция v1. В манифесте помощник умеет открывать календарь и предлагать семейные напоминания; для финансов и…</p><figure class="agenda-slide-media"><img src="../" alt="Общий семейный календарь" loading="lazy" width="640" height="400"></figure><p class="agenda-slide-cta mono"><span class="agenda-slide-read">Прочитать</span><span class="agenda-slide-hint">прототип · drawer позже</span></p></div></article></li></ol>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.querySelector("[data-agenda-carousel]");
+  if (!root) return;
+  var viewport = root.querySelector("[data-agenda-viewport]");
+  var track = viewport.querySelector(".agenda-carousel-track");
+  var slides = [].slice.call(track.querySelectorAll(".agenda-carousel-slide"));
+  var prevBtn = root.querySelector("[data-agenda-prev]");
+  var nextBtn = root.querySelector("[data-agenda-next]");
+  var status = root.querySelector("[data-agenda-status]");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function perView() { return window.innerWidth < 720 ? 1 : 2; }
+  function slideWidth() {
+    var gap = parseFloat(getComputedStyle(track).gap) || 16;
+    return (viewport.clientWidth - gap * (perView() - 1)) / perView() + gap;
+  }
+  function indexFromScroll() {
+    var w = slideWidth();
+    return Math.max(0, Math.min(slides.length - 1, Math.round(viewport.scrollLeft / w)));
+  }
+  function updateStatus() {
+    var i = indexFromScroll() + 1;
+    status.textContent = i + " / " + slides.length;
+    prevBtn.disabled = viewport.scrollLeft <= 2;
+    nextBtn.disabled = viewport.scrollLeft >= viewport.scrollWidth - viewport.clientWidth - 2;
+  }
+  function scrollToIndex(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    viewport.scrollTo({ left: i * slideWidth(), behavior: reduce ? "auto" : "smooth" });
+  }
+  prevBtn.addEventListener("click", function () { scrollToIndex(indexFromScroll() - perView()); });
+  nextBtn.addEventListener("click", function () { scrollToIndex(indexFromScroll() + perView()); });
+  viewport.addEventListener("scroll", function () { requestAnimationFrame(updateStatus); }, { passive: true });
+  window.addEventListener("resize", updateStatus);
+  root.querySelectorAll("[data-agenda-jump]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var g = btn.getAttribute("data-agenda-jump");
+      var el = track.querySelector('[data-agenda-group="' + g + '"]');
+      if (el) el.scrollIntoView({ inline: "start", block: "nearest", behavior: reduce ? "auto" : "smooth" });
+      updateStatus();
+    });
+  });
+  viewport.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { e.preventDefault(); scrollToIndex(indexFromScroll() - 1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); scrollToIndex(indexFromScroll() + 1); }
+  });
+  updateStatus();
+})();
+</script>
+</body>
+</html>
