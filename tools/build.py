@@ -114,8 +114,28 @@ while i < len(lines):
 
 title = blocks[0][2]; stand = blocks[1][2]; meta = re.findall(r'`([^`]+)`', blocks[2][1])
 body = blocks[3:]
-toc, out, sec_open, chap = [], [], False, 0
+toc, sec_open, chap = [], False, 0
 block_open, pending_marker, block_heading = False, None, None
+intro_lines, sources_lines, chapter_list, cur_ch = [], [], [], None
+active = 'intro'
+
+
+def emit(line):
+    if active == 'intro':
+        intro_lines.append(line)
+    elif active == 'chapter' and cur_ch is not None:
+        cur_ch['lines'].append(line)
+    else:
+        sources_lines.append(line)
+
+
+def first_sentence(text):
+    plain = re.sub(r'`([^`]+)`', r'\1', text)
+    plain = re.sub(r'\*\*([^*]+)\*\*', r'\1', plain)
+    plain = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\1', plain)
+    plain = plain.strip()
+    m = re.match(r'.+?[.!?…](?:\s|$|[»"])', plain)
+    return (m.group(0).strip() if m else plain[:180]).strip()
 
 
 def render_quote(q):
@@ -157,7 +177,7 @@ def render_quote(q):
 def close_block():
     global block_open, block_heading
     if block_open:
-        out.append('</div></section>')
+        emit('</div></section>')
         block_open = False
         block_heading = None
 
@@ -172,7 +192,7 @@ def open_block(btype, heading=None, log_key=None, block_id=None):
     h = f'<h3 class="block-title">{inline(heading)}</h3>' if heading else ''
     id_attr = f' id="{block_id}"' if block_id else ''
     extra = ' sources' if btype == 'sources' else ''
-    out.append(
+    emit(
         f'<section class="block block--{btype}{extra}"{id_attr}>'
         f'<header class="block-h"><span class="block-ico">{ico}</span><span class="mono block-lbl">{lab}</span>{h}</header>'
         f'<div class="block-body">'
@@ -189,16 +209,18 @@ def ensure_block(btype, heading=None, log_key=None):
 def render_content(b):
     k = b[0]
     if k == 'p':
-        out.append(f'<p>{inline(b[1])}</p>')
+        if active == 'chapter' and cur_ch is not None and cur_ch.get('teaser') is None:
+            cur_ch['teaser'] = first_sentence(b[1])
+        emit(f'<p>{inline(b[1])}</p>')
     elif k == 'list':
         tag = 'ol' if b[1] else 'ul'
-        out.append(f'<{tag}>' + ''.join(f'<li>{inline(x)}</li>' for x in b[2]) + f'</{tag}>')
+        emit(f'<{tag}>' + ''.join(f'<li>{inline(x)}</li>' for x in b[2]) + f'</{tag}>')
     elif k == 'quote':
-        out.append(render_quote(b[1]))
+        emit(render_quote(b[1]))
     elif k == 'fig':
         _, alt, src, cap = b
         num, _, rest = cap.partition(' · ')
-        out.append(f'<figure class="ill"><img src="{src}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"><figcaption><span class="mono">{inline(num)}</span><span>{inline(rest)}</span></figcaption></figure>')
+        emit(f'<figure class="ill"><img src="{src}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"><figcaption><span class="mono">{inline(num)}</span><span>{inline(rest)}</span></figcaption></figure>')
 
 
 for b in body:
@@ -209,17 +231,22 @@ for b in body:
     if k == 'h' and b[1] == 2:
         close_block()
         if sec_open:
-            out.append('</section>')
+            emit('</section>')
         m = re.match(r'(\d+)\.\s*(.+)', b[2])
         chap = int(m.group(1)); name = m.group(2)
-        sid = f'ch{chap:02d}'; toc.append((sid, chap, name))
-        out.append(f'<section class="chapter" id="{sid}"><header class="ch-h"><span class="mono">Глава {chap:02d} / 13</span><h2>{inline(name)}</h2></header>')
+        sid = f'glava-{chap}'
+        toc.append((sid, chap, name))
+        active = 'chapter'
+        cur_ch = {'num': chap, 'title': name, 'teaser': None, 'lines': []}
+        chapter_list.append(cur_ch)
+        emit(f'<section class="chapter" id="{sid}" data-chapter="{chap}" tabindex="-1"><header class="ch-h"><span class="mono">Глава {chap:02d} / 13</span><h2>{inline(name)}</h2></header>')
         sec_open = True
         pending_marker = None
     elif k == 'h' and b[1] == 3 and b[2] == 'Об источниках':
         close_block()
         if sec_open:
-            out.append('</section>'); sec_open = False
+            emit('</section>'); sec_open = False
+        active = 'sources'
         open_block('sources', 'Об источниках', 'Об источниках', block_id='sources')
         pending_marker = None
     elif k == 'h' and b[1] == 3:
@@ -228,7 +255,7 @@ for b in body:
         open_block(btype, b[2], b[2])
     elif k == 'h':
         ensure_block(CHAPTER_DEFAULT.get(chap, 'concept'))
-        out.append(f'<h4 class="block-sub">{inline(b[2])}</h4>')
+        emit(f'<h4 class="block-sub">{inline(b[2])}</h4>')
     elif k == 'p':
         ptype = paragraph_block_type(b[1], chap)
         if ptype:
@@ -249,9 +276,27 @@ for b in body:
 
 close_block()
 if sec_open:
-    out.append('</section>')
+    emit('</section>')
 
-toc_html = ''.join(f'<li><a href="#{sid}"><span class="mono">{n:02d}</span>{html.escape(name)}</a></li>' for sid, n, name in toc)
+for ch in chapter_list:
+    if not ch.get('teaser'):
+        ch['teaser'] = ch['title']
+
+landing_items = []
+for ch in chapter_list:
+    n = ch['num']
+    landing_items.append(
+        f'<li><a class="chapter-card" href="#glava-{n}" data-chapter="{n}">'
+        f'<span class="mono chapter-num">{n:02d}</span>'
+        f'<span class="chapter-card-text"><span class="chapter-card-title">{html.escape(ch["title"])}</span>'
+        f'<span class="chapter-card-teaser">{html.escape(ch["teaser"])}</span></span></a></li>'
+    )
+landing_html = '\n'.join(landing_items)
+chapter_html = '\n'.join('\n'.join(ch['lines']) for ch in chapter_list)
+intro_html = '\n'.join(intro_lines)
+sources_html = '\n'.join(sources_lines)
+
+toc_html = ''.join(f'<li><a href="#glava-{n}"><span class="mono">{n:02d}</span>{html.escape(name)}</a></li>' for sid, n, name in toc)
 meta_html = ''.join(f'<span class="chip mono">{html.escape(m)}</span>' for m in meta)
 t1, _, t2 = title.partition(': ')
 H1 = (f'<span>{html.escape(t1)}</span> <span class="thin">{html.escape(t2)}</span>' if t2 else f'<span>{html.escape(t1)}</span>')
@@ -271,7 +316,7 @@ page = f'''<!doctype html>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<a class="skip" href="#ch01">К тексту</a>
+<a class="skip" href="#glava-1">К тексту</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink"><span class="owl">{OWL}</span><span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
@@ -287,22 +332,43 @@ page = f'''<!doctype html>
   </div>
   <figure class="hero-img"><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"></figure>
 </section>
+<section class="chapter-index" aria-labelledby="chapter-index-title">
+  <div class="chapter-index-in">
+    <span class="mono chapter-index-kicker">Лендинг глав</span>
+    <h2 id="chapter-index-title" class="chapter-index-title">13 глав манифеста</h2>
+    <ol class="chapter-landing">{landing_html}</ol>
+  </div>
+</section>
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
-  <article class="article">
-{chr(10).join(out)}
+  <article class="article read-stream">
+    <div class="read-lead">{intro_html}</div>
+    <div class="read-chapters">{chapter_html}</div>
+    <div class="read-tail">{sources_html}</div>
   </article>
 </div>
 </main>
+<dialog class="chapter-dialog" id="chapter-dialog" aria-labelledby="chapter-dialog-title">
+  <div class="chapter-dialog-panel">
+    <header class="chapter-dialog-head">
+      <span class="mono chapter-dialog-kicker" id="chapter-dialog-kicker">Глава 01 / 13</span>
+      <h2 class="chapter-dialog-title" id="chapter-dialog-title"></h2>
+      <button type="button" class="chapter-dialog-close" aria-label="Закрыть главу">×</button>
+    </header>
+    <div class="chapter-dialog-body" id="chapter-dialog-body"></div>
+    <footer class="chapter-dialog-foot">
+      <button type="button" class="btn-nav" id="chapter-prev" aria-label="Предыдущая глава">← Предыдущая</button>
+      <button type="button" class="btn-nav" id="chapter-next" aria-label="Следующая глава">Следующая →</button>
+    </footer>
+  </div>
+</dialog>
 <footer class="foot">
   <a class="brand" href="#top"><span class="owl">{OWL}</span><span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <span class="mono">© 2026 Carelink · Слава Якимов</span>
   <span class="mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>
-<script>
-(function(){{var b=document.getElementById('bar');function u(){{var h=document.documentElement;b.style.width=(100*h.scrollTop/((h.scrollHeight-h.clientHeight)||1))+'%'}}addEventListener('scroll',u,{{passive:true}});u();
-var links=[].slice.call(document.querySelectorAll('.toc a'));var io=new IntersectionObserver(function(es){{es.forEach(function(e){{if(e.isIntersecting){{links.forEach(function(a){{a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)}})}}}})}},{{rootMargin:'-40% 0px -55% 0px'}});document.querySelectorAll('.chapter,.sources').forEach(function(s){{io.observe(s)}});}})();
-</script>
+<script src="assets/site.js" defer></script>
+<script src="assets/chapters.js" defer></script>
 </body>
 </html>
 '''
