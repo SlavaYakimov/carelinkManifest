@@ -12,6 +12,7 @@ if FINALE_MARKER in _raw_md:
     md = _head + '### Об источниках' + _sources_rest
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
+ARCH_DATA = json.loads((ROOT / 'tools' / 'product-architecture.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
 finale_html = ''
@@ -601,8 +602,37 @@ def render_solutions_section():
     )
 
 
+def render_product_architecture_section():
+    d = ARCH_DATA
+    cards = []
+    for i, it in enumerate(d['items'], 1):
+        note = it.get('note', '')
+        badge = ''
+        if note == 'direction':
+            badge = '<span class="badge product-arch-badge product-arch-badge--direction">Направление</span>'
+        cards.append(
+            f'<li class="product-arch-item">'
+            f'<span class="mono product-arch-num">{i:02d}</span>'
+            f'<div class="product-arch-body">'
+            f'{badge}'
+            f'<h3 class="product-arch-title">{html.escape(it["title"])}</h3>'
+            f'<p class="product-arch-desc">{inline(it["description"])}</p>'
+            f'</div></li>'
+        )
+    return (
+        f'<section class="product-arch" id="product-arch" aria-labelledby="product-arch-title">'
+        f'<div class="product-arch-in section-panel" data-reveal>'
+        f'<p class="section-label">Продукт</p>'
+        f'<h2 id="product-arch-title" class="product-arch-title-main">Архитектура и продукт</h2>'
+        f'<p class="product-arch-intro">{inline(d["intro"])}</p>'
+        f'<ol class="product-arch-grid">{"".join(cards)}</ol>'
+        f'</div></section>'
+    )
+
+
 challenges_html = render_challenges_section()
 solutions_html = render_solutions_section()
+product_arch_html = render_product_architecture_section()
 
 page = f'''<!doctype html>
 <html lang="ru">
@@ -623,7 +653,7 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#final-value">Ценность</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#product-arch">Архитектура</a><a href="#final-value">Ценность</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
@@ -646,6 +676,7 @@ page = f'''<!doctype html>
     <ol class="chapter-grid">{landing_html}</ol>
   </div>
 </section>
+{product_arch_html}
 {finale_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
