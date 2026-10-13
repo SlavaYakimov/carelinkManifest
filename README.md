@@ -8,10 +8,10 @@
 |---|---|
 | `index.html` | Готовая страница для GitHub Pages: обычный HTML без сборки, редакционная вёрстка |
 | `assets/style.css` | Стили. Палитра: тёмно-зелёный `#1f5c4a`, бронза `#8a6a3b`, кремовый `#f7faf8`, чернила `#14201b`, мятный `#dcefe6` |
-| `assets/carelink-owl-avatar.svg` | Официальная сова с книгой (CarelinkMemory `a280f1e`), хедер и footer через `<img>` |
-| `assets/carelink-owl-avatar-128.png` | Favicon PNG 128 (из SVG) |
-| `assets/carelink-owl-avatar-32.png` | Favicon PNG 32 (из SVG) |
-| `assets/owl.svg` | Упрощённый силуэт (legacy), не используется в хедере |
+| `assets/carelink-owl-avatar.svg` | Официальная сова с книгой (CarelinkMemory `a280f1e`), маска лендинга, шапка и favicon SVG |
+| `assets/carelink-owl-128.png` | Favicon / apple-touch-icon и марка в блоке «Финальная ценность» |
+| `assets/carelink-owl-avatar-128.png` | Запасной favicon PNG 128 (из оригинального SVG) |
+| `assets/carelink-owl-avatar-32.png` | Запасной favicon PNG 32 (из оригинального SVG) |
 | `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
 | `images/` | Шесть иллюстраций (01–06) |
 | `ARTICLE.md` | Тот же текст в чистом Markdown с относительными путями к картинкам. Это источник для `index.html` |
@@ -31,6 +31,7 @@ python3 tools/build.py          # 2. пересобираем index.html
 Соглашения в Markdown, которые понимает генератор:
 - `## N. Название` — глава. Номер становится моноширинной меткой «Глава 0N / N» (число глав считается автоматически) и пунктом оглавления.
 - `tools/challenges.json` — блок «Вызовы» на лендинге (`#vyzovy`): шесть проблем и три помеченных «Пример» кейса.
+- `<!-- landing:finale -->` в `ARTICLE.md` — финальный блок лендинга «Финальная ценность» (`#final-value`), между списком глав и «Вызовы»; в long-read не дублируется.
 - `` `Концепт` `` — бейдж «не найдено в источниках, требует подтверждения».
 - `> **Сценарий. Вымышленный пример.** …` — блок-сценка. Строки `**Имя:** реплика` превращаются в диалог.
 - `> **Вопрос читателю.** …` — вопрос читателю.

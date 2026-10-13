@@ -2,11 +2,19 @@
 """ARTICLE.md -> index.html (без внешних зависимостей). Запуск: python3 tools/build.py"""
 import re, html, pathlib, json
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
+_raw_md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
+FINALE_MARKER = '<!-- landing:finale -->'
+finale_chunk = None
+md = _raw_md
+if FINALE_MARKER in _raw_md:
+    _head, _tail = _raw_md.split(FINALE_MARKER, 1)
+    finale_chunk, _sources_rest = _tail.split('### Об источниках', 1)
+    md = _head + '### Об источниках' + _sources_rest
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
+finale_html = ''
 IMG_WIDTH, IMG_HEIGHT = 1280, 720
 
 
@@ -21,17 +29,30 @@ def resolve_chapter_image_src(num, meta_src='', fig=None):
             src = fig['src']
         else:
             src = chapter_image_meta(num).get('src', '')
-    return src
+    return src.split('?', 1)[0]
 
 
-def img_picture(src, alt, img_class=''):
+def image_src_with_cache(src, chap_num=None):
+    base = src.split('?', 1)[0]
+    if chap_num is None:
+        return base
+    cache = chapter_image_meta(chap_num).get('cache')
+    if not cache:
+        return base
+    return f'{base}?v={cache}'
+
+
+def img_picture(src, alt, img_class='', chap_num=None):
     if not src:
         return ''
-    esc_src, esc_alt = html.escape(src), html.escape(alt)
-    webp = re.sub(r'\.jpe?g$', '.webp', src, flags=re.I)
+    base = src.split('?', 1)[0]
+    display_src = image_src_with_cache(base, chap_num)
+    esc_src, esc_alt = html.escape(display_src), html.escape(alt)
+    webp_base = re.sub(r'\.jpe?g$', '.webp', base, flags=re.I)
     webp_tag = ''
-    if webp != src and (ROOT / webp).is_file():
-        webp_tag = f'<source type="image/webp" srcset="{html.escape(webp)}">'
+    if webp_base != base and (ROOT / webp_base).is_file():
+        webp_display = image_src_with_cache(webp_base, chap_num)
+        webp_tag = f'<source type="image/webp" srcset="{html.escape(webp_display)}">'
     cls = f' class="{img_class}"' if img_class else ''
     return (
         f'<picture>{webp_tag}<img src="{esc_src}" alt="{esc_alt}" loading="lazy" decoding="async" '
@@ -55,15 +76,25 @@ for chunk in re.split(r'\n(?=## \d+\.)', md):
 blocks_report = []
 source_report = []
 
-OWL = ('<svg viewBox="0 0 512 512" width="24" height="24" fill="#fff" aria-hidden="true"><path fill-rule="evenodd" d="M132 60 L196 132 Q256 116 316 132 L380 60 L392 168 Q440 226 440 300 Q440 410 352 456 Q306 480 256 480 Q206 480 160 456 Q72 410 72 300 Q72 226 120 168 Z M190 168 a70 70 0 1 0 0.1 0 Z M322 168 a70 70 0 1 0 0.1 0 Z M256 270 L238 300 L256 336 L274 300 Z M214 372 q14 18 28 0 q-14 8 -28 0 Z M270 372 q14 18 28 0 q-14 8 -28 0 Z M242 404 q14 18 28 0 q-14 8 -28 0 Z M186 404 q14 18 28 0 q-14 8 -28 0 Z M298 404 q14 18 28 0 q-14 8 -28 0 Z"/><circle cx="190" cy="238" r="34"/><circle cx="322" cy="238" r="34"/><circle fill="none" stroke="#fff" stroke-width="10" cx="190" cy="238" r="50"/><circle fill="none" stroke="#fff" stroke-width="10" cx="322" cy="238" r="50"/></svg>')
-BRAND_LOGO = (
-    '<img class="brand-mark" src="assets/carelink-owl-avatar.svg" width="40" height="45" '
-    'alt="Carelink" decoding="async">'
-)
-BRAND_LOGO_FOOT = (
-    '<img class="brand-mark" src="assets/carelink-owl-avatar.svg" width="40" height="45" '
-    'alt="" aria-hidden="true" decoding="async" loading="lazy">'
-)
+OWL_SVG = 'assets/carelink-owl-avatar.svg'
+OWL_PNG = 'assets/carelink-owl-128.png'
+OWL_VIEW_W, OWL_VIEW_H = 1000, 1120
+
+
+def owl_img(width, png=False, *, alt='', lazy=True):
+    height = max(1, round(width * OWL_VIEW_H / OWL_VIEW_W))
+    src = OWL_PNG if png else OWL_SVG
+    lazy_attr = ' loading="lazy"' if lazy else ''
+    aria = ' aria-hidden="true"' if not alt else ''
+    return (
+        f'<img src="{src}" alt="{html.escape(alt)}" width="{width}" height="{height}" class="owl-mark" '
+        f'decoding="async"{lazy_attr}{aria}>'
+    )
+
+
+BRAND_OWL = f'<span class="owl">{owl_img(40, png=False, alt="Carelink", lazy=False)}</span>'
+BRAND_OWL_FOOT = f'<span class="owl">{owl_img(40, png=False)}</span>'
+FINALE_OWL = f'<span class="landing-finale-owl" aria-hidden="true">{owl_img(36, png=True)}</span>'
 
 ICON = {
     'concept': '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Zm-2 15v2h4v-2h-4Z"/></svg>',
@@ -116,6 +147,38 @@ def inline(t):
     t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
     t = re.sub(r'(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', r'<em>\1</em>', t)
     return t
+
+
+def render_finale_section(chunk):
+    title = ''
+    paras = []
+    foot = ''
+    for line in chunk.strip().split('\n'):
+        l = line.strip()
+        if not l or l.startswith('---'):
+            continue
+        if l.startswith('## '):
+            title = l[3:].strip()
+            continue
+        if len(l) >= 2 and l.startswith('*') and l.endswith('*') and not l.startswith('**'):
+            foot = l.strip('*').strip()
+            continue
+        paras.append(l)
+    body = ''.join(f'<p>{inline(p)}</p>' for p in paras)
+    foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
+    return (
+        f'<section class="landing-finale" id="final-value" aria-labelledby="landing-finale-title">'
+        f'<div class="landing-finale-in">'
+        f'<span class="mono landing-finale-kicker">'
+        f'{FINALE_OWL}Финальная ценность</span>'
+        f'<h2 id="landing-finale-title" class="landing-finale-title">{html.escape(title)}</h2>'
+        f'<div class="landing-finale-body">{body}</div>{foot_html}'
+        f'</div></section>'
+    )
+
+
+if finale_chunk:
+    finale_html = render_finale_section(finale_chunk)
 
 
 def classify_h3(title, chap):
@@ -215,7 +278,7 @@ def build_structure_pane(ch):
             if src:
                 im = chapter_image_meta(ch['num'])
                 alt = (fig['alt'] if fig and fig.get('alt') else '') or im.get('alt', '')
-                inner = f'<figure class="struct-fig">{img_picture(src, alt)}</figure>'
+                inner = f'<figure class="struct-fig">{img_picture(src, alt, chap_num=ch["num"])}</figure>'
                 filled = True
             else:
                 inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
@@ -428,7 +491,7 @@ for ch in chapter_list:
     src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
     alt = im.get('alt') or (ch.get('fig') or {}).get('alt', ch['title'])
     thumb = (
-        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img")}</span>'
+        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img", n)}</span>'
         if src else ''
     )
     landing_items.append(
@@ -500,15 +563,17 @@ page = f'''<!doctype html>
 <meta property="og:description" content="{html.escape(stand)}">
 <meta property="og:image" content="images/hero-family-table.jpg">
 <link rel="icon" href="assets/carelink-owl-avatar.svg" type="image/svg+xml">
+<link rel="icon" href="assets/carelink-owl-128.png" type="image/png" sizes="128x128">
 <link rel="icon" href="assets/carelink-owl-avatar-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="assets/carelink-owl-avatar-128.png" type="image/png" sizes="128x128">
+<link rel="apple-touch-icon" href="assets/carelink-owl-128.png">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <a class="skip" href="#glava-1">К тексту</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
-  <a class="brand" href="#top">{BRAND_LOGO}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
@@ -529,6 +594,7 @@ page = f'''<!doctype html>
     <ol class="chapter-landing">{landing_html}</ol>
   </div>
 </section>
+{finale_html}
 {challenges_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
@@ -563,7 +629,7 @@ page = f'''<!doctype html>
   </div>
 </dialog>
 <footer class="foot">
-  <a class="brand" href="#top">{BRAND_LOGO_FOOT}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <a class="brand" href="#top">{BRAND_OWL_FOOT}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <span class="mono">© 2026 Carelink · Слава Якимов</span>
   <span class="mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>
