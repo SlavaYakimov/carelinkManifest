@@ -81,16 +81,19 @@ OWL_PNG = 'assets/carelink-owl-128.png'
 OWL_VIEW_W, OWL_VIEW_H = 1000, 1120
 
 
-def owl_img(width, png=False):
+def owl_img(width, png=False, *, alt='', lazy=True):
     height = max(1, round(width * OWL_VIEW_H / OWL_VIEW_W))
     src = OWL_PNG if png else OWL_SVG
+    lazy_attr = ' loading="lazy"' if lazy else ''
+    aria = ' aria-hidden="true"' if not alt else ''
     return (
-        f'<img src="{src}" alt="" width="{width}" height="{height}" class="owl-mark" '
-        f'decoding="async" loading="lazy">'
+        f'<img src="{src}" alt="{html.escape(alt)}" width="{width}" height="{height}" class="owl-mark" '
+        f'decoding="async"{lazy_attr}{aria}>'
     )
 
 
-BRAND_OWL = f'<span class="owl">{owl_img(40, png=True)}</span>'
+BRAND_OWL = f'<span class="owl">{owl_img(40, png=False, alt="Carelink", lazy=False)}</span>'
+BRAND_OWL_FOOT = f'<span class="owl">{owl_img(40, png=False)}</span>'
 FINALE_OWL = f'<span class="landing-finale-owl" aria-hidden="true">{owl_img(36, png=True)}</span>'
 
 ICON = {
@@ -563,7 +566,10 @@ page = f'''<!doctype html>
 <meta property="og:title" content="{html.escape(title)} — манифест Carelink">
 <meta property="og:description" content="{html.escape(stand)}">
 <meta property="og:image" content="images/hero-family-table.jpg">
+<link rel="icon" href="assets/carelink-owl-avatar.svg" type="image/svg+xml">
 <link rel="icon" href="assets/carelink-owl-128.png" type="image/png" sizes="128x128">
+<link rel="icon" href="assets/carelink-owl-avatar-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/carelink-owl-avatar-128.png" type="image/png" sizes="128x128">
 <link rel="apple-touch-icon" href="assets/carelink-owl-128.png">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -627,7 +633,7 @@ page = f'''<!doctype html>
   </div>
 </dialog>
 <footer class="foot">
-  <a class="brand" href="#top">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <a class="brand" href="#top">{BRAND_OWL_FOOT}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <span class="mono">© 2026 Carelink · Слава Якимов</span>
   <span class="mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>

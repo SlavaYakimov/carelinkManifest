@@ -8,8 +8,10 @@
 |---|---|
 | `index.html` | Готовая страница для GitHub Pages: обычный HTML без сборки, редакционная вёрстка |
 | `assets/style.css` | Стили. Палитра: тёмно-зелёный `#1f5c4a`, бронза `#8a6a3b`, кремовый `#f7faf8`, чернила `#14201b`, мятный `#dcefe6` |
-| `assets/carelink-owl-avatar.svg` | Аватар-сова с книгой (SVGO), для маски и `<img>` |
-| `assets/carelink-owl-128.png` | Favicon / apple-touch-icon и марка в шапке |
+| `assets/carelink-owl-avatar.svg` | Официальная сова с книгой (CarelinkMemory `a280f1e`), маска лендинга, шапка и favicon SVG |
+| `assets/carelink-owl-128.png` | Favicon / apple-touch-icon и марка в блоке «Финальная ценность» |
+| `assets/carelink-owl-avatar-128.png` | Запасной favicon PNG 128 (из оригинального SVG) |
+| `assets/carelink-owl-avatar-32.png` | Запасной favicon PNG 32 (из оригинального SVG) |
 | `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
 | `images/` | Шесть иллюстраций (01–06) |
 | `ARTICLE.md` | Тот же текст в чистом Markdown с относительными путями к картинкам. Это источник для `index.html` |
