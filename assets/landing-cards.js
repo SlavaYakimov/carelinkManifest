@@ -7,6 +7,7 @@
   var titleEl = document.getElementById('landing-card-dialog-title');
   var bodyEl = document.getElementById('landing-card-dialog-body');
   var btnClose = dialog.querySelector('.chapter-dialog-close');
+  var lastFocus = null;
   var focusables = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
   function lockScroll(on) {
@@ -42,6 +43,7 @@
       if (location.hash !== hash) history.pushState(null, '', hash);
     }
     if (!dialog.open) {
+      lastFocus = document.activeElement;
       dialog.showModal();
       lockScroll(true);
       dialog.addEventListener('keydown', trapFocus);
@@ -62,6 +64,10 @@
     dialog.removeEventListener('keydown', trapFocus);
     dialog.classList.remove('is-visible');
     clearHash();
+    if (lastFocus && typeof lastFocus.focus === 'function') {
+      try { lastFocus.focus(); } catch (err) { /* ignore */ }
+      lastFocus = null;
+    }
   });
   btnClose.addEventListener('click', function () { dialog.close(); });
 

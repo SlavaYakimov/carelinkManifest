@@ -16,6 +16,7 @@
   var tabs = [tabStructure, tabSource];
   var total = document.querySelectorAll('.read-chapters .chapter').length;
   var current = null;
+  var lastFocus = null;
   var focusables = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
   var DEFAULT_VERSION = '3';
 
@@ -179,6 +180,7 @@
     if (!fillDialog(n)) return;
     if (push !== false) setHash(n);
     if (!dialog.open) {
+      lastFocus = document.activeElement;
       dialog.showModal();
       lockScroll(true);
       dialog.addEventListener('keydown', trapFocus);
@@ -198,6 +200,10 @@
     dialog.classList.remove('is-visible');
     clearHash();
     current = null;
+    if (lastFocus && typeof lastFocus.focus === 'function') {
+      try { lastFocus.focus(); } catch (err) { /* ignore */ }
+      lastFocus = null;
+    }
   });
   btnClose.addEventListener('click', function () { dialog.close(); });
   btnPrev.addEventListener('click', function () { if (current > 1) openChapter(current - 1); });

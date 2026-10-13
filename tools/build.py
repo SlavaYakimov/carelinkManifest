@@ -927,7 +927,7 @@ page = f'''<!doctype html>
 {finale_html}
 </main>
 <div id="landing-card-store" hidden aria-hidden="true">{''.join(landing_card_store)}</div>
-<dialog class="chapter-dialog landing-card-dialog" id="landing-card-dialog" aria-labelledby="landing-card-dialog-title">
+<dialog class="chapter-dialog landing-card-dialog" id="landing-card-dialog" aria-modal="true" aria-labelledby="landing-card-dialog-title">
   <div class="chapter-dialog-panel">
     <header class="chapter-dialog-head">
       <span class="mono chapter-dialog-kicker" id="landing-card-dialog-kicker"></span>
@@ -937,7 +937,7 @@ page = f'''<!doctype html>
     <div class="chapter-dialog-body landing-card-dialog-body" id="landing-card-dialog-body"></div>
   </div>
 </dialog>
-<dialog class="chapter-dialog" id="chapter-dialog" aria-labelledby="chapter-dialog-title">
+<dialog class="chapter-dialog" id="chapter-dialog" aria-modal="true" aria-labelledby="chapter-dialog-title">
   <div class="chapter-dialog-panel">
     <header class="chapter-dialog-head">
       <span class="mono chapter-dialog-kicker" id="chapter-dialog-kicker">Глава 01 / {NUM_CHAPTERS}</span>
