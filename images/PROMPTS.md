@@ -140,6 +140,17 @@ Warm painterly editorial 16:9: family with household agreement document, calm ag
 
 ---
 
-## Главы (архив)
+## Главы 15–20 (reuse landing, 13.10.2026)
 
-См. также `images/chapter-images/PROMPTS-chapters.md`.
+Иллюстрации глав 15–20 **переиспользуют** уже сгенерированные файлы лендинга (палитра #1f5c4a / #8a6a3b). Новая генерация не потребовалась.
+
+| Глава | Файл | Источник промпта в этом файле |
+|-------|------|-------------------------------|
+| 15 | `images/landing/solutions/01-family-unity.jpg` | Landing · решения · 01-family-unity |
+| 16 | `images/landing/problems/05-offline-privacy.jpg` | Landing · проблемы · 05-offline-privacy |
+| 17 | `images/landing/solutions/02-dialogue.jpg` | Landing · решения · 02-dialogue |
+| 18 | `images/landing/scenarios/05-friday-pulse.jpg` | Landing · сценарии · 05-friday-pulse |
+| 19 | `images/landing/problems/03-data-abroad.jpg` | Landing · проблемы · 03-data-abroad |
+| 20 | `images/landing/problems/07-scattered-info.jpg` | Landing · проблемы · 07-scattered-info |
+
+Главы 1–14: см. `images/chapter-images/PROMPTS-chapters.md` и корневые `images/*.jpg`.

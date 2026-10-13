@@ -1,0 +1,9 @@
+{
+  "image": "images/landing/problems/03-data-abroad.jpg",
+  "quote": "«AI не судья. Решение — сумма взглядов».",
+  "mission": "",
+  "task": "Зачем это Carelink: Qwen на телефоне и self-hosted — попытка не собрать «одного судью» на всех.",
+  "hypothesis": "Архитектура звонка 13.10.2026 и навык qwen-ai-to-ai-blind-spots — `Концепт`, **требует подтверждения**.",
+  "risks": "Открытые вопросы обмена паттернами: 152‑ФЗ, согласие детей, ошибка одного AI.",
+  "description": "Офлайн Qwen, CarelinkAuth на Go, синхронизация через телефон; self-hosted и «S-Project» [?]."
+}
