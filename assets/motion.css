@@ -2,6 +2,7 @@
 :root{--ease-out-ui:cubic-bezier(.23,1,.32,1)}
 
 @media(hover:hover) and (pointer:fine){
+.top-nav a,.foot-nav a,.text-action{transition:color .18s var(--ease-out-ui),transform .24s var(--ease-out-ui),border-color .18s var(--ease-out-ui)}
 .chapter-grid-card--ticket,.mirai-ticket,.landing-card-ticket,.finale-cta-card{transition:background .22s var(--ease-out-ui),transform .22s var(--ease-out-ui),box-shadow .22s var(--ease-out-ui),border-color .22s var(--ease-out-ui)}
 .chapter-grid-card--ticket:hover,.mirai-ticket:hover,.landing-card-ticket:hover,.finale-cta-card:hover{transform:translateY(-3px)}
 .finale-cta-media img,.landing-card-ticket .landing-card-media img{transition:transform .35s var(--ease-out-ui)}
