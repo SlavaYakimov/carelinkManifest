@@ -554,6 +554,20 @@ def render_challenges_section():
 
 def render_solutions_section():
     d = CHALLENGES_DATA
+    featured = []
+    for i, f in enumerate(d.get('featured_solutions', []), 1):
+        featured.append(
+            f'<li class="solution-item solution-item--featured">'
+            f'<span class="mono solution-num">{i:02d}</span>'
+            f'<div class="solution-body">'
+            f'<span class="badge solution-way-badge">Способ</span>'
+            f'<h3 class="solution-way-title">{html.escape(f["title"])}</h3>'
+            f'<p class="solution-problem-ref">'
+            f'<span class="mono solution-problem-lbl">К проблеме</span> '
+            f'{html.escape(f["problem_ref"])}</p>'
+            f'<p class="solution-text">{inline(f["description"])}</p>'
+            f'</div></li>'
+        )
     items = []
     for i, p in enumerate(d['problems'], 1):
         items.append(
@@ -565,13 +579,24 @@ def render_solutions_section():
             f'</div></li>'
         )
     intro = d.get('solutions_intro', '')
+    detail_lbl = d.get('solutions_detail_lbl', '')
+    detail_html = (
+        f'<p class="mono solutions-detail-lbl">{html.escape(detail_lbl)}</p>'
+        if detail_lbl else ''
+    )
+    featured_html = (
+        f'<ol class="solution-list solution-list--featured">{"".join(featured)}</ol>'
+        if featured else ''
+    )
     return (
         f'<section class="solutions" id="resheniya" aria-labelledby="solutions-title">'
         f'<div class="solutions-in section-panel" data-reveal>'
         f'<p class="section-label">Carelink</p>'
         f'<h2 id="solutions-title" class="solutions-title">Способы решения</h2>'
         f'<p class="solutions-intro">{inline(intro)}</p>'
-        f'<ol class="solution-list">{"".join(items)}</ol>'
+        f'{featured_html}'
+        f'{detail_html}'
+        f'<ol class="solution-list solution-list--detail">{"".join(items)}</ol>'
         f'</div></section>'
     )
 
