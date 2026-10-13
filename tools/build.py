@@ -46,7 +46,7 @@ def image_src_with_cache(src, chap_num=None):
     return f'{base}?v={cache}'
 
 
-def img_picture(src, alt, img_class='', chap_num=None):
+def img_picture(src, alt, img_class='', chap_num=None, loading='lazy'):
     if not src:
         return ''
     base = src.split('?', 1)[0]
@@ -59,7 +59,7 @@ def img_picture(src, alt, img_class='', chap_num=None):
         webp_tag = f'<source type="image/webp" srcset="{html.escape(webp_display)}">'
     cls = f' class="{img_class}"' if img_class else ''
     return (
-        f'<picture>{webp_tag}<img src="{esc_src}" alt="{esc_alt}" loading="lazy" decoding="async" '
+        f'<picture>{webp_tag}<img src="{esc_src}" alt="{esc_alt}" loading="{html.escape(loading)}" decoding="async" '
         f'width="{IMG_WIDTH}" height="{IMG_HEIGHT}"{cls}></picture>'
     )
 PLACEHOLDER = 'Не сформулировано — требует подтверждения'
@@ -166,7 +166,7 @@ def render_landing_card_li(card_id: str, num: int, title: str, teaser: str, imag
     if image_src:
         media = (
             f'<figure class="chapter-grid-media">'
-            f'{img_picture(image_src, alt, "chapter-grid-img")}'
+            f'{img_picture(image_src, alt, "chapter-grid-img", loading="eager")}'
             f'</figure>'
         )
     return (
