@@ -56,6 +56,14 @@ blocks_report = []
 source_report = []
 
 OWL = ('<svg viewBox="0 0 512 512" width="24" height="24" fill="#fff" aria-hidden="true"><path fill-rule="evenodd" d="M132 60 L196 132 Q256 116 316 132 L380 60 L392 168 Q440 226 440 300 Q440 410 352 456 Q306 480 256 480 Q206 480 160 456 Q72 410 72 300 Q72 226 120 168 Z M190 168 a70 70 0 1 0 0.1 0 Z M322 168 a70 70 0 1 0 0.1 0 Z M256 270 L238 300 L256 336 L274 300 Z M214 372 q14 18 28 0 q-14 8 -28 0 Z M270 372 q14 18 28 0 q-14 8 -28 0 Z M242 404 q14 18 28 0 q-14 8 -28 0 Z M186 404 q14 18 28 0 q-14 8 -28 0 Z M298 404 q14 18 28 0 q-14 8 -28 0 Z"/><circle cx="190" cy="238" r="34"/><circle cx="322" cy="238" r="34"/><circle fill="none" stroke="#fff" stroke-width="10" cx="190" cy="238" r="50"/><circle fill="none" stroke="#fff" stroke-width="10" cx="322" cy="238" r="50"/></svg>')
+BRAND_LOGO = (
+    '<img class="brand-mark" src="assets/carelink-owl-avatar-128.png" width="40" height="40" '
+    'alt="Carelink" decoding="async">'
+)
+BRAND_LOGO_FOOT = (
+    '<img class="brand-mark" src="assets/carelink-owl-avatar-128.png" width="40" height="40" '
+    'alt="" aria-hidden="true" decoding="async">'
+)
 
 ICON = {
     'concept': '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Zm-2 15v2h4v-2h-4Z"/></svg>',
@@ -491,14 +499,15 @@ page = f'''<!doctype html>
 <meta property="og:title" content="{html.escape(title)} — манифест Carelink">
 <meta property="og:description" content="{html.escape(stand)}">
 <meta property="og:image" content="images/hero-family-table.jpg">
-<link rel="icon" href="assets/owl.svg" type="image/svg+xml">
+<link rel="icon" href="assets/carelink-owl-avatar-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/carelink-owl-avatar-128.png" type="image/png" sizes="128x128">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <a class="skip" href="#glava-1">К тексту</a>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
-  <a class="brand" href="#top" aria-label="Carelink"><span class="owl">{OWL}</span><span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <a class="brand" href="#top">{BRAND_LOGO}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
@@ -553,7 +562,7 @@ page = f'''<!doctype html>
   </div>
 </dialog>
 <footer class="foot">
-  <a class="brand" href="#top"><span class="owl">{OWL}</span><span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
+  <a class="brand" href="#top">{BRAND_LOGO_FOOT}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <span class="mono">© 2026 Carelink · Слава Якимов</span>
   <span class="mono"><span class="badge">Концепт</span> — ещё обсуждается</span>
 </footer>
