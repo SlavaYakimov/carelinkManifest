@@ -16,6 +16,7 @@ BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(enco
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
 ARCH_DATA = json.loads((ROOT / 'tools' / 'product-architecture.json').read_text(encoding='utf-8'))
 DEV_DATA = json.loads((ROOT / 'tools' / 'development.json').read_text(encoding='utf-8'))
+FINALE_CTAS_DATA = json.loads((ROOT / 'tools' / 'finale_ctas.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
 finale_html = ''
@@ -192,6 +193,36 @@ def stash_landing_card(card_id: str, kicker: str, title: str, body_html: str):
     )
 
 
+def render_finale_cta_li(cta: dict, num: int, total: int):
+    card_id = cta['id']
+    phrase = cta['phrase']
+    img = cta.get('image', '')
+    alt = cta.get('image_alt', phrase)
+    media = ''
+    if img:
+        media = (
+            f'<figure class="finale-cta-media">'
+            f'{img_picture(img, alt, "finale-cta-img", None, "eager")}'
+            f'</figure>'
+        )
+    modal_body = cta.get('modal_html', '')
+    stash_landing_card(
+        card_id,
+        cta.get('modal_kicker', f'Призыв {num:02d} / {total:02d}'),
+        cta.get('modal_title', phrase),
+        modal_body,
+    )
+    return (
+        f'<li class="chapter-grid-cell finale-cta-cell">'
+        f'<article class="finale-cta-card">'
+        f'{media}'
+        f'<h3 class="finale-cta-title">{html.escape(phrase)}</h3>'
+        f'<button type="button" class="finale-cta-read" data-landing-card="{html.escape(card_id)}">'
+        f'Прочитать</button>'
+        f'</article></li>'
+    )
+
+
 def render_finale_section(chunk):
     title = ''
     paras = []
@@ -211,19 +242,21 @@ def render_finale_section(chunk):
     foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
     full_body = body + foot_html
     card_id = 'landing-finale-1'
-    stash_landing_card(card_id, 'Финальная ценность', title, full_body)
-    card = render_landing_card_li(
-        card_id,
-        1,
-        title or 'Финальная ценность',
-        FINALE_CARD_IMAGE,
-        'Семейный очаг — метафора общей реальности',
-    )
+    stash_landing_card(card_id, 'Финальная ценность', title or 'Инструмент, чтобы создавать свою реальность', full_body)
+    ctas = FINALE_CTAS_DATA.get('ctas', [])
+    n_cta = len(ctas)
+    cta_cards = [
+        render_finale_cta_li(c, i, n_cta) for i, c in enumerate(ctas, 1)
+    ]
+    cta_lead = FINALE_CTAS_DATA.get('lead', '')
     legacy = (
         f'<div class="landing-block-legacy" id="final-value-legacy">'
         f'<span class="mono landing-finale-kicker">{FINALE_OWL}Финальная ценность</span>'
         f'<h2 class="landing-finale-title">{html.escape(title)}</h2>'
         f'<div class="landing-finale-body">{body}</div>{foot_html}'
+        f'<ol class="chapter-grid landing-card-grid">'
+        f'{render_landing_card_li(card_id, 1, title or "Финальная ценность", FINALE_CARD_IMAGE, "Семейный очаг — метафора общей реальности")}'
+        f'</ol>'
         f'</div>'
     )
     return (
@@ -232,8 +265,9 @@ def render_finale_section(chunk):
         f'<p class="section-label landing-finale-label">Ценность</p>'
         f'<h2 id="landing-finale-title" class="landing-finale-title landing-finale-title--section">'
         f'Финальная ценность</h2>'
-        f'<p class="landing-finale-lead">Нажмите на карточку — откроется полный текст блока.</p>'
-        f'<ol class="chapter-grid landing-card-grid landing-card-grid--finale">{card}</ol>'
+        f'<p class="landing-finale-lead">{html.escape(cta_lead)}</p>'
+        f'<ol class="chapter-grid landing-card-grid landing-card-grid--finale landing-card-grid--finale-cta">'
+        f'{"".join(cta_cards)}</ol>'
         f'{legacy}'
         f'</div></section>'
     )

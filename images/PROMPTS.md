@@ -109,6 +109,37 @@ Warm painterly editorial 16:9: kitchen wall calendar and phone side by side, fam
 
 ---
 
+## Landing · финальная ценность · призывы (`images/landing/finale/`)
+
+Концепция 17 (own-reality-flow, CarelinkMemory) — философия без дословных цитат из «Песни Потока».
+
+### 01-sunrise-together.jpg
+```
+Warm painterly editorial 16:9: person rising at sunrise by window, calm morning, dignity not wellness stock. Palette #1f5c4a #8a6a3b #f7faf8. No text.
+```
+
+### 02-reality-for-all.jpg
+```
+Warm painterly editorial 16:9: family sharing load at table, mutual care, grounded. Palette green bronze cream. No text.
+```
+
+### 03-return-to-self.jpg
+```
+Warm painterly editorial 16:9: pause with notebook before messaging, thoughtful restraint. Palette #1f5c4a #8a6a3b #f7faf8. No text.
+```
+
+### 04-return-to-each-other.jpg
+```
+Warm painterly editorial 16:9: family eye contact at dinner, phones aside, reconnection. Palette green bronze cream. No text.
+```
+
+### 05-life-in-our-hands.jpg
+```
+Warm painterly editorial 16:9: family with household agreement document, calm agency. Palette #1f5c4a #8a6a3b #f7faf8. No text.
+```
+
+---
+
 ## Главы (архив)
 
 См. также `images/chapter-images/PROMPTS-chapters.md`.
