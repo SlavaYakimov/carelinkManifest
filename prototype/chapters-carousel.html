@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototype · Карусель глав (Speakers / Neo Mirai)</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --paper: oklch(94% 0.035 78);
+  --paper-soft: oklch(91% 0.045 78);
+  --paper-deep: oklch(84% 0.06 73);
+  --ink: oklch(18% 0.035 82);
+  --ink-soft: oklch(32% 0.045 80);
+  --ash: oklch(54% 0.04 80);
+  --line: oklch(73% 0.055 77);
+  --gold: oklch(68% 0.145 74);
+  --gold-bright: oklch(76% 0.165 80);
+  --sun: oklch(64% 0.19 43);
+  --sun-deep: oklch(52% 0.17 38);
+  --night: oklch(17% 0.035 185);
+  --night-soft: oklch(24% 0.04 170);
+  --rice: oklch(97% 0.02 82);
+  --focus: oklch(58% 0.18 42);
+  --shadow: 0 28px 90px oklch(24% 0.05 75 / 0.22);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-display: "Chakra Petch", "Noto Sans JP", sans-serif;
+  --font-serif: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
+  --font-mono: "Azeret Mono", "SFMono-Regular", monospace;
+  --header-height: 74px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  background: var(--paper);
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-width: 320px;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 66% 7%, oklch(82% 0.11 79 / 0.55), transparent 17rem),
+    linear-gradient(90deg, oklch(20% 0.015 80 / 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, oklch(20% 0.015 80 / 0.028) 1px, transparent 1px),
+    var(--paper);
+  background-size: auto, 112px 112px, 112px 112px, auto;
+  font-family: var(--font-serif);
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  content: "";
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle at 18% 21%, oklch(100% 0 0 / 0.6), transparent 0.08rem),
+    radial-gradient(circle at 76% 63%, oklch(36% 0.05 70 / 0.18), transparent 0.07rem),
+    radial-gradient(circle at 48% 88%, oklch(38% 0.07 35 / 0.14), transparent 0.06rem);
+  background-size: 0.7rem 0.85rem, 1.1rem 1.3rem, 0.95rem 1.05rem;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.agenda-block {
+  display: grid;
+  grid-template-columns: minmax(16.5rem, 32vw) 1fr;
+  height: clamp(23.1rem, 43vw, 38.7rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.agenda-panel {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-height: 0;
+  padding: clamp(1.35rem, 2.55vw, 2.35rem);
+  color: var(--rice);
+  background:
+    radial-gradient(circle at 100% 0, oklch(40% 0.08 74 / 0.35), transparent 16rem),
+    linear-gradient(135deg, var(--night), oklch(13% 0.035 180));
+  overflow: clip;
+}
+
+.agenda-panel::after {
+  position: absolute;
+  right: -10.8rem;
+  top: 0;
+  z-index: 0;
+  width: 21.6rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--gold-bright), var(--sun));
+  content: "";
+  opacity: 0.86;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.agenda-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.agenda-panel .section-label,
+.agenda-panel h2,
+.agenda-days li,
+.agenda-panel .text-action {
+  opacity: 0;
+  filter: blur(3px);
+  transform: translate3d(-0.85rem, 0, 0);
+  transition:
+    opacity 560ms var(--ease),
+    filter 640ms var(--ease),
+    transform 760ms var(--ease-quint);
+}
+
+.agenda-panel.is-visible .section-label,
+.agenda-panel.is-visible h2,
+.agenda-panel.is-visible .agenda-days li,
+.agenda-panel.is-visible .text-action {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+}
+
+.agenda-panel.is-visible h2 {
+  transition-delay: 110ms;
+}
+
+.agenda-panel.is-visible .agenda-days li:nth-child(1) {
+  transition-delay: 220ms;
+}
+
+.agenda-panel.is-visible .agenda-days li:nth-child(2) {
+  transition-delay: 340ms;
+}
+
+.agenda-panel.is-visible .agenda-days li:nth-child(3) {
+  transition-delay: 460ms;
+}
+
+.agenda-panel.is-visible .text-action {
+  transition-delay: 610ms;
+}
+
+.section-label {
+  margin: 0 0 0.72rem;
+  color: inherit;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  font-weight: 300;
+  line-height: 1;
+  text-transform: uppercase;
+.speakers,
+.installations {
+  display: grid;
+  grid-template-columns: minmax(12rem, 25%) 1fr;
+  gap: 0;
+  padding: 0 clamp(1.2rem, 3.5vw, 3rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-intro {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  padding-top: clamp(3.3rem, 6.8vw, 6rem);
+}
+
+.section-intro .text-action {
+  margin-top: 3.5rem;
+}
+
+.speaker-carousel {
+  --speaker-index: 0;
+  --speaker-offset: 0%;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: clip;
+  background: var(--paper-soft);
+  isolation: isolate;
+}
+
+.speaker-track {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transform: translate3d(0, var(--speaker-offset), 0);
+  transition: transform 620ms var(--ease-quint);
+  will-change: transform;
+}
+
+.speaker-slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  min-height: 100%;
+  height: 100%;
+  overflow: clip;
+}
+
+.speaker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.speaker-person {
+  --speaker-focus-x: 50%;
+  --speaker-focus-y: 48%;
+  position: relative;
+  min-width: 0;
+  overflow: clip;
+  background:
+    linear-gradient(90deg, oklch(20% 0.015 80 / 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, oklch(20% 0.015 80 / 0.026) 1px, transparent 1px),
+    var(--paper-soft);
+  background-size: 112px 112px, 112px 112px, auto;
+  isolation: isolate;
+}
+
+.speaker-person + .speaker-person {
+  border-left: 1px solid oklch(50% 0.04 78 / 0.24);
+}
+
+.speaker-person::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 58%, oklch(81% 0.14 78 / 0.14), transparent 28%),
+    linear-gradient(0deg, oklch(12% 0.025 80 / 0.72), oklch(12% 0.025 80 / 0.28) 31%, transparent 58%);
+  content: "";
+  opacity: 0.82;
+  transition: opacity 420ms var(--ease);
+}
+
+.speaker-person img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--speaker-focus-x) var(--speaker-focus-y);
+  filter: saturate(1.04) contrast(1.08);
+  transform: scale(1.035);
+  transition: transform 920ms var(--ease-quint), filter 520ms var(--ease);
+  will-change: transform;
+}
+
+.speaker-carousel:hover .speaker-slide.is-active .speaker-person img,
+.speaker-carousel:focus-within .speaker-slide.is-active .speaker-person img {
+  filter: saturate(1.1) contrast(1.13);
+  transform: scale(1.06);
+}
+
+.speaker-person:hover img,
+.speaker-person:focus-within img {
+  filter: saturate(1.16) contrast(1.16);
+  transform: scale(1.09);
+}
+
+.speaker-person:hover::after,
+.speaker-person:focus-within::after {
+  opacity: 1;
+}
+
+.speaker-meta {
+  position: absolute;
+  left: clamp(1rem, 1.6vw, 1.55rem);
+  bottom: clamp(1rem, 1.75vw, 1.65rem);
+  z-index: 2;
+  display: grid;
+  max-width: min(12rem, calc(100% - 3rem));
+  opacity: 0;
+  text-shadow: 0 2px 18px oklch(10% 0.02 80 / 0.78);
+  transform: translate3d(0, 0.78rem, 0);
+  transition:
+    opacity 580ms var(--ease),
+    transform 780ms var(--ease-quint);
+  will-change: transform;
+}
+
+.speaker-carousel.is-visible .speaker-slide.is-active .speaker-meta {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.speaker-carousel.is-visible .speaker-slide.is-active .speaker-person:nth-child(2) .speaker-meta {
+  transition-delay: 110ms;
+}
+
+.speaker-carousel.is-visible .speaker-slide.is-active .speaker-person:nth-child(3) .speaker-meta {
+  transition-delay: 220ms;
+}
+
+.speaker-person:hover .speaker-meta,
+.speaker-person:focus-within .speaker-meta {
+  transform: translate3d(0, -0.22rem, 0);
+}
+
+.speaker-person::before {
+  position: absolute;
+  top: clamp(1rem, 1.65vw, 1.65rem);
+  right: clamp(0.8rem, 1.45vw, 1.35rem);
+  z-index: 2;
+  color: oklch(91% 0.045 78 / 0.72);
+  content: attr(data-kanji);
+  font-size: clamp(0.68rem, 0.9vw, 0.9rem);
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  text-shadow: 0 2px 14px oklch(12% 0.03 80 / 0.56);
+  transform: translate3d(0, 0, 0);
+  transition: color 260ms var(--ease), transform 520ms var(--ease-quint);
+  will-change: transform;
+  writing-mode: vertical-rl;
+}
+
+.speaker-person:hover::before,
+.speaker-person:focus-within::before {
+  color: oklch(97% 0.04 78 / 0.86);
+  transform: translate3d(0, -0.22rem, 0);
+}
+
+.speaker-meta span,
+.speaker-meta small {
+  display: block;
+}
+
+.speaker-meta span {
+  color: var(--gold-bright);
+  font-size: clamp(0.88rem, 1.04vw, 1.22rem);
+  line-height: 1.1;
+}
+
+.speaker-meta small {
+  margin-top: 0.22rem;
+  color: oklch(94% 0.032 78 / 0.84);
+  font-size: clamp(0.58rem, 0.7vw, 0.78rem);
+  line-height: 1.18;
+}
+
+.speaker-controls {
+  position: absolute;
+  top: 50%;
+  left: clamp(1.35rem, 3vw, 3.1rem);
+  right: auto;
+  z-index: 2;
+  display: grid;
+  gap: 0.48rem;
+  transform: translateY(-50%);
+}
+
+.speaker-dot {
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink-soft) 0 0.22rem, transparent 0.24rem);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 180ms var(--ease), transform 320ms var(--ease-quint), background 180ms var(--ease);
+}
+
+.speaker-dot:hover,
+.speaker-dot:focus-visible,
+.speaker-dot.is-active {
+  background: radial-gradient(circle, var(--sun) 0 0.24rem, transparent 0.26rem);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.installations {
+  grid-template-columns: minmax(13.75rem, 28%) 1fr;
+  align-items: start;
+  min-height: clamp(15.3rem, 28.7vw, 25.5rem);
+  padding-top: clamp(0.82rem, 1.5vw, 1.5rem);
+  padding-bottom: clamp(0.78rem, 1.4vw, 1.45rem);
+}
+
+.speakers {
+.agenda-art[data-reveal],
+.speaker-carousel[data-reveal] {
+  --reveal-x: 0.9rem;
+  --reveal-y: 0rem;
+  --reveal-scale: 1.025;
+  --reveal-blur: 8px;
+  transform-origin: center;
+}
+
+.section-intro[data-reveal],
+.tickets-heading[data-reveal] {
+
+  .hero-copy[data-reveal],
+  .hero-art[data-reveal],
+  .agenda-art[data-reveal],
+  .speaker-carousel[data-reveal] {
+    --reveal-x: 0rem;
+    --reveal-scale: 1;
+  }
+
+  .hero h1 {
+    max-width: 7em;
+    font-size: clamp(2.8rem, 13vw, 5rem);
+  }
+
+  .hero-summary {
+    margin-bottom: 1.35rem;
+    right: 1.1rem;
+  }
+
+  .agenda-block,
+  .speakers,
+  .installations,
+  .manifesto,
+  .tickets {
+    grid-template-columns: 1fr;
+  }
+
+  .agenda-block {
+    height: auto;
+  }
+
+  .agenda-panel {
+    min-height: auto;
+    padding: clamp(2.6rem, 8vw, 4rem) clamp(1.15rem, 5vw, 2rem);
+  }
+
+  .agenda-panel::after {
+    right: -4rem;
+    width: 10rem;
+  }
+
+  .agenda-art {
+    min-height: 23rem;
+  }
+
+  .speakers,
+  .installations {
+    padding: 3.2rem 1rem;
+  }
+
+  .speakers {
+    height: auto;
+  }
+
+  .speakers .section-intro {
+    grid-column: auto;
+    grid-row: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .speakers .speaker-carousel {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .speaker-carousel {
+    height: clamp(29rem, 108vw, 36rem);
+    min-height: 0;
+  }
+
+  .speaker-track,
+  .speaker-slide,
+  .speaker-grid {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .speaker-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 0;
+  }
+
+  .speaker-person + .speaker-person {
+    border-top: 1px solid oklch(50% 0.04 78 / 0.24);
+    border-left: 0;
+  }
+
+  .speaker-person::before {
+    display: none;
+  }
+
+  .speaker-person img {
+    object-fit: cover;
+    object-position: var(--speaker-focus-x) var(--speaker-focus-y);
+    transform: scale(1.02);
+  }
+
+  .speaker-meta {
+    left: 0.95rem;
+    bottom: 0.82rem;
+    max-width: calc(100% - 4.25rem);
+  }
+
+  .speaker-meta span {
+    font-size: 1rem;
+  }
+
+  .speaker-meta small {
+    font-size: 0.68rem;
+  }
+
+  .speaker-controls {
+    left: 1rem;
+    right: auto;
+  }
+
+  .section-intro .text-action {
+    margin-top: 0.7rem;
+  }
+
+
+/* Carelink · dark speakers (agenda-like) + 2-up grid + horizontal TOC row */
+:root {
+  --cl-green: #6ecfae;
+  --cl-green-d: #1f5c4a;
+  --cl-bronze: #c9a56a;
+  --cl-night: #121a17;
+  --cl-rice: #e8f0ec;
+}
+body {
+  font-family: Manrope, "Zen Old Mincho", serif;
+  background: var(--cl-night);
+  color: var(--cl-rice);
+}
+body::before { opacity: 0.18; }
+.proto-banner {
+  position: relative;
+  z-index: 20;
+  padding: 10px 16px;
+  background: #2a2218;
+  color: #fbf6ee;
+  font: 600 11px/1.4 "Azeret Mono", ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.chapters-scroll-pin {
+  position: relative;
+  height: calc(100vh + (var(--chapter-count, 20) - 1) * 55vh);
+}
+.speakers--chapters {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  grid-template-columns: 1fr minmax(12rem, 28%);
+  height: clamp(17.9rem, 33.4vw, 30rem);
+  min-height: min(100vh, 36rem);
+  background:
+    radial-gradient(circle at 100% 0, rgba(201, 165, 106, 0.22), transparent 14rem),
+    linear-gradient(135deg, #1a2822, #121a17);
+  border-bottom: 1px solid rgba(110, 207, 174, 0.15);
+  color: var(--cl-rice);
+}
+.speakers--chapters .section-label {
+  color: var(--cl-green);
+  font-family: Manrope, sans-serif;
+}
+.speakers--chapters #speakers-title {
+  color: var(--cl-rice);
+  font-family: Manrope, sans-serif;
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+}
+.speakers--chapters .speaker-carousel {
+  background: oklch(22% 0.03 170);
+}
+.speakers--chapters .speaker-person {
+  background:
+    linear-gradient(90deg, rgba(110, 207, 174, 0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(110, 207, 174, 0.03) 1px, transparent 1px),
+    oklch(20% 0.025 170);
+  background-size: 112px 112px, 112px 112px, auto;
+  cursor: pointer;
+}
+.speakers--chapters .speaker-person + .speaker-person {
+  border-left-color: rgba(201, 165, 106, 0.28);
+}
+.speakers--chapters .speaker-meta span {
+  color: var(--cl-bronze);
+}
+.speakers--chapters .speaker-meta small {
+  color: rgba(232, 240, 236, 0.82);
+}
+.speakers--chapters .speaker-dot.is-active {
+  background: radial-gradient(circle, var(--cl-green) 0 0.24rem, transparent 0.26rem);
+}
+.speakers--chapters .speaker-dot:hover,
+.speakers--chapters .speaker-dot:focus-visible {
+  background: radial-gradient(circle, var(--cl-bronze) 0 0.24rem, transparent 0.26rem);
+}
+.speakers--chapters .speaker-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.speakers--chapters .speaker-controls--toc {
+  position: static;
+  transform: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.42rem;
+  margin-top: 1.25rem;
+  max-width: 100%;
+}
+.speakers--chapters .speaker-controls--toc .speaker-dot {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex-shrink: 0;
+}
+.speakers--chapters .speaker-carousel.is-visible .speaker-slide.is-active .speaker-person:nth-child(2) .speaker-meta {
+  transition-delay: 110ms;
+}
+.speakers--chapters .speaker-carousel.is-visible .speaker-slide.is-active .speaker-person:nth-child(3) .speaker-meta {
+  transition-delay: 0ms;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font: 600 10px/1.4 ui-monospace, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(201, 165, 106, 0.75);
+  pointer-events: none;
+}
+/* drawer (site pattern) */
+.landing-drawer{position:fixed;inset:0;z-index:240;display:flex;justify-content:flex-end;pointer-events:none}
+.landing-drawer[hidden]{display:none!important}
+.landing-drawer.is-open{pointer-events:auto}
+.landing-drawer-overlay{position:absolute;inset:0;border:none;padding:0;margin:0;cursor:pointer;background:rgba(20,32,27,.58);opacity:0;transition:opacity .28s cubic-bezier(.23,1,.32,1)}
+.landing-drawer.is-open .landing-drawer-overlay{opacity:1}
+.landing-drawer-sheet{position:relative;z-index:1;display:flex;flex-direction:column;width:100%;max-width:100%;height:100dvh;min-width:0;background:linear-gradient(180deg,#f7faf8 0%,#fbf6ee 100%);border-left:1px solid rgba(31,92,74,.22);box-shadow:-24px 0 64px -32px rgba(20,32,27,.45);transform:translate3d(100%,0,0);transition:transform .32s cubic-bezier(.23,1,.32,1)}
+.landing-drawer.is-open .landing-drawer-sheet{transform:translate3d(0,0,0)}
+.landing-drawer-head{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:1rem 1.25rem .75rem;border-bottom:1px solid rgba(31,92,74,.18);background:linear-gradient(180deg,rgba(220,239,230,.45),rgba(247,250,248,.92))}
+.landing-drawer-kicker{grid-column:1/-1;color:#8a6a3b;font:600 10px/1.2 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase}
+.landing-drawer-title{font:300 clamp(1.45rem,2.6vw,2.1rem)/1.08 Manrope,sans-serif;color:#1f5c4a;margin:0}
+.landing-drawer-close{border:0;background:transparent;font-size:1.5rem;cursor:pointer;color:#1f5c4a;min-width:44px;min-height:44px}
+.landing-drawer-body{padding:16px 20px 28px;overflow:auto;flex:1;color:#14201b;font-size:16px;line-height:1.65}
+@media(min-width:561px){.landing-drawer-sheet{width:clamp(480px,36vw,560px);max-width:560px}}
+@media(prefers-reduced-motion:reduce){.landing-drawer-overlay,.landing-drawer-sheet,.speaker-track{transition:none!important}}
+@media(max-width:719px){
+  .speakers--chapters .speaker-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr))}
+  .speakers--chapters .speaker-person + .speaker-person{border-left:0;border-top:1px solid rgba(201,165,106,.28)}
+}
+</style>
+</head>
+<body>
+<p class="proto-banner">Prototype · Neo Mirai Speakers → 20 глав Carelink · не в проде</p>
+<div class="chapters-scroll-pin" id="chapters-scroll-pin" style="--chapter-count: 20">
+  <section class="speakers speakers--chapters" id="speakers" aria-labelledby="speakers-title">
+    <div class="section-intro is-visible" data-reveal>
+      <p class="section-label">Главы</p>
+      <h2 id="speakers-title">Выберите главу</h2>
+      <div class="speaker-controls speaker-controls--toc" aria-label="Оглавление глав">
+        <button class="speaker-dot is-active" type="button" data-chapter="1" data-slide="0" aria-label="Глава 01: Одинокие астронавты" aria-current="true"></button><button class="speaker-dot" type="button" data-chapter="2" data-slide="0" aria-label="Глава 02: Стекло шлема"></button><button class="speaker-dot" type="button" data-chapter="3" data-slide="1" aria-label="Глава 03: Тысяча астронавтов"></button><button class="speaker-dot" type="button" data-chapter="4" data-slide="1" aria-label="Глава 04: Государство в государстве"></button><button class="speaker-dot" type="button" data-chapter="5" data-slide="2" aria-label="Глава 05: Вход через разговор"></button><button class="speaker-dot" type="button" data-chapter="6" data-slide="2" aria-label="Глава 06: Дневник, который никто не прочтёт"></button><button class="speaker-dot" type="button" data-chapter="7" data-slide="3" aria-label="Глава 07: Пятница, 20:00"></button><button class="speaker-dot" type="button" data-chapter="8" data-slide="3" aria-label="Глава 08: Деньги как доверие"></button><button class="speaker-dot" type="button" data-chapter="9" data-slide="4" aria-label="Глава 09: Предохранитель"></button><button class="speaker-dot" type="button" data-chapter="10" data-slide="4" aria-label="Глава 10: Паттерны, а не приговоры"></button><button class="speaker-dot" type="button" data-chapter="11" data-slide="5" aria-label="Глава 11: Когда ИИ разговаривают между собой"></button><button class="speaker-dot" type="button" data-chapter="12" data-slide="5" aria-label="Глава 12: Капсула времени"></button><button class="speaker-dot" type="button" data-chapter="13" data-slide="6" aria-label="Глава 13: Что Carelink даёт семье уже сейчас"></button><button class="speaker-dot" type="button" data-chapter="14" data-slide="6" aria-label="Глава 14: ИИ в Carelink — не судья, а секретарь"></button><button class="speaker-dot" type="button" data-chapter="15" data-slide="7" aria-label="Глава 15: Из чего складывается Carelink"></button><button class="speaker-dot" type="button" data-chapter="16" data-slide="7" aria-label="Глава 16: Теневой кодекс: границы, которые видит только ИИ"></button><button class="speaker-dot" type="button" data-chapter="17" data-slide="8" aria-label="Глава 17: Бортовой журнал и семь шагов согласия"></button><button class="speaker-dot" type="button" data-chapter="18" data-slide="8" aria-label="Глава 18: Family XP: кооперативная игра семьи"></button><button class="speaker-dot" type="button" data-chapter="19" data-slide="9" aria-label="Глава 19: Qwen офлайн, своё хранилище и синхронизация"></button><button class="speaker-dot" type="button" data-chapter="20" data-slide="9" aria-label="Глава 20: Что пока требует подтверждения"></button>
+      </div>
+    </div>
+    <div class="speaker-carousel is-visible" data-reveal aria-roledescription="carousel" aria-label="Карусель глав манифеста">
+      <div class="speaker-track" id="speaker-track">
+        <article class="speaker-slide is-active" aria-label="Главы 1–2" aria-hidden="false"><ul class="speaker-grid" aria-label="Главы, набор 1"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="01" data-chapter="1" role="button" tabindex="0" aria-label="Одинокие астронавты"><img src="../images/family-apart.jpg" alt="Семья за одним столом, но каждый смотрит в свой телефон; бумаги разбросаны"><div class="speaker-meta"><span>Одинокие астронавты</span><small>Глава первая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="02" data-chapter="2" role="button" tabindex="0" aria-label="Стекло шлема"><img src="../images/family-different-views.jpg" alt="Члены семьи смотрят на одну ситуацию с разных сторон"><div class="speaker-meta"><span>Стекло шлема</span><small>Глава вторая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 3–4" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 2"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="03" data-chapter="3" role="button" tabindex="0" aria-label="Тысяча астронавтов"><img src="../images/family-many-voices.jpg" alt="Большая семья разных поколений говорит за общим столом"><div class="speaker-meta"><span>Тысяча астронавтов</span><small>Глава третья</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="04" data-chapter="4" role="button" tabindex="0" aria-label="Государство в государстве"><img src="../images/family-house-rules.jpg" alt="Семья в гостиной договаривается о правилах дома"><div class="speaker-meta"><span>Государство в государстве</span><small>Глава четвёртая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 5–6" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 3"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="05" data-chapter="5" role="button" tabindex="0" aria-label="Вход через разговор"><img src="../images/family-conversation-start.jpg" alt="Человек начинает разговор с Carelink в телефоне, рядом спокойная домашняя обстановка"><div class="speaker-meta"><span>Вход через разговор</span><small>Глава пятая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="06" data-chapter="6" role="button" tabindex="0" aria-label="Дневник, который никто не прочтёт"><img src="../images/family-private-diary.jpg" alt="Человек пишет в личный дневник в тишине, записи остаются только у него"><div class="speaker-meta"><span>Дневник, который никто не прочтёт</span><small>Глава шестая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 7–8" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 4"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="07" data-chapter="7" role="button" tabindex="0" aria-label="Пятница, 20:00"><img src="../images/hero-family-table.jpg" alt="Вся семья за вечерним столом — общий ритуал и разговор"><div class="speaker-meta"><span>Пятница, 20:00</span><small>Глава седьмая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="08" data-chapter="8" role="button" tabindex="0" aria-label="Деньги как доверие"><img src="../images/family-money-trust.jpg" alt="Родственники договариваются о семейной помощи и переводе без банковской формальности"><div class="speaker-meta"><span>Деньги как доверие</span><small>Глава восьмая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 9–10" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 5"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="09" data-chapter="9" role="button" tabindex="0" aria-label="Предохранитель"><img src="../images/family-safety-net.jpg" alt="Рука на экране телефона с кнопкой экстренной помощи, рядом близкий человек"><div class="speaker-meta"><span>Предохранитель</span><small>Глава девятая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="10" data-chapter="10" role="button" tabindex="0" aria-label="Паттерны, а не приговоры"><img src="../images/family-hearth.jpg" alt="Семья собралась у домашнего очага"><div class="speaker-meta"><span>Паттерны, а не приговоры</span><small>Глава десятая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 11–12" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 6"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="11" data-chapter="11" role="button" tabindex="0" aria-label="Когда ИИ разговаривают между собой"><img src="../images/care-across-distance.jpg" alt="Дочь на видеосвязи с отцом, он показывает ей тонометр"><div class="speaker-meta"><span>Когда ИИ разговаривают между собой</span><small>Глава одиннадцатая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="12" data-chapter="12" role="button" tabindex="0" aria-label="Капсула времени"><img src="../images/family-legacy-box.jpg" alt="Семья складывает письма и фотографии в шкатулку памяти"><div class="speaker-meta"><span>Капсула времени</span><small>Глава двенадцатая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 13–14" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 7"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="13" data-chapter="13" role="button" tabindex="0" aria-label="Что Carelink даёт семье уже сейчас"><img src="../images/family-memory.jpg" alt="Бабушка и внучка листают семейный фотоальбом"><div class="speaker-meta"><span>Что Carelink даёт семье уже сейчас</span><small>Глава тринадцатая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="14" data-chapter="14" role="button" tabindex="0" aria-label="ИИ в Carelink — не судья, а секретарь"><img src="../images/ai-secretary.jpg" alt="Руки печатают на ноутбуке рядом с блокнотом и чашкой чая — спокойная домашняя работа с текстом"><div class="speaker-meta"><span>ИИ в Carelink — не судья, а секретарь</span><small>Глава четырнадцатая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 15–16" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 8"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="15" data-chapter="15" role="button" tabindex="0" aria-label="Из чего складывается Carelink"><img src="../images/landing/solutions/01-family-unity.jpg" alt="Родня собирается вокруг общего семейного пространства — приглашение и единый вход"><div class="speaker-meta"><span>Из чего складывается Carelink</span><small>Глава пятнадцатая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="16" data-chapter="16" role="button" tabindex="0" aria-label="Теневой кодекс: границы, которые видит только ИИ"><img src="../images/landing/problems/05-offline-privacy.jpg" alt="Человек пишет в тишине, телефон экраном вниз — личная граница до публикации"><div class="speaker-meta"><span>Теневой кодекс: границы, которые видит только ИИ</span><small>Глава шестнадцатая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 17–18" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 9"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="17" data-chapter="17" role="button" tabindex="0" aria-label="Бортовой журнал и семь шагов согласия"><img src="../images/landing/solutions/02-dialogue.jpg" alt="Пара разговаривает лицом к лицу, телефон в стороне"><div class="speaker-meta"><span>Бортовой журнал и семь шагов согласия</span><small>Глава семнадцатая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="18" data-chapter="18" role="button" tabindex="0" aria-label="Family XP: кооперативная игра семьи"><img src="../images/landing/scenarios/05-friday-pulse.jpg" alt="Пятница вечером: короткие карточки на телефоне, уютный диван"><div class="speaker-meta"><span>Family XP: кооперативная игра семьи</span><small>Глава восемнадцатая</small></div></li></ul></article><article class="speaker-slide" aria-label="Главы 19–20" aria-hidden="true"><ul class="speaker-grid" aria-label="Главы, набор 10"><li class="speaker-person" style="--speaker-focus-x: 52%; --speaker-focus-y: 48%;" data-kanji="19" data-chapter="19" role="button" tabindex="0" aria-label="Qwen офлайн, своё хранилище и синхронизация"><img src="../images/landing/problems/03-data-abroad.jpg" alt="Родитель вводит данные о здоровье; намёк на облако и границы данных"><div class="speaker-meta"><span>Qwen офлайн, своё хранилище и синхронизация</span><small>Глава девятнадцатая</small></div></li><li class="speaker-person" style="--speaker-focus-x: 44%; --speaker-focus-y: 48%;" data-kanji="20" data-chapter="20" role="button" tabindex="0" aria-label="Что пока требует подтверждения"><img src="../images/landing/problems/07-scattered-info.jpg" alt="Кухонный стол с медицинскими бумагами и заметками — много источников, мало одного списка"><div class="speaker-meta"><span>Что пока требует подтверждения</span><small>Глава двадцатая</small></div></li></ul></article>
+      </div>
+      <p class="scroll-hint" aria-hidden="true">Прокрутите страницу ↓</p>
+    </div>
+  </section>
+</div>
+<div id="chapter-store" hidden><article id="chapter-1" hidden><div data-title="Одинокие астронавты" data-role="Глава первая"><p>На кухне нет вакуума, но ощущение часто то же: вы физически рядом — и каждый будто в своём шлеме, со своим экраном, своей усталостью, своим списком дел. Так начинается первая глава манифеста: не с кнопки в приложении, а с узнаваемой сцены «рядом, но врозь», которую мы уже видели во вступлении.</p></div></article><article id="chapter-2" hidden><div data-title="Стекло шлема" data-role="Глава вторая"><p>Ссора в семье редко начинается с фактов — чаще с того, как мы их видим. Вторая глава CosmoFusion называется «Стекло шлема отражает только то, что астронавт хочет видеть». В стекле отражается Земля. Красиво — но это не сама Земля, а её искажённое отражение. А если в стекле вообще не Земля, а собственные ожидания?</p></div></article><article id="chapter-3" hidden><div data-title="Тысяча астронавтов" data-role="Глава третья"><p>После «стекла шлема» напрашивается следующий шаг: не доказать, кто прав, а собрать неполные правды в одну картину. Третья глава манифеста отвечает на этот запрос метафорой CosmoFusion — снова фон, не кнопка в приложении (Концепт для переноса идеи на семью).</p></div></article><article id="chapter-4" hidden><div data-title="Государство в государстве" data-role="Глава четвёртая"><p>Если третья глава — про голоса, четвёртая — про правила, которым эти голоса могут доверять. Самая смелая формулировка проекта есть в белой книге и в продуктовых требованиях. Carelink хочет превратить семью из «сожителей» в «государство в государстве» со своей экономикой, законами и поддержкой. Звучит громко. Устроено это вполне буднично: через бумаги, которые семья пишет сама себе.</p></div></article><article id="chapter-5" hidden><div data-title="Вход через разговор" data-role="Глава пятая"><p>Как «государство в государстве» выглядит в телефоне? На звонке 13.10.2026 прозвучал ответ, который меняет всю архитектуру интерфейса. Главная точка входа — чат-бот, «похожий на Jarvis, но для закрытых семейных отношений». Остальные экраны вторичны. Концепт</p></div></article><article id="chapter-6" hidden><div data-title="Дневник, который никто не прочтёт" data-role="Глава шестая"><p>У каждой ссоры есть минута «до»: человек ещё не сказал главного, но уже готов это выкрикнуть. Carelink предлагает прожить эту минуту с телефоном, а не с партнёром.</p></div></article><article id="chapter-7" hidden><div data-title="Пятница, 20:00" data-role="Глава седьмая"><p>Семью держат смыслы, ритуалы и благодарность, а не ипотека. Эта фраза из манифеста объясняет, почему в Carelink так много повторяющихся механик. Ритуал — это договорённость, которая стала привычкой.</p></div></article><article id="chapter-8" hidden><div data-title="Деньги как доверие" data-role="Глава восьмая"><p>«Мы продаём инфраструктуру для счастья, а не банкинг», — так позиционирование сформулировано в продуктовом контексте. Но деньги в Carelink есть, и устроены они как продолжение доверия.</p></div></article><article id="chapter-9" hidden><div data-title="Предохранитель" data-role="Глава девятая"><p>У любого «государства» есть соблазн стать тюрьмой. Проект знает об этом и называет риск сам: «закрытая секта». Поэтому самая продуманная часть материалов — не про любовь, а про то, что делать, когда инструмент заботы превращают в инструмент контроля.</p></div></article><article id="chapter-10" hidden><div data-title="Паттерны, а не приговоры" data-role="Глава десятая"><p>Всё, о чём говорилось выше — Пульс, медиатор, SOS, деньги — держится на одном умении: замечать повторы, а не ярлыки. Источники перечисляют, какие паттерны AI отслеживает. Это ты-сообщения, газлайтинг, агрессия и напряжение в тексте и голосе, давление, оскорбления личности и манипуляции: злоупотребление паузой, изоляция, финансовая блокада. Кроме того, маркеры состояния («устал»), быстрый набор текста как признак ссоры, тупик после нескольких кругов медиации (тогда предлагается специалист) и споры между поколениями (тогда предлагается Совет старейшин).</p></div></article><article id="chapter-11" hidden><div data-title="Когда ИИ разговаривают между собой" data-role="Глава одиннадцатая"><p>Десятая глава остановилась на формуле «AI замечает паттерны. Решает семья». Здесь — следующий шаг: самая новая и самая спорная часть манифеста. Всё в ней Концепт.</p></div></article><article id="chapter-12" hidden><div data-title="Капсула времени" data-role="Глава двенадцатая"><p>После предохранителей, денег и паттернов — глава о том, что остаётся после человека: не только воспоминания, но и правила для данных.</p></div></article><article id="chapter-13" hidden><div data-title="Что Carelink даёт семье уже сейчас" data-role="Глава тринадцатая"><p>Мы обещали вернуться к вопросу «крепкая семья или цифровая клетка?». Ответ проекта — не обещать «всё сразу», а начинать с малого и проверяемого. Вот что в материалах названо работающим сегодня:</p></div></article><article id="chapter-14" hidden><div data-title="ИИ в Carelink — не судья, а секретарь" data-role="Глава четырнадцатая"><p>Представьте длинный семейный стол, за которым сидят люди с разных «планет»: у каждого свой темп, своя усталость, свой страх быть неуслышанным. Спор разгорается не потому, что кто-то плохой, а потому что у каждого в голове — свой черновик разговора. На таком столе больше всего не хватает не «судьи», а секретаря: того, кто записывает, что уже решили, напоминает о паузе, помогает переформулировать фразу так, чтобы её можно было услышать.</p></div></article><article id="chapter-15" hidden><div data-title="Из чего складывается Carelink" data-role="Глава пятнадцатая"><p>В начале этого текста уже сказано, что работает сегодня, и отдельно — из чего складывается задуманный продукт. Здесь те же части собраны в одну главу, без новых обещаний.</p></div></article><article id="chapter-16" hidden><div data-title="Теневой кодекс: границы, которые видит только ИИ" data-role="Глава шестнадцатая"><p>Пятнадцатая глава перечислила вход, веб и телефон. Четвёртая — кодексы и Конституцию. Между ними лежит одна из самых тонких идей, подтверждённая блокнотом проекта: «Теневой кодекс».</p></div></article><article id="chapter-17" hidden><div data-title="Бортовой журнал и семь шагов согласия" data-role="Глава семнадцатая"><p>Секретарь из четырнадцатой главы умеет переформулировать и записать. Но без памяти решений семья снова начнёт спор с нуля. Здесь — путь из семи шагов и бортовой журнал (в третьей главе CosmoFusion уже перенесён на язык семьи).</p></div></article><article id="chapter-18" hidden><div data-title="Family XP: кооперативная игра семьи" data-role="Глава восемнадцатая"><p>Седьмая глава описывает пятничный стол и Пятничный Пульс — ритуал без очков. Здесь — геймификация, как она сформулирована в материалах проекта: кооператив, а не таблица лидеров.</p></div></article><article id="chapter-19" hidden><div data-title="Qwen офлайн, своё хранилище и синхронизация" data-role="Глава девятнадцатая"><p>Одиннадцатая глава описывает обмен паттернами между AI — и честно помечает это Концепт. Здесь — инфраструктурный слой, на который эта идея опирается, по материалам звонка 13.10.2026 и вводной части манифеста.</p></div></article><article id="chapter-20" hidden><div data-title="Что пока требует подтверждения" data-role="Глава двадцатая"><p>Тринадцатая глава перечисляет, что работает сегодня, и отделяет это от Концепт. Двадцатая — не повтор того списка, а карта расхождений источников: вопросы, которые уже звучали в тексте, собраны в одном месте, без новых обещаний.</p></div></article></div>
+<div class="landing-drawer" id="chapter-drawer" hidden aria-hidden="true">
+  <button type="button" class="landing-drawer-overlay" id="chapter-drawer-overlay" aria-label="Закрыть"></button>
+  <div class="landing-drawer-sheet" id="chapter-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="chapter-drawer-title">
+    <header class="landing-drawer-head">
+      <p class="landing-drawer-kicker" id="chapter-drawer-kicker">Открытие главы</p>
+      <h2 class="landing-drawer-title" id="chapter-drawer-title"></h2>
+      <button type="button" class="landing-drawer-close" id="chapter-drawer-close" aria-label="Закрыть">×</button>
+    </header>
+    <div class="landing-drawer-body" id="chapter-drawer-body"></div>
+  </div>
+</div>
+<script>
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const revealTargets = document.querySelectorAll("[data-reveal]");
+revealTargets.forEach((t) => t.classList.add("is-visible"));
+
+const speakerCarousel = document.querySelector(".speaker-carousel");
+const scrollPin = document.getElementById("chapters-scroll-pin");
+let activeChapterIndex = 0;
+
+if (speakerCarousel) {
+  const speakerTrack = speakerCarousel.querySelector(".speaker-track");
+  const speakerSlides = Array.from(speakerCarousel.querySelectorAll(".speaker-slide"));
+  const speakerDots = Array.from(document.querySelectorAll(".speaker-controls--toc .speaker-dot"));
+  let activeSpeakerIndex = 0;
+
+  const setSpeakerSlide = (slideIndex, chapterIndex) => {
+    activeSpeakerIndex = (slideIndex + speakerSlides.length) % speakerSlides.length;
+    if (typeof chapterIndex === "number") activeChapterIndex = chapterIndex;
+    speakerCarousel.style.setProperty("--speaker-index", activeSpeakerIndex);
+    speakerCarousel.style.setProperty("--speaker-offset", `${activeSpeakerIndex * -100}%`);
+    speakerSlides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === activeSpeakerIndex;
+      slide.classList.toggle("is-active", isActive);
+      slide.toggleAttribute("aria-hidden", !isActive);
+    });
+    speakerDots.forEach((dot) => {
+      const ch = Number(dot.dataset.chapter) - 1;
+      const isActive = ch === activeChapterIndex;
+      dot.classList.toggle("is-active", isActive);
+      if (isActive) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  };
+
+  speakerDots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const ch = Number(dot.dataset.chapter) - 1;
+      const slideIndex = Number(dot.dataset.slide);
+      if (Number.isNaN(ch)) return;
+      setSpeakerSlide(slideIndex, ch);
+      const rect = scrollPin.getBoundingClientRect();
+      const start = window.scrollY + rect.top;
+      const span = scrollPin.offsetHeight - window.innerHeight;
+      const target = start + (ch / Math.max(1, speakerDots.length - 1)) * span;
+      window.scrollTo({ top: target, behavior: reducedMotion.matches ? "auto" : "smooth" });
+    });
+  });
+
+  speakerCarousel.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+      event.preventDefault();
+      setSpeakerSlide(activeSpeakerIndex + 1, Math.min(activeChapterIndex + 1, speakerDots.length - 1));
+    }
+    if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      setSpeakerSlide(activeSpeakerIndex - 1, Math.max(activeChapterIndex - 1, 0));
+    }
+  });
+
+  const onScroll = () => {
+    const rect = scrollPin.getBoundingClientRect();
+    const span = scrollPin.offsetHeight - window.innerHeight;
+    if (span <= 0) return;
+    const progress = Math.min(1, Math.max(0, -rect.top / span));
+    const ch = Math.round(progress * (speakerDots.length - 1));
+    const slideIndex = Math.floor(ch / 2);
+    if (ch !== activeChapterIndex) setSpeakerSlide(slideIndex, ch);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  if (speakerTrack) setSpeakerSlide(0, 0);
+}
+
+const drawer = document.getElementById("chapter-drawer");
+const store = document.getElementById("chapter-store");
+const titleEl = document.getElementById("chapter-drawer-title");
+const bodyEl = document.getElementById("chapter-drawer-body");
+const btnClose = document.getElementById("chapter-drawer-close");
+const overlay = document.getElementById("chapter-drawer-overlay");
+let lastFocus = null;
+
+function openChapter(num) {
+  const src = store.querySelector("#chapter-" + num);
+  if (!src) return;
+  const inner = src.querySelector("div");
+  titleEl.textContent = inner.getAttribute("data-title") || "";
+  bodyEl.innerHTML = inner.innerHTML;
+  lastFocus = document.activeElement;
+  drawer.hidden = false;
+  drawer.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => drawer.classList.add("is-open"));
+  btnClose.focus();
+}
+function closeChapter() {
+  drawer.classList.remove("is-open");
+  document.body.style.overflow = "";
+  const done = () => {
+    drawer.hidden = true;
+    drawer.setAttribute("aria-hidden", "true");
+    if (lastFocus) lastFocus.focus();
+  };
+  if (reducedMotion.matches) done();
+  else window.setTimeout(done, 320);
+}
+document.querySelectorAll(".speaker-person[data-chapter]").forEach((el) => {
+  el.addEventListener("click", () => openChapter(el.getAttribute("data-chapter")));
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openChapter(el.getAttribute("data-chapter")); }
+  });
+});
+btnClose.addEventListener("click", closeChapter);
+overlay.addEventListener("click", closeChapter);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && drawer.classList.contains("is-open")) closeChapter(); });
+</script>
+</body>
+</html>
