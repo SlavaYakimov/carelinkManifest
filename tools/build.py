@@ -15,6 +15,7 @@ if FINALE_MARKER in _raw_md:
 BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
 ARCH_DATA = json.loads((ROOT / 'tools' / 'product-architecture.json').read_text(encoding='utf-8'))
+DEV_DATA = json.loads((ROOT / 'tools' / 'development.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
 finale_html = ''
@@ -576,9 +577,12 @@ for ch in chapter_list:
         if src else ''
     )
     landing_items.append(
-        f'<li><a class="chapter-grid-card" href="#glava-{n}" data-chapter="{n}">'
+        f'<li class="chapter-grid-cell">'
+        f'<a class="chapter-grid-card" href="#glava-{n}" data-chapter="{n}">'
+        f'<div class="chapter-grid-head">'
         f'<span class="mono chapter-grid-num">{n:02d}</span>'
         f'<h3 class="chapter-grid-title">{html.escape(ch["title"])}</h3>'
+        f'</div>'
         f'<p class="chapter-grid-lead">{lead}</p>'
         f'{media}'
         f'</a></li>'
@@ -673,13 +677,66 @@ def render_solutions_section():
     return (
         f'<section class="solutions" id="resheniya" aria-labelledby="solutions-title">'
         f'<div class="solutions-in section-panel" data-reveal>'
-        f'<p class="section-label">Carelink</p>'
-        f'<h2 id="solutions-title" class="solutions-title">Способы решения</h2>'
+        f'<p class="section-label">Решения</p>'
+        f'<h2 id="solutions-title" class="solutions-title">Решения</h2>'
         f'<p class="solutions-intro">{inline(intro)}</p>'
         f'{featured_html}'
         f'{detail_html}'
         f'<ol class="solution-list solution-list--detail">{"".join(items)}</ol>'
         f'</div></section>'
+    )
+
+
+def dev_status_badge(needs_confirmation: bool) -> str:
+    if needs_confirmation:
+        return (
+            '<span class="badge dev-badge dev-badge--unconfirmed" '
+            'title="Не подтверждено первоисточником или статусом команды">'
+            'требует подтверждения</span>'
+        )
+    return ''
+
+
+def render_development_section():
+    d = DEV_DATA
+    done_items = []
+    for i, it in enumerate(d.get('done', []), 1):
+        done_items.append(
+            f'<li class="dev-item dev-item--done">'
+            f'<span class="mono dev-num">{i:02d}</span>'
+            f'<div class="dev-body">'
+            f'<h3 class="dev-title">{html.escape(it["title"])}</h3>'
+            f'<p class="dev-desc">{inline(it["description"])}</p>'
+            f'</div></li>'
+        )
+    prog_items = []
+    for i, it in enumerate(d.get('in_progress', []), 1):
+        badge = dev_status_badge(bool(it.get('needs_confirmation')))
+        prog_items.append(
+            f'<li class="dev-item dev-item--progress">'
+            f'<span class="mono dev-num">{i:02d}</span>'
+            f'<div class="dev-body">'
+            f'{badge}'
+            f'<h3 class="dev-title">{html.escape(it["title"])}</h3>'
+            f'<p class="dev-desc">{inline(it["description"])}</p>'
+            f'</div></li>'
+        )
+    return (
+        f'<section class="development" id="razrabotka" aria-labelledby="development-title">'
+        f'<div class="development-in section-panel" data-reveal>'
+        f'<p class="section-label">Разработка</p>'
+        f'<h2 id="development-title" class="development-title">Разработка</h2>'
+        f'<p class="development-intro">{inline(d["intro"])}</p>'
+        f'<div class="dev-columns">'
+        f'<div class="dev-column">'
+        f'<h3 class="mono dev-column-lbl">{html.escape(d.get("done_label", "Уже сделано"))}</h3>'
+        f'<ol class="dev-list dev-list--done">{"".join(done_items)}</ol>'
+        f'</div>'
+        f'<div class="dev-column">'
+        f'<h3 class="mono dev-column-lbl">{html.escape(d.get("in_progress_label", "В работе"))}</h3>'
+        f'<ol class="dev-list dev-list--progress">{"".join(prog_items)}</ol>'
+        f'</div>'
+        f'</div></div></section>'
     )
 
 
@@ -690,7 +747,15 @@ def render_product_architecture_section():
         note = it.get('note', '')
         badge = ''
         if note == 'direction':
-            badge = '<span class="badge product-arch-badge product-arch-badge--direction">Направление</span>'
+            badge = (
+                '<span class="badge product-arch-badge product-arch-badge--direction" '
+                'title="Направление, не подтверждённый релиз v1">требует подтверждения</span>'
+            )
+        elif note == 'partial':
+            badge = (
+                '<span class="badge product-arch-badge product-arch-badge--partial" '
+                'title="Частично описано в манифесте">требует подтверждения</span>'
+            )
         cards.append(
             f'<li class="product-arch-item">'
             f'<span class="mono product-arch-num">{i:02d}</span>'
@@ -703,8 +768,8 @@ def render_product_architecture_section():
     return (
         f'<section class="product-arch" id="product-arch" aria-labelledby="product-arch-title">'
         f'<div class="product-arch-in section-panel" data-reveal>'
-        f'<p class="section-label">Продукт</p>'
-        f'<h2 id="product-arch-title" class="product-arch-title-main">Архитектура и продукт</h2>'
+        f'<p class="section-label">Архитектура</p>'
+        f'<h2 id="product-arch-title" class="product-arch-title-main">Архитектура</h2>'
         f'<p class="product-arch-intro">{inline(d["intro"])}</p>'
         f'<ol class="product-arch-grid">{"".join(cards)}</ol>'
         f'</div></section>'
@@ -713,6 +778,7 @@ def render_product_architecture_section():
 
 challenges_html = render_challenges_section()
 solutions_html = render_solutions_section()
+development_html = render_development_section()
 product_arch_html = render_product_architecture_section()
 
 page = f'''<!doctype html>
@@ -734,7 +800,7 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#product-arch">Архитектура</a><a href="#final-value">Ценность</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#razrabotka">Разработка</a><a href="#product-arch">Архитектура</a><a href="#final-value">Ценность</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
@@ -757,6 +823,7 @@ page = f'''<!doctype html>
     <ol class="chapter-grid">{landing_html}</ol>
   </div>
 </section>
+{development_html}
 {product_arch_html}
 {finale_html}
 <div class="layout">
