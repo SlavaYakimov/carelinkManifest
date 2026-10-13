@@ -488,15 +488,18 @@ for ch in chapter_list:
     im = chapter_image_meta(n)
     src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
     alt = im.get('alt') or (ch.get('fig') or {}).get('alt', ch['title'])
-    thumb = (
-        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img", n)}</span>'
+    lead = html.escape(ch['teaser'])
+    media = (
+        f'<figure class="chapter-grid-media">{img_picture(src, alt, "chapter-grid-img", n)}</figure>'
         if src else ''
     )
     landing_items.append(
-        f'<li><a class="chapter-card" href="#glava-{n}" data-chapter="{n}">'
-        f'<span class="mono chapter-num">{n:02d}</span>{thumb}'
-        f'<span class="chapter-card-text"><span class="chapter-card-title">{html.escape(ch["title"])}</span>'
-        f'<span class="chapter-card-teaser">{html.escape(ch["teaser"])}</span></span></a></li>'
+        f'<li><a class="chapter-grid-card" href="#glava-{n}" data-chapter="{n}">'
+        f'<span class="mono chapter-grid-num">{n:02d}</span>'
+        f'<h3 class="chapter-grid-title">{html.escape(ch["title"])}</h3>'
+        f'<p class="chapter-grid-lead">{lead}</p>'
+        f'{media}'
+        f'</a></li>'
     )
 landing_html = '\n'.join(landing_items)
 chapter_html = '\n'.join('\n'.join(ch['lines']) for ch in chapter_list)
@@ -521,9 +524,6 @@ def render_challenges_section():
             f'<span class="badge challenge-problem-badge">Проблема</span>'
             f'<h3 class="challenge-title">{html.escape(p["title"])}</h3>'
             f'<p class="challenge-desc">{inline(p["description"])}</p>'
-            f'<p class="challenge-response">'
-            f'<span class="mono challenge-response-lbl">Связь с Carelink</span>'
-            f'{inline(p["response"])}</p>'
             f'</div></li>'
         )
     examples = []
@@ -538,10 +538,10 @@ def render_challenges_section():
     examples_note = d.get('examples_note', '')
     note_html = f'<p class="challenges-examples-note">{inline(examples_note)}</p>' if examples_note else ''
     return (
-        f'<section class="challenges" id="problemy" aria-labelledby="challenges-title">'
+        f'<section class="challenges" id="vyzovy" aria-labelledby="challenges-title">'
         f'<div class="challenges-in section-panel" data-reveal>'
         f'<p class="section-label">Вызовы</p>'
-        f'<h2 id="challenges-title" class="challenges-title">Проблемы семьи</h2>'
+        f'<h2 id="challenges-title" class="challenges-title">Шесть проблем семьи</h2>'
         f'<p class="challenges-intro">{inline(d["intro"])}</p>'
         f'<ol class="challenge-list">{"".join(problems)}</ol>'
         f'<div class="challenge-examples">'
@@ -552,7 +552,32 @@ def render_challenges_section():
     )
 
 
+def render_solutions_section():
+    d = CHALLENGES_DATA
+    items = []
+    for i, p in enumerate(d['problems'], 1):
+        items.append(
+            f'<li class="solution-item">'
+            f'<span class="mono solution-num">{i:02d}</span>'
+            f'<div class="solution-body">'
+            f'<h3 class="solution-for">{html.escape(p["title"])}</h3>'
+            f'<p class="solution-text">{inline(p["response"])}</p>'
+            f'</div></li>'
+        )
+    intro = d.get('solutions_intro', '')
+    return (
+        f'<section class="solutions" id="resheniya" aria-labelledby="solutions-title">'
+        f'<div class="solutions-in section-panel" data-reveal>'
+        f'<p class="section-label">Carelink</p>'
+        f'<h2 id="solutions-title" class="solutions-title">Способы решения</h2>'
+        f'<p class="solutions-intro">{inline(intro)}</p>'
+        f'<ol class="solution-list">{"".join(items)}</ol>'
+        f'</div></section>'
+    )
+
+
 challenges_html = render_challenges_section()
+solutions_html = render_solutions_section()
 
 page = f'''<!doctype html>
 <html lang="ru">
@@ -573,7 +598,7 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#glavy">Главы</a><a href="#problemy">Вызовы</a><a href="#final-value">Ценность</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#vyzovy">Вызовы</a><a href="#resheniya">Решения</a><a href="#glavy">Главы</a><a href="#final-value">Ценность</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
@@ -586,15 +611,16 @@ page = f'''<!doctype html>
   </div>
   <figure class="hero-img"><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"></figure>
 </section>
+{challenges_html}
+{solutions_html}
 <section class="chapter-index" id="glavy" aria-labelledby="chapter-index-title">
   <div class="chapter-index-in section-panel" data-reveal>
     <p class="section-label">Главы</p>
     <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
-    <p class="chapter-index-lead">Откройте главу — структура, иллюстрации и исходный текст в модальном окне.</p>
-    <ol class="chapter-landing">{landing_html}</ol>
+    <p class="chapter-index-lead">Нажмите на карточку — откроется модальное окно со структурой, иллюстрациями и исходным текстом.</p>
+    <ol class="chapter-grid">{landing_html}</ol>
   </div>
 </section>
-{challenges_html}
 {finale_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
