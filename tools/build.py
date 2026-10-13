@@ -165,7 +165,8 @@ def render_finale_section(chunk):
     foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
     return (
         f'<section class="landing-finale" id="final-value" aria-labelledby="landing-finale-title">'
-        f'<div class="landing-finale-in">'
+        f'<div class="landing-finale-in section-panel" data-reveal>'
+        f'<p class="section-label landing-finale-label">Ценность</p>'
         f'<span class="mono landing-finale-kicker">'
         f'{FINALE_OWL}Финальная ценность</span>'
         f'<h2 id="landing-finale-title" class="landing-finale-title">{html.escape(title)}</h2>'
@@ -538,9 +539,9 @@ def render_challenges_section():
     note_html = f'<p class="challenges-examples-note">{inline(examples_note)}</p>' if examples_note else ''
     return (
         f'<section class="challenges" id="problemy" aria-labelledby="challenges-title">'
-        f'<div class="challenges-in">'
-        f'<span class="mono challenges-kicker">Перед главами</span>'
-        f'<h2 id="challenges-title" class="challenges-title">Проблемы</h2>'
+        f'<div class="challenges-in section-panel" data-reveal>'
+        f'<p class="section-label">Вызовы</p>'
+        f'<h2 id="challenges-title" class="challenges-title">Проблемы семьи</h2>'
         f'<p class="challenges-intro">{inline(d["intro"])}</p>'
         f'<ol class="challenge-list">{"".join(problems)}</ol>'
         f'<div class="challenge-examples">'
@@ -572,27 +573,28 @@ page = f'''<!doctype html>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
-  <nav class="top-nav mono" aria-label="Разделы"><a href="#problemy">Проблемы</a></nav>
+  <nav class="top-nav mono" aria-label="Разделы"><a href="#glavy">Главы</a><a href="#problemy">Вызовы</a><a href="#final-value">Ценность</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">
 <section class="hero">
-  <div class="hero-in">
+  <div class="hero-in" data-reveal>
     <h1>{H1}</h1>
     <p class="stand">{inline(stand)}</p>
     <div class="chips">{meta_html}</div>
   </div>
   <figure class="hero-img"><img src="images/hero-family-table.jpg" alt="Вся семья за вечерним чаем"  width="1280" height="720"></figure>
 </section>
-{challenges_html}
-<section class="chapter-index" aria-labelledby="chapter-index-title">
-  <div class="chapter-index-in">
-    <span class="mono chapter-index-kicker">Лендинг глав</span>
+<section class="chapter-index" id="glavy" aria-labelledby="chapter-index-title">
+  <div class="chapter-index-in section-panel" data-reveal>
+    <p class="section-label">Главы</p>
     <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
+    <p class="chapter-index-lead">Откройте главу — структура, иллюстрации и исходный текст в модальном окне.</p>
     <ol class="chapter-landing">{landing_html}</ol>
   </div>
 </section>
+{challenges_html}
 {finale_html}
 <div class="layout">
   <nav class="toc" aria-label="Оглавление"><span class="mono">Содержание</span><ol>{toc_html}<li><a href="#sources"><span class="mono">··</span>Об источниках</a></li></ol></nav>
