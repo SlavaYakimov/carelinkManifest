@@ -1,0 +1,138 @@
+[
+  {
+    "type": "feature",
+    "label": "Вступление"
+  },
+  {
+    "type": "feature",
+    "label": "Из чего состоит Carelink"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 01"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 02"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 03"
+  },
+  {
+    "type": "concept",
+    "label": "Маяк, а не судья"
+  },
+  {
+    "type": "concept",
+    "label": "Трезубец Милля"
+  },
+  {
+    "type": "concept",
+    "label": "Четыре стадии и правда в движении"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 04"
+  },
+  {
+    "type": "concept",
+    "label": "Сначала личный кодекс"
+  },
+  {
+    "type": "concept",
+    "label": "Теневой кодекс"
+  },
+  {
+    "type": "concept",
+    "label": "Конституция и ратификация"
+  },
+  {
+    "type": "feature",
+    "label": "То, что не может отменить никто"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 05"
+  },
+  {
+    "type": "feature",
+    "label": "Глава 06"
+  },
+  {
+    "type": "concept",
+    "label": "Теневой дневник (§6)"
+  },
+  {
+    "type": "feature",
+    "label": "Медиатор-зеркало"
+  },
+  {
+    "type": "feature",
+    "label": "Глава 07"
+  },
+  {
+    "type": "feature",
+    "label": "Пятничный Пульс"
+  },
+  {
+    "type": "concept",
+    "label": "Игра, в которой выигрывает клан"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 08"
+  },
+  {
+    "type": "risk",
+    "label": "Серьёзные риски (§8)"
+  },
+  {
+    "type": "risk",
+    "label": "Глава 09"
+  },
+  {
+    "type": "risk",
+    "label": "«Мне нужна пауза»"
+  },
+  {
+    "type": "risk",
+    "label": "Защита от того, кто рядом"
+  },
+  {
+    "type": "risk",
+    "label": "Детский профиль"
+  },
+  {
+    "type": "feature",
+    "label": "Глава 10"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 11"
+  },
+  {
+    "type": "concept",
+    "label": "Как это задумано"
+  },
+  {
+    "type": "concept",
+    "label": "Что здесь пока не решено"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 12"
+  },
+  {
+    "type": "feature",
+    "label": "Глава 13"
+  },
+  {
+    "type": "concept",
+    "label": "Глава 14"
+  },
+  {
+    "type": "sources",
+    "label": "Об источниках"
+  }
+]

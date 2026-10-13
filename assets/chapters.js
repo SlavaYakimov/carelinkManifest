@@ -17,6 +17,7 @@
   var total = document.querySelectorAll('.read-chapters .chapter').length;
   var current = null;
   var focusables = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  var DEFAULT_VERSION = '3';
 
   function chapterFromHash() {
     var m = (location.hash || '').match(/^#glava-(\d{1,2})$/);
@@ -90,6 +91,72 @@
   tabStructure.addEventListener('keydown', function (e) { onTabKeydown(e, 0); });
   tabSource.addEventListener('keydown', function (e) { onTabKeydown(e, 1); });
 
+  function selectVersionTab(wrapper, vnum) {
+    var vtabs = [].slice.call(wrapper.querySelectorAll('[data-version-tab]'));
+    var vpanels = [].slice.call(wrapper.querySelectorAll('[data-version-panel]'));
+    var id = String(vnum);
+    vtabs.forEach(function (tab) {
+      var on = tab.getAttribute('data-version-tab') === id;
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.tabIndex = on ? 0 : -1;
+    });
+    vpanels.forEach(function (pan) {
+      if (pan.getAttribute('data-version-panel') === id) pan.removeAttribute('hidden');
+      else pan.setAttribute('hidden', '');
+    });
+  }
+
+  function initVersionTabs(container) {
+    var wrapper = container.querySelector('[data-chapter-versions]');
+    if (!wrapper) return;
+    wrapper.removeAttribute('hidden');
+    selectVersionTab(wrapper, DEFAULT_VERSION);
+  }
+
+  function onVersionTabKeydown(e, wrapper) {
+    var btn = e.target.closest('[data-version-tab]');
+    if (!btn || !wrapper.contains(btn)) return;
+    var vtabs = [].slice.call(wrapper.querySelectorAll('[data-version-tab]'));
+    var idx = vtabs.indexOf(btn);
+    if (idx < 0) return;
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      var next = vtabs[(idx + 1) % vtabs.length];
+      selectVersionTab(wrapper, next.getAttribute('data-version-tab'));
+      next.focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      var prev = vtabs[(idx + vtabs.length - 1) % vtabs.length];
+      selectVersionTab(wrapper, prev.getAttribute('data-version-tab'));
+      prev.focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      selectVersionTab(wrapper, vtabs[0].getAttribute('data-version-tab'));
+      vtabs[0].focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      var last = vtabs[vtabs.length - 1];
+      selectVersionTab(wrapper, last.getAttribute('data-version-tab'));
+      last.focus();
+    }
+  }
+
+  panelStructure.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-version-tab]');
+    if (!btn) return;
+    var wrapper = btn.closest('[data-chapter-versions]');
+    if (!wrapper || !panelStructure.contains(wrapper)) return;
+    selectVersionTab(wrapper, btn.getAttribute('data-version-tab'));
+  });
+
+  panelStructure.addEventListener('keydown', function (e) {
+    var btn = e.target.closest('[data-version-tab]');
+    if (!btn) return;
+    var wrapper = btn.closest('[data-chapter-versions]');
+    if (!wrapper) return;
+    onVersionTabKeydown(e, wrapper);
+  });
+
   function fillDialog(n) {
     var src = document.getElementById('glava-' + n);
     if (!src) return false;
@@ -100,6 +167,7 @@
     var structPane = src.querySelector('.chapter-pane-structure');
     panelSource.innerHTML = sourcePane ? sourcePane.innerHTML : '';
     panelStructure.innerHTML = structPane ? structPane.innerHTML : '';
+    initVersionTabs(panelStructure);
     selectTab(0);
     btnPrev.disabled = n <= 1;
     btnNext.disabled = n >= total;
@@ -116,7 +184,9 @@
       dialog.addEventListener('keydown', trapFocus);
     }
     dialog.classList.add('is-visible');
-    tabStructure.focus();
+    var verTab = panelStructure.querySelector('[data-version-tab="' + DEFAULT_VERSION + '"]');
+    if (verTab && !panelStructure.hidden) verTab.focus();
+    else tabStructure.focus();
   }
 
   dialog.addEventListener('click', function (e) {

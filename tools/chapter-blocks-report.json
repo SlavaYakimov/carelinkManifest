@@ -1,0 +1,310 @@
+[
+  {
+    "chapter": 1,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "filled",
+      "task": "filled",
+      "hypothesis": "placeholder",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "filled",
+      "task": "filled",
+      "hypothesis": "placeholder",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 2,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 3,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 4,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 5,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "placeholder",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "placeholder",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 6,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 7,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 8,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 9,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 10,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 11,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 12,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 13,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "placeholder",
+      "hypothesis": "filled",
+      "risks": "placeholder",
+      "description": "filled"
+    }
+  },
+  {
+    "chapter": 14,
+    "v1": "prose",
+    "v2": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    },
+    "v3": {
+      "image": "filled",
+      "quote": "filled",
+      "mission": "placeholder",
+      "task": "filled",
+      "hypothesis": "filled",
+      "risks": "filled",
+      "description": "filled"
+    }
+  }
+]

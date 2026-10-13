@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """ARTICLE.md -> index.html (без внешних зависимостей). Запуск: python3 tools/build.py"""
-import re, html, pathlib, json
+import re, html, pathlib, json, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / 'tools'))
+from chapter_versions import ensure_chapter_versions, load_v1_markdown, version_inventory
 _raw_md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
 FINALE_MARKER = '<!-- landing:finale -->'
 finale_chunk = None
@@ -74,6 +76,7 @@ for chunk in re.split(r'\n(?=## \d+\.)', md):
     m = re.match(r'## (\d+)\.', chunk)
     if m:
         chapter_md_raw[int(m.group(1))] = chunk.strip()
+ensure_chapter_versions(chapter_md_raw, BLOCKS_DATA)
 blocks_report = []
 source_report = []
 
@@ -262,15 +265,17 @@ def finish_chapter_section():
     verify_chapter_source(cur_ch)
 
 
-def build_structure_pane(ch):
-    if not ch:
-        return ''
-    meta = BLOCKS_DATA.get(str(ch['num']), {})
-    row = {'chapter': ch['num']}
-    parts = ['<div class="chapter-pane-structure" hidden>']
-    parts.append('<div class="struct-blocks">')
+def load_blocks_for_version(ch_num, version):
+    ch_dir = ROOT / 'chapters' / f'{ch_num:02d}'
+    path = ch_dir / ('v2.json' if version == 2 else 'v3.json')
+    if path.exists():
+        return json.loads(path.read_text(encoding='utf-8'))
+    return BLOCKS_DATA.get(str(ch_num), {})
+
+
+def render_struct_blocks(meta, ch, variant='v2'):
+    parts = [f'<div class="struct-blocks struct-blocks--{variant}">']
     for key, label in STRUCT_LABELS:
-        filled = False
         if key == 'image':
             fig = ch.get('fig')
             src = resolve_chapter_image_src(ch['num'], meta.get('image') or '', fig)
@@ -278,22 +283,98 @@ def build_structure_pane(ch):
                 im = chapter_image_meta(ch['num'])
                 alt = (fig['alt'] if fig and fig.get('alt') else '') or im.get('alt', '')
                 inner = f'<figure class="struct-fig">{img_picture(src, alt, chap_num=ch["num"])}</figure>'
-                filled = True
             else:
                 inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
         else:
             text = (meta.get(key) or '').strip()
             if text:
-                inner = f'<p>{inline(text)}</p>'
-                filled = True
+                paras = [p.strip() for p in re.split(r'\n\n+', text) if p.strip()]
+                inner = ''.join(f'<p>{inline(p)}</p>' for p in paras)
             else:
                 inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
-        row[key] = 'filled' if filled else 'placeholder'
-        risk = ' struct-block--risk' if key == 'risks' and filled else ''
-        parts.append(f'<section class="struct-block struct-block--{key}{risk}"><span class="mono struct-lbl">{label}</span>{inner}</section>')
-    parts.append('</div></div>')
+        risk = ' struct-block--risk' if key == 'risks' and (meta.get(key) or '').strip() else ''
+        parts.append(
+            f'<section class="struct-block struct-block--{key}{risk}">'
+            f'<span class="mono struct-lbl">{label}</span>{inner}</section>'
+        )
+    parts.append('</div>')
+    return ''.join(parts)
+
+
+def render_v1_prose(md_text):
+    parts = ['<div class="chapter-v1-prose">']
+    if not md_text.strip():
+        parts.append(f'<p class="struct-placeholder">{PLACEHOLDER}</p>')
+    else:
+        for block in re.split(r'\n\n+', md_text.strip()):
+            block = block.strip()
+            if not block or block.startswith('![') or block.startswith('*Иллюстрация'):
+                continue
+            if block.startswith('### '):
+                parts.append(f'<h3 class="chapter-v1-h3">{inline(block[4:].strip())}</h3>')
+                continue
+            if block.startswith('>'):
+                lines = []
+                for ln in block.split('\n'):
+                    ln = ln.strip()
+                    if ln.startswith('>'):
+                        lines.append(ln[1:].strip())
+                parts.append(f'<blockquote class="chapter-v1-quote"><p>{inline(" ".join(lines))}</p></blockquote>')
+                continue
+            flat = re.sub(r'\n', ' ', block)
+            parts.append(f'<p>{inline(flat)}</p>')
+    parts.append('</div>')
+    return ''.join(parts)
+
+
+def block_fill_report(meta, ch):
+    row = {}
+    for key, _ in STRUCT_LABELS:
+        if key == 'image':
+            fig = ch.get('fig')
+            src = resolve_chapter_image_src(ch['num'], meta.get('image') or '', fig)
+            row[key] = 'filled' if src else 'placeholder'
+        else:
+            row[key] = 'filled' if (meta.get(key) or '').strip() else 'placeholder'
+    return row
+
+
+def build_structure_pane(ch):
+    if not ch:
+        return ''
+    n = ch['num']
+    row = {'chapter': n, 'v1': 'prose', 'v2': {}, 'v3': {}}
+    tab_btns = []
+    panels = []
+    defs = ((1, 'Версия 1'), (2, 'Версия 2'), (3, 'Версия 3'))
+    for vnum, vlabel in defs:
+        default = vnum == 3
+        tab_btns.append(
+            f'<button type="button" role="tab" class="chapter-version-tab" '
+            f'id="chapter-{n}-version-tab-{vnum}" data-version-tab="{vnum}" '
+            f'aria-selected="{"true" if default else "false"}" '
+            f'aria-controls="chapter-{n}-version-panel-{vnum}" tabindex="{0 if default else -1}">'
+            f'{html.escape(vlabel)}</button>'
+        )
+        if vnum == 1:
+            inner = render_v1_prose(load_v1_markdown(n, chapter_md_raw))
+        else:
+            meta = load_blocks_for_version(n, vnum)
+            variant = 'v2' if vnum == 2 else 'v3'
+            inner = render_struct_blocks(meta, ch, variant=variant)
+            row[variant] = block_fill_report(meta, ch)
+        hidden = '' if default else ' hidden'
+        panels.append(
+            f'<div role="tabpanel" class="chapter-version-panel chapter-version-panel--v{vnum}" '
+            f'id="chapter-{n}-version-panel-{vnum}" data-version-panel="{vnum}" '
+            f'aria-labelledby="chapter-{n}-version-tab-{vnum}"{hidden}>{inner}</div>'
+        )
     blocks_report.append(row)
-    return '\n'.join(parts)
+    return (
+        f'<div class="chapter-pane-structure" data-chapter-versions="{n}">'
+        f'<div role="tablist" class="chapter-version-tablist" aria-label="Версии структуры">'
+        f'{"".join(tab_btns)}</div>{"".join(panels)}</div>'
+    )
 
 
 def normalize_plain(t):
@@ -725,3 +806,15 @@ page = f'''<!doctype html>
 (ROOT / 'tools' / 'chapter-blocks-report.json').write_text(json.dumps(blocks_report, ensure_ascii=False, indent=2), encoding='utf-8')
 (ROOT / 'tools' / 'chapter-source-report.json').write_text(json.dumps(source_report, ensure_ascii=False, indent=2), encoding='utf-8')
 print('ok words', words, 'chapters', len(toc), 'blocks', len(section_log), 'source_ok', all(r['match'] for r in source_report))
+inv = version_inventory()
+print('\n=== Chapter version files ===')
+for row in inv:
+    print(f"  Ch {row['chapter']:2d}: {', '.join(row['versions']) or '(none)'}")
+empty_v3 = []
+for rep in blocks_report:
+    v3 = rep.get('v3') or {}
+    for k, st in v3.items():
+        if st == 'placeholder':
+            empty_v3.append(f"ch{rep['chapter']}:{k}")
+if empty_v3:
+    print('v3 placeholders:', ', '.join(empty_v3))
