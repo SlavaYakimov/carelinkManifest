@@ -16,6 +16,7 @@ BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(enco
 CHALLENGES_DATA = json.loads((ROOT / 'tools' / 'challenges.json').read_text(encoding='utf-8'))
 ARCH_DATA = json.loads((ROOT / 'tools' / 'product-architecture.json').read_text(encoding='utf-8'))
 DEV_DATA = json.loads((ROOT / 'tools' / 'development.json').read_text(encoding='utf-8'))
+FINALE_CTAS_DATA = json.loads((ROOT / 'tools' / 'finale_ctas.json').read_text(encoding='utf-8'))
 CHAPTER_IMAGES = json.loads((ROOT / 'tools' / 'chapter-images.json').read_text(encoding='utf-8'))
 NUM_CHAPTERS = len(re.findall(r'^## \d+\.', md, re.MULTILINE))
 finale_html = ''
@@ -161,24 +162,26 @@ def teaser_from_text(text: str) -> str:
     return first_sentence(plain)
 
 
-def render_landing_card_li(card_id: str, num: int, title: str, teaser: str, image_src: str, alt: str):
+def render_landing_card_li(card_id: str, _num: int, title: str, image_src: str, alt: str):
+    if not title or not str(title).strip():
+        title = 'Без названия'
+    if not alt or not str(alt).strip():
+        alt = title
     media = ''
     if image_src:
         media = (
-            f'<figure class="chapter-grid-media">'
+            f'<figure class="chapter-grid-media landing-card-media">'
             f'{img_picture(image_src, alt, "chapter-grid-img", loading="eager")}'
             f'</figure>'
         )
+    aria = html.escape(title, quote=True)
     return (
         f'<li class="chapter-grid-cell">'
-        f'<a class="chapter-grid-card" href="#card-{html.escape(card_id)}" data-landing-card="{html.escape(card_id)}">'
-        f'<div class="chapter-grid-head">'
-        f'<span class="mono chapter-grid-num">{num:02d}</span>'
-        f'<h3 class="chapter-grid-title">{html.escape(title)}</h3>'
-        f'</div>'
-        f'<p class="chapter-grid-lead">{html.escape(teaser)}</p>'
+        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn" '
+        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
         f'{media}'
-        f'</a></li>'
+        f'<span class="landing-card-read">Прочитать</span>'
+        f'</button></li>'
     )
 
 
@@ -187,6 +190,36 @@ def stash_landing_card(card_id: str, kicker: str, title: str, body_html: str):
         f'<article class="landing-card-source" id="{html.escape(card_id)}" '
         f'data-kicker="{html.escape(kicker)}" data-title="{html.escape(title)}">'
         f'<div class="landing-card-modal-body">{body_html}</div></article>'
+    )
+
+
+def render_finale_cta_li(cta: dict, num: int, total: int):
+    card_id = cta['id']
+    phrase = cta['phrase']
+    img = cta.get('image', '')
+    alt = cta.get('image_alt', phrase)
+    media = ''
+    if img:
+        media = (
+            f'<figure class="chapter-grid-media landing-card-media finale-cta-media">'
+            f'{img_picture(img, alt, "finale-cta-img", None, "eager")}'
+            f'</figure>'
+        )
+    modal_body = cta.get('modal_html', '')
+    stash_landing_card(
+        card_id,
+        cta.get('modal_kicker', f'Призыв {num:02d} / {total:02d}'),
+        cta.get('modal_title', phrase),
+        modal_body,
+    )
+    aria = html.escape(phrase, quote=True)
+    return (
+        f'<li class="chapter-grid-cell finale-cta-cell">'
+        f'<button type="button" class="chapter-grid-card chapter-grid-card--image-btn finale-cta-btn" '
+        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
+        f'{media}'
+        f'<span class="landing-card-read">Прочитать</span>'
+        f'</button></li>'
     )
 
 
@@ -209,17 +242,21 @@ def render_finale_section(chunk):
     foot_html = f'<p class="landing-finale-foot">{inline(foot)}</p>' if foot else ''
     full_body = body + foot_html
     card_id = 'landing-finale-1'
-    teaser = teaser_from_text(paras[0]) if paras else title
-    stash_landing_card(card_id, 'Финальная ценность', title, full_body)
-    card = render_landing_card_li(
-        card_id, 1, title or 'Финальная ценность', teaser, FINALE_CARD_IMAGE,
-        'Семейный очаг — метафора общей реальности',
-    )
+    stash_landing_card(card_id, 'Финальная ценность', title or 'Инструмент, чтобы создавать свою реальность', full_body)
+    ctas = FINALE_CTAS_DATA.get('ctas', [])
+    n_cta = len(ctas)
+    cta_cards = [
+        render_finale_cta_li(c, i, n_cta) for i, c in enumerate(ctas, 1)
+    ]
+    cta_lead = FINALE_CTAS_DATA.get('lead', '')
     legacy = (
         f'<div class="landing-block-legacy" id="final-value-legacy">'
         f'<span class="mono landing-finale-kicker">{FINALE_OWL}Финальная ценность</span>'
         f'<h2 class="landing-finale-title">{html.escape(title)}</h2>'
         f'<div class="landing-finale-body">{body}</div>{foot_html}'
+        f'<ol class="chapter-grid landing-card-grid">'
+        f'{render_landing_card_li(card_id, 1, title or "Финальная ценность", FINALE_CARD_IMAGE, "Семейный очаг — метафора общей реальности")}'
+        f'</ol>'
         f'</div>'
     )
     return (
@@ -228,8 +265,9 @@ def render_finale_section(chunk):
         f'<p class="section-label landing-finale-label">Ценность</p>'
         f'<h2 id="landing-finale-title" class="landing-finale-title landing-finale-title--section">'
         f'Финальная ценность</h2>'
-        f'<p class="landing-finale-lead">Нажмите на карточку — откроется полный текст блока.</p>'
-        f'<ol class="chapter-grid landing-card-grid landing-card-grid--finale">{card}</ol>'
+        f'<p class="landing-finale-lead">{html.escape(cta_lead)}</p>'
+        f'<ol class="chapter-grid landing-card-grid landing-card-grid--finale landing-card-grid--finale-cta">'
+        f'{"".join(cta_cards)}</ol>'
         f'{legacy}'
         f'</div></section>'
     )
@@ -675,9 +713,7 @@ def render_challenges_section():
         stash_landing_card(card_id, f'Проблема {i:02d} / {n_prob:02d}', p['title'], modal_body)
         img = p.get('image', '')
         alt = p['title']
-        problem_cards.append(
-            render_landing_card_li(card_id, i, p['title'], teaser_from_text(p['description']), img, alt)
-        )
+        problem_cards.append(render_landing_card_li(card_id, i, p['title'], img, alt))
     examples = []
     scenario_cards = []
     for i, ex in enumerate(d['examples'], 1):
@@ -697,12 +733,10 @@ def render_challenges_section():
             f'<span class="badge challenge-example-badge">Сценарий</span>{"".join(body_parts)}',
         )
         scenario_cards.append(
-            render_landing_card_li(
-                card_id, i, ex['title'], teaser_from_text(ex['body'].replace('\n', ' ')),
-                ex.get('image', ''), ex['title'],
-            )
+            render_landing_card_li(card_id, i, ex['title'], ex.get('image', ''), ex['title'])
         )
     examples_note = d.get('examples_note', '')
+    n_ex = len(d['examples'])
     note_html = f'<p class="challenges-examples-note">{inline(examples_note)}</p>' if examples_note else ''
     return (
         f'<section class="challenges" id="vyzovy" aria-labelledby="challenges-title">'
@@ -710,7 +744,7 @@ def render_challenges_section():
         f'<p class="section-label">Вызовы</p>'
         f'<h2 id="challenges-title" class="challenges-title">Проблемы семьи</h2>'
         f'<p class="challenges-intro">{inline(d["intro"])}</p>'
-        f'<h3 class="mono landing-card-grid-lbl">Шесть проблем — карточки</h3>'
+        f'<h3 class="mono landing-card-grid-lbl">{n_prob} проблем — карточки</h3>'
         f'<ol class="chapter-grid landing-card-grid landing-card-grid--problems">{"".join(problem_cards)}</ol>'
         f'<div class="landing-block-legacy" id="vyzovy-problems-legacy">'
         f'<ol class="challenge-list">{"".join(problems)}</ol>'
@@ -718,7 +752,7 @@ def render_challenges_section():
         f'<div class="challenge-examples">'
         f'<span class="mono challenges-examples-lbl">Сценарии</span>'
         f'{note_html}'
-        f'<h3 class="mono landing-card-grid-lbl">Вымышленные сценарии — карточки</h3>'
+        f'<h3 class="mono landing-card-grid-lbl">{n_ex} сценариев — карточки</h3>'
         f'<ol class="chapter-grid landing-card-grid landing-card-grid--scenarios">{"".join(scenario_cards)}</ol>'
         f'<div class="landing-block-legacy" id="vyzovy-scenarios-legacy">'
         f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
@@ -729,9 +763,24 @@ def render_challenges_section():
 
 def render_solutions_section():
     d = CHALLENGES_DATA
-    featured = []
-    for i, f in enumerate(d.get('featured_solutions', []), 1):
-        featured.append(
+    featured_legacy = []
+    featured_cards = []
+    featured = d.get('featured_solutions', [])
+    n_feat = len(featured)
+    for i, f in enumerate(featured, 1):
+        card_id = f'solution-featured-{i}'
+        modal_body = (
+            f'<span class="badge solution-way-badge">Способ</span>'
+            f'<p class="landing-card-modal-lead">{inline(f["description"])}</p>'
+            f'<p class="solution-problem-ref-modal">'
+            f'<span class="mono solution-problem-lbl">К проблеме</span> '
+            f'{html.escape(f["problem_ref"])}</p>'
+        )
+        stash_landing_card(card_id, f'Решение {i:02d} / {n_feat:02d}', f['title'], modal_body)
+        featured_cards.append(
+            render_landing_card_li(card_id, i, f['title'], f.get('image', ''), f['title'])
+        )
+        featured_legacy.append(
             f'<li class="solution-item solution-item--featured">'
             f'<span class="mono solution-num">{i:02d}</span>'
             f'<div class="solution-body">'
@@ -759,9 +808,11 @@ def render_solutions_section():
         f'<p class="mono solutions-detail-lbl">{html.escape(detail_lbl)}</p>'
         if detail_lbl else ''
     )
-    featured_html = (
-        f'<ol class="solution-list solution-list--featured">{"".join(featured)}</ol>'
-        if featured else ''
+    cards_html = (
+        f'<h3 class="mono landing-card-grid-lbl">{n_feat} опорных решений — карточки</h3>'
+        f'<ol class="chapter-grid landing-card-grid landing-card-grid--solutions">'
+        f'{"".join(featured_cards)}</ol>'
+        if featured_cards else ''
     )
     return (
         f'<section class="solutions" id="resheniya" aria-labelledby="solutions-title">'
@@ -769,9 +820,13 @@ def render_solutions_section():
         f'<p class="section-label">Решения</p>'
         f'<h2 id="solutions-title" class="solutions-title">Решения</h2>'
         f'<p class="solutions-intro">{inline(intro)}</p>'
-        f'{featured_html}'
+        f'<p class="solutions-lead">Нажмите на карточку — откроется полный текст.</p>'
+        f'{cards_html}'
+        f'<div class="landing-block-legacy" id="resheniya-legacy">'
+        f'<ol class="solution-list solution-list--featured">{"".join(featured_legacy)}</ol>'
         f'{detail_html}'
         f'<ol class="solution-list solution-list--detail">{"".join(items)}</ol>'
+        f'</div>'
         f'</div></section>'
     )
 
@@ -912,7 +967,9 @@ page = f'''<!doctype html>
     <p class="section-label">Главы</p>
     <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
     <p class="chapter-index-lead">Нажмите на карточку — откроется модальное окно со структурой, иллюстрациями и исходным текстом.</p>
-    <ol class="chapter-grid">{landing_html}</ol>
+  </div>
+  <div class="chapter-index-bleed section-panel" data-reveal>
+    <ol class="chapter-grid chapter-grid--bleed">{landing_html}</ol>
   </div>
 </section>
 {development_html}
