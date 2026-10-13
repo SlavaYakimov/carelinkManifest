@@ -933,7 +933,9 @@ page = f'''<!doctype html>
     <p class="section-label">Главы</p>
     <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
     <p class="chapter-index-lead">Нажмите на карточку — откроется модальное окно со структурой, иллюстрациями и исходным текстом.</p>
-    <ol class="chapter-grid">{landing_html}</ol>
+  </div>
+  <div class="chapter-index-bleed section-panel" data-reveal>
+    <ol class="chapter-grid chapter-grid--bleed">{landing_html}</ol>
   </div>
 </section>
 {development_html}
