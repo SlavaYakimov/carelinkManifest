@@ -134,6 +134,8 @@ CHAPTER_DEFAULT = {
     5: 'concept', 6: 'feature', 7: 'feature', 8: 'concept',
     9: 'risk', 10: 'feature', 11: 'concept', 12: 'concept', 13: 'feature',
     14: 'concept',
+    15: 'feature', 16: 'concept', 17: 'concept', 18: 'concept',
+    19: 'concept', 20: 'feature',
 }
 
 section_log = []

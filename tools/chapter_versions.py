@@ -102,7 +102,7 @@ def ensure_chapter_versions(chapter_md_raw: dict, blocks_data: dict) -> None:
     (CHAPTERS_DIR / 'manifest.json').write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
     )
-    for n in range(1, 15):
+    for n in range(1, 21):
         ch_dir = CHAPTERS_DIR / f'{n:02d}'
         ch_dir.mkdir(parents=True, exist_ok=True)
         raw = chapter_md_raw.get(n, '')
@@ -147,7 +147,7 @@ def load_v1_markdown(ch_num: int, chapter_md_raw: dict) -> str:
 
 def version_inventory() -> list[dict]:
     rows = []
-    for n in range(1, 15):
+    for n in range(1, 21):
         ch_dir = CHAPTERS_DIR / f'{n:02d}'
         present = []
         for vid, name in (('v1', 'v1.md'), ('v2', 'v2.json'), ('v3', 'v3.json')):
