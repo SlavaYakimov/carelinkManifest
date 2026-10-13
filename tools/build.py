@@ -1276,7 +1276,7 @@ page = f'''<!doctype html>
   <a class="brand" href="#top" aria-label="Carelink">{BRAND_OWL}<span class="bt"><b>Carelink</b><small>Спокойная забота</small></span></a>
   <nav class="top-nav mono" aria-label="Разделы"><a href="#agenda">Повестка</a><a href="#glavy-manifest">Главы</a><a href="#cennosti">Ценности</a><a href="#navyki">Навыки</a><a href="#razrabotka">Разработка</a><a href="#product-arch">Архитектура</a><a href="#top">Лонгрид</a></nav>
   <span class="mono top-l">Манифест · живой лонгрид</span>
-  <a class="top-cta mono" href="#glavy"><span>К главам</span><span class="top-cta-arrow" aria-hidden="true">→</span></a>
+  <a class="top-cta mono" href="#glavy-manifest"><span>К главам</span><span class="top-cta-arrow" aria-hidden="true">→</span></a>
   <span class="mono top-r">{words} слов · {NUM_CHAPTERS} глав</span>
 </header>
 <main id="top">

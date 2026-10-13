@@ -194,9 +194,13 @@ def render_chapters_manifesto(inline_fn, img_picture_fn, detail_store: list):
             n = ch['num']
             cid = f'chapter-poster-{n}'
             img = ch.get('image', '')
+            active = si == 0
+            tab = '0' if active else '-1'
+            role = ' role="button"' if active else ''
+            hidden = '' if active else ' aria-hidden="true"'
             cards.append(
-                f'<article class="chapter-card" tabindex="0" role="button" data-chapter-card="{n}" '
-                f'data-detail-open="{cid}" '
+                f'<article class="chapter-card" tabindex="{tab}"{role} data-chapter-card="{n}" '
+                f'data-detail-open="{cid}"{hidden} '
                 f'aria-label="Открыть главу: {html.escape(ch["title"])}">'
                 f'<img src="{_img_src(img)}" alt="{html.escape(ch["title"])}" loading="lazy">'
                 f'<div class="chapter-card__shade" aria-hidden="true"></div>'
@@ -206,8 +210,10 @@ def render_chapters_manifesto(inline_fn, img_picture_fn, detail_store: list):
                 f'<span>{inline_fn(ch["subtitle"])}</span>'
                 f'</div></article>'
             )
+        set_hidden = 'false' if si == 0 else 'true'
         set_html.append(
-            f'<div class="chapters-set" style="--chapter-set-index:{si}">{"".join(cards)}</div>'
+            f'<div class="chapters-set" style="--chapter-set-index:{si}" '
+            f'aria-hidden="{set_hidden}">{"".join(cards)}</div>'
         )
 
     intro = render_narrative_intro(data['intro_h2'], data['intro_text'], inline_fn, 'glavy-intro')

@@ -58,6 +58,15 @@
         var n = parseInt(li.getAttribute('data-bundle-nav'), 10);
         li.classList.toggle('is-active', n === i + 1);
       });
+      cards.forEach(function (card, ci) {
+        var on = ci === i;
+        card.tabIndex = on ? 0 : -1;
+        if (on) {
+          card.setAttribute('aria-hidden', 'false');
+        } else {
+          card.setAttribute('aria-hidden', 'true');
+        }
+      });
       if (mobileCounter) {
         mobileCounter.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
       }
@@ -197,8 +206,27 @@
       sets.forEach(function (setEl, si) {
         var inActiveSet = si === setIdx;
         setEl.setAttribute('aria-hidden', inActiveSet ? 'false' : 'true');
+        if (typeof setEl.inert !== 'undefined') {
+          setEl.inert = !inActiveSet;
+        }
         setEl.querySelectorAll('.chapter-card').forEach(function (card) {
-          card.tabIndex = inActiveSet ? 0 : -1;
+          if (!inActiveSet) {
+            card.tabIndex = -1;
+            card.removeAttribute('role');
+            card.setAttribute('aria-hidden', 'true');
+            return;
+          }
+          var r = card.getBoundingClientRect();
+          var tappable = !mqMobile.matches || (r.height >= 44 && r.width >= 44);
+          if (tappable) {
+            card.tabIndex = 0;
+            card.setAttribute('role', 'button');
+            card.removeAttribute('aria-hidden');
+          } else {
+            card.tabIndex = -1;
+            card.removeAttribute('role');
+            card.setAttribute('aria-hidden', 'true');
+          }
         });
       });
       var from = start + 1;
