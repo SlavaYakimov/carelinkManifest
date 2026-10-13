@@ -3,6 +3,24 @@
 import re, html, pathlib, json
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 md = (ROOT / 'ARTICLE.md').read_text(encoding='utf-8')
+BLOCKS_DATA = json.loads((ROOT / 'tools' / 'chapter-blocks.json').read_text(encoding='utf-8'))
+PLACEHOLDER = 'Не сформулировано — требует подтверждения'
+STRUCT_LABELS = (
+    ('image', 'Картинка'),
+    ('quote', 'Цитата'),
+    ('mission', 'Миссия'),
+    ('task', 'Задача'),
+    ('hypothesis', 'Гипотеза'),
+    ('risks', 'Риски'),
+    ('description', 'Описание/объяснение'),
+)
+chapter_md_raw = {}
+for chunk in re.split(r'\n(?=## \d+\.)', md):
+    m = re.match(r'## (\d+)\.', chunk)
+    if m:
+        chapter_md_raw[int(m.group(1))] = chunk.strip()
+blocks_report = []
+source_report = []
 
 OWL = ('<svg viewBox="0 0 512 512" width="24" height="24" fill="#fff" aria-hidden="true"><path fill-rule="evenodd" d="M132 60 L196 132 Q256 116 316 132 L380 60 L392 168 Q440 226 440 300 Q440 410 352 456 Q306 480 256 480 Q206 480 160 456 Q72 410 72 300 Q72 226 120 168 Z M190 168 a70 70 0 1 0 0.1 0 Z M322 168 a70 70 0 1 0 0.1 0 Z M256 270 L238 300 L256 336 L274 300 Z M214 372 q14 18 28 0 q-14 8 -28 0 Z M270 372 q14 18 28 0 q-14 8 -28 0 Z M242 404 q14 18 28 0 q-14 8 -28 0 Z M186 404 q14 18 28 0 q-14 8 -28 0 Z M298 404 q14 18 28 0 q-14 8 -28 0 Z"/><circle cx="190" cy="238" r="34"/><circle cx="322" cy="238" r="34"/><circle fill="none" stroke="#fff" stroke-width="10" cx="190" cy="238" r="50"/><circle fill="none" stroke="#fff" stroke-width="10" cx="322" cy="238" r="50"/></svg>')
 
@@ -129,6 +147,84 @@ def emit(line):
         sources_lines.append(line)
 
 
+def finish_chapter_section():
+    global sec_open
+    if not sec_open:
+        return
+    emit('</div>')
+    emit(build_structure_pane(cur_ch))
+    emit('</section>')
+    sec_open = False
+    verify_chapter_source(cur_ch)
+
+
+def build_structure_pane(ch):
+    if not ch:
+        return ''
+    meta = BLOCKS_DATA.get(str(ch['num']), {})
+    row = {'chapter': ch['num']}
+    parts = ['<div class="chapter-pane-structure" hidden>']
+    parts.append('<div class="struct-blocks">')
+    for key, label in STRUCT_LABELS:
+        filled = False
+        if key == 'image':
+            src = meta.get('image') or ''
+            fig = ch.get('fig')
+            if src == 'auto' and fig:
+                src = fig['src']
+            if src:
+                alt = fig['alt'] if fig else ''
+                inner = f'<figure class="struct-fig"><img src="{html.escape(src)}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"></figure>'
+                filled = True
+            else:
+                inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
+        else:
+            text = (meta.get(key) or '').strip()
+            if text:
+                inner = f'<p>{inline(text)}</p>'
+                filled = True
+            else:
+                inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
+        row[key] = 'filled' if filled else 'placeholder'
+        risk = ' struct-block--risk' if key == 'risks' and filled else ''
+        parts.append(f'<section class="struct-block struct-block--{key}{risk}"><span class="mono struct-lbl">{label}</span>{inner}</section>')
+    parts.append('</div></div>')
+    blocks_report.append(row)
+    return '\n'.join(parts)
+
+
+def normalize_plain(t):
+    t = re.sub(r'`([^`]+)`', r'\1', t)
+    t = re.sub(r'\*\*([^*]+)\*\*', r'\1', t)
+    t = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'\1', t)
+    t = re.sub(r'!\[[^\]]*\]\([^)]+\)', ' ', t)
+    t = re.sub(r'^#+\s*', '', t, flags=re.M)
+    t = re.sub(r'^>\s?', '', t, flags=re.M)
+    t = re.sub(r'\s+', ' ', t).strip()
+    return t
+
+
+def verify_chapter_source(ch):
+    n = ch['num']
+    raw = chapter_md_raw.get(n, '')
+    raw_body = re.sub(r'^## \d+\.[^\n]*\n', '', raw, count=1)
+    raw_body = re.sub(r'\n---\s*$', '', raw_body.strip())
+    src_html = '\n'.join(ch['lines'])
+    html_plain = normalize_plain(re.sub(r'<[^>]+>', ' ', html.unescape(src_html)))
+    md_words = len(re.findall(r'[\wёЁ-]+', raw_body, flags=re.I))
+    html_words = len(re.findall(r'[\wёЁ-]+', html_plain, flags=re.I))
+    word_ratio = html_words / md_words if md_words else 1
+    # HTML may add figcaption/badge words; it must not omit chapter body text.
+    ok = html_words >= int(md_words * 0.90)
+    source_report.append({
+        'chapter': n,
+        'match': ok,
+        'md_words': md_words,
+        'html_words': html_words,
+        'word_ratio': round(word_ratio, 4),
+    })
+
+
 def first_sentence(text):
     plain = re.sub(r'`([^`]+)`', r'\1', text)
     plain = re.sub(r'\*\*([^*]+)\*\*', r'\1', plain)
@@ -220,6 +316,8 @@ def render_content(b):
     elif k == 'fig':
         _, alt, src, cap = b
         num, _, rest = cap.partition(' · ')
+        if active == 'chapter' and cur_ch is not None and 'fig' not in cur_ch:
+            cur_ch['fig'] = {'src': src, 'alt': alt}
         emit(f'<figure class="ill"><img src="{src}" alt="{html.escape(alt)}" loading="lazy" decoding="async" width="1280" height="720"><figcaption><span class="mono">{inline(num)}</span><span>{inline(rest)}</span></figcaption></figure>')
 
 
@@ -230,22 +328,20 @@ for b in body:
         continue
     if k == 'h' and b[1] == 2:
         close_block()
-        if sec_open:
-            emit('</section>')
+        finish_chapter_section()
         m = re.match(r'(\d+)\.\s*(.+)', b[2])
         chap = int(m.group(1)); name = m.group(2)
         sid = f'glava-{chap}'
         toc.append((sid, chap, name))
         active = 'chapter'
-        cur_ch = {'num': chap, 'title': name, 'teaser': None, 'lines': []}
+        cur_ch = {'num': chap, 'title': name, 'teaser': None, 'lines': [], 'fig': None}
         chapter_list.append(cur_ch)
-        emit(f'<section class="chapter" id="{sid}" data-chapter="{chap}" tabindex="-1"><header class="ch-h"><span class="mono">Глава {chap:02d} / 13</span><h2>{inline(name)}</h2></header>')
+        emit(f'<section class="chapter" id="{sid}" data-chapter="{chap}" tabindex="-1"><header class="ch-h"><span class="mono">Глава {chap:02d} / 13</span><h2>{inline(name)}</h2></header><div class="chapter-pane-source">')
         sec_open = True
         pending_marker = None
     elif k == 'h' and b[1] == 3 and b[2] == 'Об источниках':
         close_block()
-        if sec_open:
-            emit('</section>'); sec_open = False
+        finish_chapter_section()
         active = 'sources'
         open_block('sources', 'Об источниках', 'Об источниках', block_id='sources')
         pending_marker = None
@@ -275,8 +371,7 @@ for b in body:
         pending_marker = None
 
 close_block()
-if sec_open:
-    emit('</section>')
+finish_chapter_section()
 
 for ch in chapter_list:
     if not ch.get('teaser'):
@@ -355,7 +450,16 @@ page = f'''<!doctype html>
       <h2 class="chapter-dialog-title" id="chapter-dialog-title"></h2>
       <button type="button" class="chapter-dialog-close" aria-label="Закрыть главу">×</button>
     </header>
-    <div class="chapter-dialog-body" id="chapter-dialog-body"></div>
+    <div class="chapter-dialog-body" id="chapter-dialog-body">
+      <div class="chapter-tabs" data-chapter-tabs>
+        <div role="tablist" class="chapter-tablist" aria-label="Режим просмотра главы">
+          <button type="button" role="tab" id="chapter-tab-structure" aria-selected="true" aria-controls="chapter-panel-structure" tabindex="0">Структура</button>
+          <button type="button" role="tab" id="chapter-tab-source" aria-selected="false" aria-controls="chapter-panel-source" tabindex="-1">Исходный текст</button>
+        </div>
+        <div role="tabpanel" id="chapter-panel-structure" class="chapter-tabpanel is-active" aria-labelledby="chapter-tab-structure"></div>
+        <div role="tabpanel" id="chapter-panel-source" class="chapter-tabpanel" aria-labelledby="chapter-tab-source" hidden></div>
+      </div>
+    </div>
     <footer class="chapter-dialog-foot">
       <button type="button" class="btn-nav" id="chapter-prev" aria-label="Предыдущая глава">← Предыдущая</button>
       <button type="button" class="btn-nav" id="chapter-next" aria-label="Следующая глава">Следующая →</button>
@@ -374,4 +478,6 @@ page = f'''<!doctype html>
 '''
 (ROOT / 'index.html').write_text(page, encoding='utf-8')
 (ROOT / 'tools' / 'section-types.json').write_text(json.dumps(section_log, ensure_ascii=False, indent=2), encoding='utf-8')
-print('ok words', words, 'chapters', len(toc), 'blocks', len(section_log))
+(ROOT / 'tools' / 'chapter-blocks-report.json').write_text(json.dumps(blocks_report, ensure_ascii=False, indent=2), encoding='utf-8')
+(ROOT / 'tools' / 'chapter-source-report.json').write_text(json.dumps(source_report, ensure_ascii=False, indent=2), encoding='utf-8')
+print('ok words', words, 'chapters', len(toc), 'blocks', len(section_log), 'source_ok', all(r['match'] for r in source_report))

@@ -4,12 +4,16 @@
   var dialog = document.getElementById('chapter-dialog');
   if (!dialog || typeof dialog.showModal !== 'function') return;
 
-  var bodyEl = document.getElementById('chapter-dialog-body');
   var titleEl = document.getElementById('chapter-dialog-title');
   var kickerEl = document.getElementById('chapter-dialog-kicker');
   var btnClose = dialog.querySelector('.chapter-dialog-close');
   var btnPrev = document.getElementById('chapter-prev');
   var btnNext = document.getElementById('chapter-next');
+  var panelStructure = document.getElementById('chapter-panel-structure');
+  var panelSource = document.getElementById('chapter-panel-source');
+  var tabStructure = document.getElementById('chapter-tab-structure');
+  var tabSource = document.getElementById('chapter-tab-source');
+  var tabs = [tabStructure, tabSource];
   var total = document.querySelectorAll('.read-chapters .chapter').length;
   var current = null;
   var focusables = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -49,15 +53,54 @@
     document.body.classList.toggle('dialog-open', on);
   }
 
+  function selectTab(idx) {
+    tabs.forEach(function (tab, i) {
+      var on = i === idx;
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.tabIndex = on ? 0 : -1;
+    });
+    panelStructure.hidden = idx !== 0;
+    panelSource.hidden = idx !== 1;
+    panelStructure.classList.toggle('is-active', idx === 0);
+    panelSource.classList.toggle('is-active', idx === 1);
+  }
+
+  function onTabKeydown(e, idx) {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      selectTab((idx + 1) % tabs.length);
+      tabs[(idx + 1) % tabs.length].focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      selectTab((idx + tabs.length - 1) % tabs.length);
+      tabs[(idx + tabs.length - 1) % tabs.length].focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      selectTab(0);
+      tabStructure.focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      selectTab(tabs.length - 1);
+      tabSource.focus();
+    }
+  }
+
+  tabStructure.addEventListener('click', function () { selectTab(0); });
+  tabSource.addEventListener('click', function () { selectTab(1); });
+  tabStructure.addEventListener('keydown', function (e) { onTabKeydown(e, 0); });
+  tabSource.addEventListener('keydown', function (e) { onTabKeydown(e, 1); });
+
   function fillDialog(n) {
     var src = document.getElementById('glava-' + n);
     if (!src) return false;
     var h2 = src.querySelector('.ch-h h2');
     titleEl.textContent = h2 ? h2.textContent : '';
     kickerEl.textContent = 'Глава ' + String(n).padStart(2, '0') + ' / ' + total;
-    bodyEl.innerHTML = src.innerHTML;
-    var head = bodyEl.querySelector('.ch-h');
-    if (head) head.remove();
+    var sourcePane = src.querySelector('.chapter-pane-source');
+    var structPane = src.querySelector('.chapter-pane-structure');
+    panelSource.innerHTML = sourcePane ? sourcePane.innerHTML : '';
+    panelStructure.innerHTML = structPane ? structPane.innerHTML : '';
+    selectTab(0);
     btnPrev.disabled = n <= 1;
     btnNext.disabled = n >= total;
     current = n;
@@ -73,26 +116,18 @@
       dialog.addEventListener('keydown', trapFocus);
     }
     dialog.classList.add('is-visible');
-    btnClose.focus();
-  }
-
-  function closeDialog() {
-    if (!dialog.open) return;
-    dialog.classList.remove('is-visible');
-    dialog.close();
-    lockScroll(false);
-    dialog.removeEventListener('keydown', trapFocus);
-    clearHash();
-    current = null;
+    tabStructure.focus();
   }
 
   dialog.addEventListener('click', function (e) {
-    if (e.target === dialog) closeDialog();
+    if (e.target === dialog) dialog.close();
   });
   dialog.addEventListener('close', function () {
     lockScroll(false);
     dialog.removeEventListener('keydown', trapFocus);
     dialog.classList.remove('is-visible');
+    clearHash();
+    current = null;
   });
   btnClose.addEventListener('click', function () { dialog.close(); });
   btnPrev.addEventListener('click', function () { if (current > 1) openChapter(current - 1); });

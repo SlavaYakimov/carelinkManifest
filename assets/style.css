@@ -62,6 +62,23 @@ a{color:var(--green)}
 .btn-nav:hover:not(:disabled){border-color:var(--green)}
 .btn-nav:disabled{opacity:.45;cursor:not-allowed}
 body.dialog-open{overflow:hidden}
+.chapter-tablist{display:flex;gap:8px;padding:0 0 14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.chapter-tablist [role=tab]{font:500 14px Inter,sans-serif;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--mut);cursor:pointer}
+.chapter-tablist [role=tab][aria-selected=true]{color:var(--green-d);border-color:var(--green);background:rgba(220,239,230,.45)}
+.chapter-tabpanel[hidden]{display:none!important}
+.struct-blocks{display:grid;gap:12px}
+.struct-block{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.struct-block--image{background:var(--cream)}
+.struct-block--quote{border-left:4px solid var(--bronze)}
+.struct-block--mission{background:rgba(220,239,230,.35);border-left:4px solid var(--green)}
+.struct-block--task{border-left:4px solid var(--green)}
+.struct-block--hypothesis{background:rgba(220,239,230,.25)}
+.struct-block--risk{background:#fbf3e6;border-left:4px solid var(--bronze)}
+.struct-block--description{background:var(--cream)}
+.struct-lbl{display:block;margin-bottom:8px;color:var(--bronze);font-size:11px}
+.struct-placeholder{color:var(--mut);font-style:italic}
+.struct-fig{margin:0}.struct-fig img{width:100%;max-width:100%;height:auto;border-radius:8px}
+.chapter-pane-structure{display:none!important}
 @media(max-width:560px){
 .chapter-dialog{max-width:none;width:100%;height:100%;max-height:none;margin:0}
 .chapter-dialog-panel{border-radius:0;border:none;max-height:none;height:100vh;height:100dvh}
