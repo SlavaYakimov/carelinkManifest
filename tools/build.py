@@ -29,17 +29,30 @@ def resolve_chapter_image_src(num, meta_src='', fig=None):
             src = fig['src']
         else:
             src = chapter_image_meta(num).get('src', '')
-    return src
+    return src.split('?', 1)[0]
 
 
-def img_picture(src, alt, img_class=''):
+def image_src_with_cache(src, chap_num=None):
+    base = src.split('?', 1)[0]
+    if chap_num is None:
+        return base
+    cache = chapter_image_meta(chap_num).get('cache')
+    if not cache:
+        return base
+    return f'{base}?v={cache}'
+
+
+def img_picture(src, alt, img_class='', chap_num=None):
     if not src:
         return ''
-    esc_src, esc_alt = html.escape(src), html.escape(alt)
-    webp = re.sub(r'\.jpe?g$', '.webp', src, flags=re.I)
+    base = src.split('?', 1)[0]
+    display_src = image_src_with_cache(base, chap_num)
+    esc_src, esc_alt = html.escape(display_src), html.escape(alt)
+    webp_base = re.sub(r'\.jpe?g$', '.webp', base, flags=re.I)
     webp_tag = ''
-    if webp != src and (ROOT / webp).is_file():
-        webp_tag = f'<source type="image/webp" srcset="{html.escape(webp)}">'
+    if webp_base != base and (ROOT / webp_base).is_file():
+        webp_display = image_src_with_cache(webp_base, chap_num)
+        webp_tag = f'<source type="image/webp" srcset="{html.escape(webp_display)}">'
     cls = f' class="{img_class}"' if img_class else ''
     return (
         f'<picture>{webp_tag}<img src="{esc_src}" alt="{esc_alt}" loading="lazy" decoding="async" '
@@ -248,7 +261,7 @@ def build_structure_pane(ch):
             if src:
                 im = chapter_image_meta(ch['num'])
                 alt = (fig['alt'] if fig and fig.get('alt') else '') or im.get('alt', '')
-                inner = f'<figure class="struct-fig">{img_picture(src, alt)}</figure>'
+                inner = f'<figure class="struct-fig">{img_picture(src, alt, chap_num=ch["num"])}</figure>'
                 filled = True
             else:
                 inner = f'<p class="struct-placeholder">{PLACEHOLDER}</p>'
@@ -461,7 +474,7 @@ for ch in chapter_list:
     src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
     alt = im.get('alt') or (ch.get('fig') or {}).get('alt', ch['title'])
     thumb = (
-        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img")}</span>'
+        f'<span class="chapter-card-thumb">{img_picture(src, alt, "chapter-card-thumb-img", n)}</span>'
         if src else ''
     )
     landing_items.append(
