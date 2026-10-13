@@ -41,6 +41,10 @@ to{opacity:1;transform:none}
 }
 
 @media(prefers-reduced-motion:reduce){
+.carelink-page .carelink-hero__content [data-reveal],
+.carelink-page .narrative-intro[data-reveal],
+.carelink-page .bundle-scroll *,
+.carelink-page .chapters-scroll *{transition:none!important;animation:none!important}
 .chapter-grid-card--ticket,.mirai-ticket,.landing-card-ticket,.finale-cta-card{transition:background .15s ease!important;transform:none!important}
 .mirai-ticket:hover,.landing-card-ticket:hover,.finale-cta-card:hover{transform:none!important}
 .finale-cta-media img,.landing-card-ticket .landing-card-media img{transition:none!important;transform:none!important}
