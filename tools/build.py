@@ -169,6 +169,35 @@ LANDING_CARD_CTA_LABEL = 'Прочитать'
 LANDING_CARD_CTA_HINT = 'панель справа'
 CHAPTER_CARD_CTA_LABEL = 'Открыть главу'
 CHAPTER_CARD_CTA_HINT = 'окно · структура'
+CHAPTER_ORDINAL_RU = (
+    '',
+    'первая',
+    'вторая',
+    'третья',
+    'четвёртая',
+    'пятая',
+    'шестая',
+    'седьмая',
+    'восьмая',
+    'девятая',
+    'десятая',
+    'одиннадцатая',
+    'двенадцатая',
+    'тринадцатая',
+    'четырнадцатая',
+    'пятнадцатая',
+    'шестнадцатая',
+    'семнадцатая',
+    'восемнадцатая',
+    'девятнадцатая',
+    'двадцатая',
+)
+
+
+def chapter_role_label(n: int) -> str:
+    if 0 < n < len(CHAPTER_ORDINAL_RU):
+        return f'Глава {CHAPTER_ORDINAL_RU[n]}'
+    return f'Глава {n:02d}'
 
 
 def landing_card_cta_html(
@@ -228,6 +257,55 @@ def render_landing_card_li(
         f'{media}'
         f'{landing_card_cta_html()}'
         f'</button></li>'
+    )
+
+
+def render_agenda_carousel_slide(
+    card_id: str,
+    schedule_kind: str,
+    num: int,
+    title: str,
+    image_src: str,
+    alt: str,
+    *,
+    teaser: str = '',
+    data_group: str = '',
+):
+    if not title or not str(title).strip():
+        title = 'Без названия'
+    if not alt or not str(alt).strip():
+        alt = title
+    media = ''
+    if image_src:
+        media = (
+            f'<figure class="agenda-slide-media">'
+            f'{img_picture(image_src, alt, "chapter-grid-img", loading="lazy")}'
+            f'</figure>'
+        )
+    teaser_html = (
+        f'<p class="agenda-slide-teaser">{inline(teaser)}</p>'
+        if teaser and teaser.strip()
+        else ''
+    )
+    aria_bits = [f'{schedule_kind} {num:02d}', title]
+    if teaser and teaser.strip():
+        aria_bits.append(teaser.strip())
+    aria = html.escape(' — '.join(aria_bits), quote=True)
+    group_attr = f' data-agenda-group="{html.escape(data_group)}"' if data_group else ''
+    return (
+        f'<li class="agenda-carousel-slide"{group_attr}>'
+        f'<article class="agenda-schedule-row">'
+        f'<time class="agenda-schedule-label mono" datetime="">'
+        f'<span>{html.escape(schedule_kind)}</span>{num:02d}'
+        f'</time>'
+        f'<span class="agenda-schedule-rail" aria-hidden="true"></span>'
+        f'<button type="button" class="agenda-schedule-card mirai-ticket landing-card-ticket" '
+        f'data-landing-card="{html.escape(card_id)}" aria-label="{aria}">'
+        f'<h3 class="agenda-slide-title landing-card-title">{html.escape(title)}</h3>'
+        f'{teaser_html}'
+        f'{media}'
+        f'{landing_card_cta_html()}'
+        f'</button></article></li>'
     )
 
 
@@ -921,11 +999,71 @@ H1 = (f'<span>{html.escape(t1)}</span> <span class="thin">{html.escape(t2)}</spa
 words = len(re.findall(r'[\wёЁ-]+', re.sub(r'[`*#>!\[\]()]', ' ', md)))
 
 
+def render_chapters_carousel_section(chapters, num_chapters: int) -> str:
+    dots = []
+    slides = []
+    for ch in chapters:
+        n = ch['num']
+        im = chapter_image_meta(n)
+        src = resolve_chapter_image_src(n, BLOCKS_DATA.get(str(n), {}).get('image', ''), ch.get('fig'))
+        alt = im.get('alt') or ch['title']
+        focus_x = '44%' if n % 2 else '52%'
+        dots.append(
+            f'<button class="speaker-dot{" is-active" if n == 1 else ""}" type="button" '
+            f'data-chapter="{n}" data-slide="{(n - 1) // 2}" '
+            f'aria-label="Глава {n:02d}: {html.escape(ch["title"])}"'
+            f'{" aria-current=\"true\"" if n == 1 else ""}></button>'
+        )
+        person = (
+            f'<li><a class="speaker-person" href="#glava-{n}" data-chapter="{n}" '
+            f'style="--speaker-focus-x: {focus_x}; --speaker-focus-y: 48%;" '
+            f'data-kanji="{n:02d}" aria-label="{html.escape(ch["title"])}">'
+            f'{img_picture(src, alt, "speaker-person-img", n, "lazy") if src else ""}'
+            f'<div class="speaker-meta"><span>{html.escape(ch["title"])}</span>'
+            f'<small>{html.escape(chapter_role_label(n))}</small></div></a></li>'
+        )
+        if (n - 1) % 2 == 0:
+            slides.append([person])
+        else:
+            slides[-1].append(person)
+    slide_html = []
+    for idx, pair in enumerate(slides):
+        active = ' is-active' if idx == 0 else ''
+        hidden = 'false' if idx == 0 else 'true'
+        slide_html.append(
+            f'<article class="speaker-slide{active}" aria-label="Главы {idx * 2 + 1}–{idx * 2 + len(pair)}" '
+            f'aria-hidden="{hidden}">'
+            f'<ul class="speaker-grid speaker-grid--duo">{"".join(pair)}</ul></article>'
+        )
+    n_ch = len(chapters)
+    scroll_h = f'calc(100vh + (var(--chapter-count, {n_ch}) - 1) * 55vh)'
+    return (
+        f'<div class="chapters-scroll-pin chapter-index" id="glavy" style="--chapter-count: {n_ch}">'
+        f'<section class="speakers speakers--chapters" id="glavy-carousel" aria-labelledby="chapter-index-title">'
+        f'<div class="section-intro section-panel" data-reveal>'
+        f'<p class="section-label">Главы</p>'
+        f'<h2 id="chapter-index-title" class="chapter-index-title">{num_chapters} глав манифеста</h2>'
+        f'<p class="chapter-index-lead">Выберите главу — откроется окно со структурой, иллюстрацией и исходным текстом.</p>'
+        f'<div class="speaker-controls speaker-controls--toc" aria-label="Оглавление глав">'
+        f'{"".join(dots)}</div>'
+        f'</div>'
+        f'<div class="speaker-carousel section-panel" data-reveal aria-roledescription="carousel" '
+        f'aria-label="Карусель глав">'
+        f'<div class="speaker-track" id="speaker-track">{"".join(slide_html)}</div>'
+        f'<p class="chapters-scroll-hint mono" aria-hidden="true">Прокрутите страницу ↓</p>'
+        f'</div></section></div>'
+        f'<div class="chapter-index-bleed section-panel landing-block-legacy" id="glavy-grid-legacy" data-reveal>'
+        f'<ol class="chapter-grid chapter-grid--bleed ticket-grid">{landing_html}</ol>'
+        f'</div>'
+    )
+
+
 def render_challenges_section():
     d = CHALLENGES_DATA
     n_prob = len(d['problems'])
     problems = []
     problem_cards = []
+    agenda_slides = []
     for i, p in enumerate(d['problems'], 1):
         card_id = f'problem-{i}'
         problems.append(
@@ -968,6 +1106,18 @@ def render_challenges_section():
                 teaser=teaser_from_text(p['description']),
             )
         )
+        agenda_slides.append(
+            render_agenda_carousel_slide(
+                card_id,
+                'Вызов',
+                i,
+                p['title'],
+                img,
+                alt,
+                teaser=teaser_from_text(p['description']),
+                data_group='problems',
+            )
+        )
     examples = []
     scenario_cards = []
     for i, ex in enumerate(d['examples'], 1):
@@ -1003,36 +1153,19 @@ def render_challenges_section():
                 teaser=teaser_from_text(main),
             )
         )
-    examples_note = d.get('examples_note', '')
-    n_ex = len(d['examples'])
-    note_html = f'<p class="challenges-examples-note">{inline(examples_note)}</p>' if examples_note else ''
-    return (
-        f'<section class="challenges" id="vyzovy" aria-labelledby="challenges-title">'
-        f'<div class="challenges-in section-panel" data-reveal>'
-        f'<p class="section-label">Вызовы</p>'
-        f'<h2 id="challenges-title" class="challenges-title">Проблемы семьи</h2>'
-        f'<p class="challenges-intro">{inline(d["intro"])}</p>'
-        f'<h3 class="mono landing-card-grid-lbl">Выберите проблему · {n_prob} карточек</h3>'
-        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--problems">{"".join(problem_cards)}</ol>'
-        f'<div class="landing-block-legacy" id="vyzovy-problems-legacy">'
-        f'<ol class="challenge-list">{"".join(problems)}</ol>'
-        f'</div>'
-        f'<div class="challenge-examples">'
-        f'<span class="mono challenges-examples-lbl">Сценарии</span>'
-        f'{note_html}'
-        f'<h3 class="mono landing-card-grid-lbl">Выберите сценарий · {n_ex} карточек</h3>'
-        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--scenarios">{"".join(scenario_cards)}</ol>'
-        f'<div class="landing-block-legacy" id="vyzovy-scenarios-legacy">'
-        f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
-        f'</div>'
-        f'</div></div></section>'
-    )
-
-
-def render_solutions_section():
-    d = CHALLENGES_DATA
-    featured_legacy = []
-    featured_cards = []
+        agenda_slides.append(
+            render_agenda_carousel_slide(
+                card_id,
+                'Сценарий',
+                i,
+                ex['title'],
+                ex.get('image', ''),
+                ex['title'],
+                teaser=teaser_from_text(main),
+                data_group='scenarios',
+            )
+        )
+    solution_cards = []
     featured = d.get('featured_solutions', [])
     n_feat = len(featured)
     for i, f in enumerate(featured, 1):
@@ -1055,7 +1188,7 @@ def render_solutions_section():
         )
         kicker = f'Решение · {i:02d}/{n_feat:02d}'
         stash_landing_card(card_id, kicker, f['title'], drawer_body)
-        featured_cards.append(
+        solution_cards.append(
             render_landing_card_li(
                 card_id,
                 i,
@@ -1066,6 +1199,89 @@ def render_solutions_section():
                 teaser=teaser_from_text(f['description']),
             )
         )
+        agenda_slides.append(
+            render_agenda_carousel_slide(
+                card_id,
+                'Решение',
+                i,
+                f['title'],
+                f.get('image', ''),
+                f['title'],
+                teaser=teaser_from_text(f['description']),
+                data_group='solutions',
+            )
+        )
+    examples_note = d.get('examples_note', '')
+    n_ex = len(d['examples'])
+    note_html = (
+        f'<p class="challenges-examples-note manifest-agenda-note">{inline(examples_note)}</p>'
+        if examples_note
+        else ''
+    )
+    solutions_intro = d.get('solutions_intro', '')
+    solutions_lead = (
+        'Каждая карточка — один способ из манифеста. Нажмите «Прочитать» — справа откроется '
+        'панель с полным текстом и связью с проблемой.'
+    )
+    n_total = len(agenda_slides)
+    carousel = (
+        f'<div class="manifest-agenda-carousel" data-agenda-carousel role="region" '
+        f'aria-roledescription="carousel" aria-label="Вызовы, сценарии и решения — {n_total} карточек">'
+        f'<div class="manifest-agenda-carousel-controls">'
+        f'<button type="button" class="agenda-carousel-btn agenda-carousel-btn--prev" '
+        f'data-agenda-prev aria-label="Предыдущая карточка">←</button>'
+        f'<p class="agenda-carousel-status mono" data-agenda-status aria-live="polite">'
+        f'1 / {n_total}</p>'
+        f'<button type="button" class="agenda-carousel-btn agenda-carousel-btn--next" '
+        f'data-agenda-next aria-label="Следующая карточка">→</button>'
+        f'</div>'
+        f'<div class="agenda-carousel-viewport" data-agenda-viewport tabindex="0">'
+        f'<ol class="agenda-carousel-track">{"".join(agenda_slides)}</ol>'
+        f'</div></div>'
+    )
+    toc_row = (
+        f'<ul class="manifest-agenda-toc-row mono" aria-label="Блоки карусели">'
+        f'<li><button type="button" data-agenda-jump="problems">Проблемы · {n_prob}</button></li>'
+        f'<li><button type="button" data-agenda-jump="scenarios">Сценарии · {n_ex}</button></li>'
+        f'<li><button type="button" data-agenda-jump="solutions">Решения · {n_feat}</button></li>'
+        f'</ul>'
+    )
+    legacy_grids = (
+        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--problems">'
+        f'{"".join(problem_cards)}</ol>'
+        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--scenarios">'
+        f'{"".join(scenario_cards)}</ol>'
+        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--solutions">'
+        f'{"".join(solution_cards)}</ol>'
+    )
+    return (
+        f'<section class="challenges manifest-vyzovy" id="vyzovy" aria-labelledby="challenges-title">'
+        f'<div class="agenda-block manifest-agenda-block">'
+        f'<div class="agenda-panel manifest-agenda-panel section-panel" data-reveal>'
+        f'<p class="section-label">Вызовы</p>'
+        f'<h2 id="challenges-title" class="challenges-title manifest-agenda-subtitle">'
+        f'Проблемы семьи, сценарии и три опоры</h2>'
+        f'<p class="challenges-intro manifest-agenda-intro">{inline(d["intro"])}</p>'
+        f'<p class="solutions-intro manifest-agenda-solutions-intro">{inline(solutions_intro)}</p>'
+        f'<p class="solutions-lead manifest-agenda-solutions-lead">{inline(solutions_lead)}</p>'
+        f'{note_html}'
+        f'{toc_row}'
+        f'</div>'
+        f'<div class="manifest-agenda-stage section-panel" data-reveal>{carousel}</div>'
+        f'</div>'
+        f'<div class="landing-block-legacy" id="vyzovy-legacy">'
+        f'<ol class="challenge-list">{"".join(problems)}</ol>'
+        f'<div class="challenge-examples-grid">{"".join(examples)}</div>'
+        f'{legacy_grids}'
+        f'</div></section>'
+    )
+
+
+def render_solutions_section():
+    d = CHALLENGES_DATA
+    featured_legacy = []
+    featured = d.get('featured_solutions', [])
+    for i, f in enumerate(featured, 1):
         featured_legacy.append(
             f'<li class="solution-item solution-item--featured">'
             f'<span class="mono solution-num">{i:02d}</span>'
@@ -1088,26 +1304,18 @@ def render_solutions_section():
             f'<p class="solution-text">{inline(p["response"])}</p>'
             f'</div></li>'
         )
-    intro = d.get('solutions_intro', '')
     detail_lbl = d.get('solutions_detail_lbl', '')
     detail_html = (
         f'<p class="mono solutions-detail-lbl">{html.escape(detail_lbl)}</p>'
         if detail_lbl else ''
     )
-    cards_html = (
-        f'<h3 class="mono landing-card-grid-lbl">Три опоры · {n_feat} карточки</h3>'
-        f'<ol class="chapter-grid ticket-grid landing-card-grid landing-card-grid--solutions">'
-        f'{"".join(featured_cards)}</ol>'
-        if featured_cards else ''
-    )
     return (
         f'<section class="solutions" id="resheniya" aria-labelledby="solutions-title">'
         f'<div class="solutions-in section-panel" data-reveal>'
         f'<p class="section-label">Решения</p>'
-        f'<h2 id="solutions-title" class="solutions-title">Решения</h2>'
-        f'<p class="solutions-intro">{inline(intro)}</p>'
-        f'<p class="solutions-lead">Каждая карточка — один способ из манифеста. Нажмите «Прочитать» — справа откроется панель с полным текстом и связью с проблемой.</p>'
-        f'{cards_html}'
+        f'<h2 id="solutions-title" class="solutions-title">По тексту манифеста — к каждой проблеме</h2>'
+        f'<p class="solutions-lead">Три опоры («Решение 01–03») — в карусели блока '
+        f'<a href="#vyzovy">Вызовы</a>; ниже — ответ манифеста на каждую из девяти проблем.</p>'
         f'<div class="landing-block-legacy" id="resheniya-legacy">'
         f'<ol class="solution-list solution-list--featured">{"".join(featured_legacy)}</ol>'
         f'{detail_html}'
@@ -1206,6 +1414,7 @@ def render_product_architecture_section():
     )
 
 
+chapters_carousel_html = render_chapters_carousel_section(chapter_list, NUM_CHAPTERS)
 challenges_html = render_challenges_section()
 solutions_html = render_solutions_section()
 development_html = render_development_section()
@@ -1227,6 +1436,7 @@ page = f'''<!doctype html>
 <link rel="apple-touch-icon" href="assets/carelink-owl-128.png">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/motion.css">
+<link rel="stylesheet" href="assets/carousel-prototypes.css">
 </head>
 <body>
 <a class="skip" href="#top">К основному содержимому</a>
@@ -1249,16 +1459,7 @@ page = f'''<!doctype html>
 </section>
 {challenges_html}
 {solutions_html}
-<section class="chapter-index" id="glavy" aria-labelledby="chapter-index-title">
-  <div class="chapter-index-in section-panel" data-reveal>
-    <p class="section-label">Главы</p>
-    <h2 id="chapter-index-title" class="chapter-index-title">{NUM_CHAPTERS} глав манифеста</h2>
-    <p class="chapter-index-lead">Выберите главу — откроется окно со структурой, иллюстрацией и исходным текстом (вкладки «Структура» и «Исходный текст»).</p>
-  </div>
-  <div class="chapter-index-bleed section-panel" data-reveal>
-    <ol class="chapter-grid chapter-grid--bleed ticket-grid">{landing_html}</ol>
-  </div>
-</section>
+{chapters_carousel_html}
 {development_html}
 {product_arch_html}
 <div class="layout">
@@ -1315,6 +1516,8 @@ page = f'''<!doctype html>
 <script src="assets/site.js" defer></script>
 <script src="assets/chapters.js" defer></script>
 <script src="assets/landing-cards.js" defer></script>
+<script src="assets/agenda-carousel.js" defer></script>
+<script src="assets/chapters-carousel.js" defer></script>
 </body>
 </html>
 '''
