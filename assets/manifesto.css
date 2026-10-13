@@ -1,0 +1,107 @@
+/* Figma Make manifesto — Neo Mirai warm pastels */
+:root{
+  --manifest-cream:#F6F1E6;
+  --manifest-sand:#E9DCC7;
+  --manifest-gold:#D9B98A;
+  --manifest-terra:#C98F72;
+  --manifest-ink:#5A4636;
+}
+.hero--manifesto{min-height:50vh;max-height:50vh;align-items:stretch;background:var(--manifest-cream);color:var(--manifest-ink)}
+.hero--manifesto:after{background:linear-gradient(105deg,rgba(246,241,230,.92) 0%,rgba(246,241,230,.78) 42%,rgba(246,241,230,.35) 58%,rgba(233,220,199,.25) 100%)}
+.hero-in--manifesto{max-width:min(52rem,58%);padding:clamp(1rem,3vw,2rem) clamp(1.25rem,4vw,3rem)}
+.hero-kicker{font-size:11px;letter-spacing:.12em;color:var(--bronze);margin:0 0 .75rem;text-transform:uppercase}
+.hero--manifesto h1{font:700 clamp(2.5rem,6vw,4.5rem)/1 var(--head);color:#1f5c4a;margin:0;letter-spacing:-.03em}
+.hero-subline{font:500 1rem/1.4 Inter,sans-serif;color:var(--manifest-ink);margin:.35rem 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--manifest-gold)}
+.hero-tablist{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 .75rem}
+.hero-tablist [role=tab]{font:500 12px/1.2 Inter,sans-serif;padding:.45rem .75rem;border-radius:999px;border:1px solid var(--manifest-sand);background:var(--manifest-sand);color:var(--manifest-ink);cursor:pointer}
+.hero-tablist [role=tab][aria-selected=true]{background:var(--manifest-gold);border-color:var(--manifest-gold);box-shadow:inset 0 -2px 0 var(--manifest-terra)}
+.hero-tab-panel{font-size:15px;line-height:1.55;max-width:36ch;margin:0 0 1rem;color:var(--manifest-ink)}
+.hero-cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+.btn-hero-primary{display:inline-flex;align-items:center;padding:.65rem 1.25rem;border-radius:999px;background:var(--manifest-terra);color:#fff;font-weight:600;text-decoration:none;font-size:14px}
+.btn-hero-link{color:var(--manifest-ink);font-size:14px;text-decoration:none}
+.hero-img--manifesto img{object-position:center 30%}
+.manifest-intro{background:var(--manifest-cream);padding:clamp(3rem,8vw,5rem) clamp(1.25rem,5vw,2rem)}
+.manifest-intro-in{max-width:720px;margin:0 auto;text-align:center}
+.manifest-intro h2{font:700 clamp(1.35rem,2.5vw,1.75rem)/1.25 var(--head);color:#1f5c4a;margin:0 0 1rem}
+.manifest-intro p{font-size:17px;line-height:1.65;color:var(--manifest-ink);margin:0}
+.agenda-pin{position:relative;background:var(--manifest-cream)}
+.agenda-pin-spacer{height:calc(9 * 100vh)}
+.agenda-stage{position:sticky;top:var(--header-h,64px);height:calc(100vh - var(--header-h,64px));display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,30%);overflow:hidden}
+.agenda-main{display:flex;flex-direction:column;min-width:0;padding:0}
+.agenda-kicker{font-size:10px;letter-spacing:.14em;color:var(--bronze);margin:0;padding:.75rem 0 0 .75rem}
+.agenda-heading{font:700 clamp(1rem,2vw,1.35rem)/1.2 var(--head);color:#1f5c4a;margin:0 0 .5rem;padding-left:.75rem}
+.agenda-track-wrap{position:relative;flex:1;min-height:0;display:flex;align-items:stretch}
+.agenda-track{display:flex;flex-wrap:nowrap;will-change:transform;transition:transform .45s cubic-bezier(.22,1,.36,1);height:100%;touch-action:pan-y}
+.agenda-bundle{flex:0 0 calc((100% - 0px) / 2.5);display:flex;flex-direction:column;height:100%;min-width:0}
+.agenda-mini{position:relative;flex:1 1 33.333%;min-height:0;overflow:hidden;background:#000;margin:0 -6px 0 0;box-shadow:4px 0 16px rgba(90,70,54,.12)}
+.agenda-mini:first-child{margin-left:0}
+.agenda-mini picture,.agenda-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.agenda-mini-text{position:absolute;inset:auto 0 0;padding:.65rem .75rem 2.25rem;background:linear-gradient(180deg,transparent,rgba(246,241,230,.92) 35%,rgba(246,241,230,.98))}
+.agenda-mini-label{font-size:9px;letter-spacing:.1em;color:var(--bronze);display:block;margin-bottom:.25rem}
+.agenda-mini-title{font:700 13px/1.25 var(--head);color:#1f5c4a;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.agenda-mini-read{position:absolute;top:.5rem;right:.5rem;width:2rem;height:2rem;border-radius:50%;border:1px solid rgba(246,241,230,.7);background:rgba(246,241,230,.85);color:var(--manifest-ink);cursor:pointer;display:grid;place-items:center;font-size:14px;line-height:1}
+.agenda-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--manifest-sand);background:rgba(246,241,230,.9);cursor:pointer;color:var(--manifest-ink)}
+.agenda-arrow--prev{left:.25rem}
+.agenda-arrow--next{right:.25rem}
+.agenda-progress{height:3px;background:var(--manifest-sand);margin:0 .75rem .5rem}
+.agenda-progress i{display:block;height:100%;width:0;background:var(--manifest-terra);transition:width .2s}
+.agenda-nav{background:var(--manifest-cream);border-left:1px solid var(--manifest-sand);padding:1rem .75rem;overflow-y:auto}
+.agenda-nav-title{font-size:10px;letter-spacing:.12em;color:var(--bronze);margin:0 0 .35rem}
+.agenda-nav-counter{font-size:12px;color:var(--manifest-ink);margin:0 0 .75rem}
+.agenda-nav-line{display:block;width:100%;text-align:left;border:none;background:transparent;padding:.5rem .45rem;margin:0 0 .25rem;border-left:3px solid transparent;cursor:pointer;font-size:14px;line-height:1.35;color:rgba(90,70,54,.65)}
+.agenda-nav-line.is-active{background:var(--manifest-gold);border-left-color:var(--manifest-terra);color:var(--manifest-ink);font-weight:600}
+.agenda-nav-num{display:block;font-size:10px;margin-bottom:.15rem}
+.glavy-pin{position:relative;background:var(--manifest-cream)}
+.glavy-pin-spacer{height:calc(5 * 100vh)}
+.glavy-stage{position:sticky;top:var(--header-h,64px);height:calc(100vh - var(--header-h,64px));display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,28%);gap:0}
+.glavy-grid-wrap{overflow:hidden;min-width:0}
+.glavy-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;height:100%;transition:transform .5s cubic-bezier(.22,1,.36,1);will-change:transform}
+.glavy-grid.is-paging{transition:none}
+.chapter-poster{position:relative;min-height:0;overflow:hidden}
+.chapter-poster-link{display:block;height:100%;color:#fff;text-decoration:none;position:relative}
+.chapter-poster picture,.chapter-poster img{width:100%;height:100%;object-fit:cover;min-height:180px}
+.chapter-poster-caption{position:absolute;inset:auto 0 0;padding:1rem 1rem 2.5rem;background:linear-gradient(180deg,transparent,rgba(20,32,27,.88))}
+.chapter-poster-caption h3{font:700 1rem/1.2 var(--head);color:#fff;margin:.25rem 0}
+.chapter-poster-caption p{font-size:12px;line-height:1.4;margin:0;opacity:.92;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.chapter-poster-read{position:absolute;top:.5rem;right:.5rem;z-index:2;width:2rem;height:2rem;border-radius:50%;border:none;background:rgba(246,241,230,.9);cursor:pointer}
+.glavy-panel{padding:1.25rem 1rem;background:var(--manifest-cream);border-left:1px solid var(--manifest-sand);overflow-y:auto}
+.glavy-panel-title{font:700 clamp(1.5rem,3vw,2.25rem)/1 var(--head);color:#1f5c4a;margin:0 0 .5rem}
+.glavy-panel-lead{font-size:13px;line-height:1.5;color:var(--manifest-ink);margin:0 0 1rem}
+.glavy-nav-item{display:block;width:100%;text-align:left;border:none;background:transparent;padding:.35rem 0;font-size:13px;color:rgba(90,70,54,.7);cursor:pointer}
+.glavy-nav-item.is-active{color:#1f5c4a;font-weight:700}
+.values-row{background:var(--manifest-cream);padding-bottom:2rem}
+.values-row h2{font:700 clamp(1.35rem,2.5vw,1.75rem)/1.2 var(--head);color:#1f5c4a;text-align:center;margin:0 0 .5rem}
+.values-row-lead{text-align:center;max-width:40rem;margin:0 auto 1.5rem;font-size:15px;color:var(--manifest-ink)}
+.values-track{display:flex;flex-wrap:nowrap;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;padding:0;-webkit-overflow-scrolling:touch}
+.values-track .values-mini{flex:0 0 calc(100% / 6);min-width:160px;scroll-snap-align:start;aspect-ratio:3/4;max-height:420px}
+.values-mini-teaser{font-size:11px;line-height:1.35;margin:.35rem 0 0;color:var(--manifest-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.skills-section{background:var(--manifest-cream);border-top:1px solid var(--manifest-sand);padding:clamp(2rem,6vw,4rem) clamp(1rem,4vw,2rem)}
+.skills-section h2{font:700 1.5rem/1.2 var(--head);color:#1f5c4a}
+.skills-grid{display:grid;gap:1rem;max-width:720px}
+.skills-card{display:grid;grid-template-columns:120px 1fr;gap:1rem;align-items:start;background:var(--manifest-sand);border-radius:12px;padding:1rem}
+.skills-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.landing-block-legacy--hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.detail-dialog{border:none;padding:0;margin:0;max-width:none;max-height:none;width:100%;height:100%;background:transparent}
+.detail-dialog::backdrop{background:rgba(20,32,27,.55)}
+.detail-dialog-panel{background:var(--manifest-cream);margin:auto;max-width:min(720px,94vw);max-height:min(90vh,900px);border-radius:16px 16px 0 0;overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.detail-dialog-head{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.5rem;padding:1rem 1rem 0;border-bottom:1px solid var(--manifest-sand)}
+.detail-dialog-title{font:700 1.25rem/1.2 var(--head);color:#1f5c4a;flex:1;margin:0}
+.detail-dialog-body{padding:1rem 1.25rem 1.5rem}
+.detail-modal-hero{margin:0 0 1rem;border-radius:8px;overflow:hidden}
+.detail-modal-hero img{width:100%;height:auto;display:block}
+@media(max-width:900px){
+  .agenda-stage{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .agenda-nav{position:sticky;top:var(--header-h);z-index:5;max-height:4.5rem;overflow-x:auto;border-left:none;border-bottom:1px solid var(--manifest-sand);display:flex;align-items:center;gap:.5rem;padding:.5rem}
+  .agenda-nav-list{display:flex;gap:.5rem}
+  .agenda-nav-line{white-space:nowrap;font-size:12px;padding:.35rem .5rem}
+  .agenda-bundle{flex:0 0 85vw}
+  .hero-in--manifesto{max-width:100%}
+  .hero--manifesto{max-height:none;min-height:50vh}
+  .glavy-stage{grid-template-columns:1fr}
+  .glavy-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,1fr)}
+  .values-track .values-mini{flex:0 0 85vw}
+  .detail-dialog-panel{max-width:100%;max-height:100%;height:100%;border-radius:0;margin:0}
+}
+@media(min-width:901px){
+  .detail-dialog[open] .detail-dialog-panel{margin:3vh auto}
+}
