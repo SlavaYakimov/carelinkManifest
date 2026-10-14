@@ -1,4 +1,4 @@
-/** First sentence for card teasers (port of tools/build.py first_sentence). */
+/** First sentence for card teasers (aligned with scripts/content/inline.mjs). */
 export function teaserFromText(text: string): string {
   const plain = text
     .replace(/\*\*([^*]+)\*\*/g, '$1')

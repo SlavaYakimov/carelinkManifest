@@ -2,7 +2,7 @@
 
 **Surface:** `#agenda` / bundle scroll (landing)  
 **Date:** 2026-10-14  
-**Commands:** `node tools/audit-live-ui.mjs`, `impeccable detect index.html assets/impeccable-polish.css`
+**Commands (2026-10-14):** `node tools/audit-live-ui.mjs`, `impeccable detect index.html assets/impeccable-polish.css` — **устарело:** каталог `tools/` удалён; актуально: `npm run build`, `node scripts/parity-gate.mjs`, ручной просмотр через `npm run preview`.
 
 ## Audit health score
 

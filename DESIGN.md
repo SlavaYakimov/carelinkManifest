@@ -226,4 +226,4 @@ Hybrid: mostly flat cream surfaces with hairline borders; depth on hover via sof
 - **Don't** remove or collapse landing sections for “simplicity”—polish in place per PRODUCT.md.
 - **Don't** reintroduce solid bronze `#d9b98a` panel active fills or Cormorant SC on chain labels.
 - **Don't** use generic AI landing patterns (purple gradients, nested card stacks, Inter-only everything).
-- **Don't** edit `index.html` structure by hand for repeatable blocks—regenerate via `tools/build.py` when changing landing markup.
+- **Don't** edit repeatable landing blocks only in `dist/`—change `content/blocks/` and React in `web/src/`, then `npm run compile:content` and `npm run build`.

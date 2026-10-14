@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * One-time / repeatable: ARTICLE.md → content/blocks/article/*.json
+ * Optional: external ARTICLE.md → content/blocks/article/*.json
+ * (not in repo; штатная правка — JSON в content/blocks/article/)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,13 +11,18 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const articleDir = path.join(root, 'content/blocks/article');
 const chaptersDir = path.join(articleDir, 'chapters');
 const mdPath = path.join(root, 'ARTICLE.md');
+if (!fs.existsSync(mdPath)) {
+  console.error('migrate-article: положите ARTICLE.md в корень репозитория (в репо источник — content/blocks/article/)');
+  process.exit(1);
+}
 
 const FINALE_MARKER = '<!-- landing:finale -->';
+const blocksDir = path.join(root, 'content/blocks');
 const chapterBlocks = JSON.parse(
-  fs.readFileSync(path.join(root, 'tools/chapter-blocks.json'), 'utf8'),
+  fs.readFileSync(path.join(blocksDir, 'chapter-blocks.json'), 'utf8'),
 );
 const chapterImages = JSON.parse(
-  fs.readFileSync(path.join(root, 'tools/chapter-images.json'), 'utf8'),
+  fs.readFileSync(path.join(blocksDir, 'chapter-images.json'), 'utf8'),
 );
 
 function parseBlocks(lines) {
@@ -178,24 +184,14 @@ while (i < bodyBlocks.length) {
         caption: { num: '', text: im.caption || '' },
       };
     }
-    let v1Markdown = '';
-    const v1Path = path.join(root, 'chapters', String(num).padStart(2, '0'), 'v1.md');
-    if (fs.existsSync(v1Path)) {
-      v1Markdown = fs.readFileSync(v1Path, 'utf8');
-    }
-    let structureV3 = structure;
-    const v3Path = path.join(root, 'chapters', String(num).padStart(2, '0'), 'v3.json');
-    if (fs.existsSync(v3Path)) {
-      structureV3 = JSON.parse(fs.readFileSync(v3Path, 'utf8'));
-    }
     chapters.push({
       num,
       title: titleCh,
       illustration,
       lead,
       structure,
-      structureV3,
-      v1Markdown,
+      structureV3: structure,
+      v1Markdown: '',
       blocks: chBlocks,
     });
     continue;

@@ -9,14 +9,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const BRAND_OWL =
   '<span class="owl"><img src="assets/carelink-owl-avatar.svg" alt="" width="40" height="45" class="owl-mark" decoding="async" loading="lazy" aria-hidden="true" role="presentation"></span>';
 
-const emptySections = {
-  challengesLegacy: '',
-  chapterIndexLegacy: '',
-  development: '',
-  productArch: '',
-  finaleLegacy: '',
-};
-
 function buildStub() {
   return {
     meta: {
@@ -29,7 +21,6 @@ function buildStub() {
       ogImage: 'images/hero-family-table.jpg',
     },
     brandOwlHtml: '',
-    sections: { ...emptySections },
     article: { introHtml: '', chapterHtml: '', sourcesHtml: '' },
     landingCards: [],
     structured: {
@@ -60,14 +51,13 @@ export function compileSite() {
     meta: {
       title: blocks.meta.title,
       stand: blocks.meta.stand,
-      words: countWords(root),
+      words: countWords(blocks.article),
       numChapters,
       h1Html,
       metaChipsHtml,
       ogImage: blocks.meta.ogImage || 'images/hero-family-table.jpg',
     },
     brandOwlHtml: BRAND_OWL,
-    sections: { ...emptySections },
     article: {
       introHtml: articleRendered.introHtml,
       chapterHtml: articleRendered.chapterHtml,

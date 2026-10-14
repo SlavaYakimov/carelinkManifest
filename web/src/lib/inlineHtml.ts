@@ -1,4 +1,4 @@
-/** Minimal port of tools/build.py inline() for JSON copy fields. */
+/** Minimal port of scripts/content/inline.mjs for JSON copy fields. */
 export function inlineHtml(text: string): string {
   if (!text) return '';
   let t = text.replace(/<strong>(.+?)<\/strong>/gi, '**$1**');

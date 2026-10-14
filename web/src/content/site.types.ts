@@ -139,14 +139,6 @@ export type Structured = {
 export type SitePayload = {
   meta: SiteMeta;
   brandOwlHtml: string;
-  /** @deprecated Legacy HTML sections; empty when content is rendered in React. */
-  sections?: {
-    challengesLegacy?: string;
-    chapterIndexLegacy?: string;
-    development?: string;
-    productArch?: string;
-    finaleLegacy?: string;
-  };
   article: {
     introHtml: string;
     chapterHtml: string;

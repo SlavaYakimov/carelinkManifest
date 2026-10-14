@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { inline, firstSentence } from './inline.mjs';
 import { imgPicture } from './picture.mjs';
 
@@ -490,11 +488,35 @@ export function renderArticle(article, chapterImages) {
   };
 }
 
-export function countWords(root) {
-  const mdPath = path.join(root, 'ARTICLE.md');
-  if (!fs.existsSync(mdPath)) return 0;
-  const md = fs.readFileSync(mdPath, 'utf8');
-  return md.match(/[A-Za-z\u0400-\u04FF0-9_]+/g)?.length || 0;
+const WORD_RE = /[A-Za-z\u0400-\u04FF0-9_]+/g;
+
+function textFromBlocks(blocks) {
+  const parts = [];
+  for (const b of blocks || []) {
+    if (b.text) parts.push(b.text);
+    if (b.lines) parts.push(...b.lines);
+    if (b.items) parts.push(...b.items);
+  }
+  return parts.join(' ');
+}
+
+function textFromStructure(obj) {
+  if (!obj || typeof obj !== 'object') return '';
+  return Object.values(obj).filter((v) => typeof v === 'string').join(' ');
+}
+
+export function countWords(article) {
+  const chunks = [
+    textFromBlocks(article.intro?.blocks),
+    textFromBlocks(article.sources?.blocks),
+    article.finale?.markdown || '',
+  ];
+  for (const ch of article.chapters || []) {
+    chunks.push(ch.title || '', ch.lead || '', ch.v1Markdown || '');
+    chunks.push(textFromStructure(ch.structure), textFromStructure(ch.structureV3));
+    chunks.push(textFromBlocks(ch.blocks));
+  }
+  return chunks.join(' ').match(WORD_RE)?.length || 0;
 }
 
 export function buildMetaHtml(meta) {

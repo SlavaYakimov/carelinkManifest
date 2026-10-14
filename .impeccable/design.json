@@ -173,7 +173,7 @@
       "Don't remove landing sections for simplicity—polish in place.",
       "Don't reintroduce solid bronze panel active fills or Cormorant on chain labels.",
       "Don't use generic AI landing patterns (purple gradients, Inter-only everything).",
-      "Don't hand-edit index.html for repeatable blocks—use tools/build.py."
+      "Don't hand-edit dist for repeatable blocks—edit content/blocks and run npm run compile:content."
     ]
   }
 }

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static site: **Vite + React** in [`web/`](web/) → `dist/index.html` for GitHub Pages (Actions → `dist/`). Content compile: [`content/blocks/`](content/blocks/) → `web/public/site.json` via Node [`scripts/content/compile-site.mjs`](scripts/content/compile-site.mjs) (`npm run compile:content`). Longread chapters live in `content/blocks/article/chapters/*.json`; optional regen from `ARTICLE.md` with `scripts/migrate-article-to-json.mjs`. Editorial images live under [`assets/images/`](assets/images/) by block; public paths stay `images/…` via repo-root `images/` compat symlinks (`npm run sync:images`). Global CSS remains in [`assets/`](assets/) (Make parity, manifesto overrides). Scroll-stage and modals: TypeScript in [`web/src/interactivity/`](web/src/interactivity/). Local dev: `npm run compile:content` then `npm run dev` (repo root). Preview production: `npm run preview`.
+Static site: **Vite + React** in [`web/`](web/) → `dist/index.html` for GitHub Pages (Actions → `dist/`). Content compile: [`content/blocks/`](content/blocks/) → `web/public/site.json` via Node [`scripts/content/compile-site.mjs`](scripts/content/compile-site.mjs) (`npm run compile:content`). Longread source of truth: `content/blocks/article/` (chapters as JSON). Optional one-off import: `scripts/migrate-article-to-json.mjs` with an external `ARTICLE.md` (not shipped in repo). Editorial images under [`assets/images/`](assets/images/); public paths `images/…` via compat symlinks (`npm run sync:images`). Global CSS in [`assets/`](assets/). Interactivity: [`web/src/interactivity/`](web/src/interactivity/). Local dev: `npm run compile:content` then `npm run dev`. Preview: `npm run preview`.
 
 ## Users
 
@@ -28,15 +28,15 @@ Unlike a feature list or pitch deck, this repo is a **journalistic investigation
 
 ## Operating Context
 
-- **Edit loop:** Change JSON in `content/blocks/` (or `ARTICLE.md` + migrate script), then `npm run build`. Commit `web/public/site.json` when content changed (or rely on CI compile). UI/React: `web/src/`.
+- **Edit loop:** Change JSON in `content/blocks/`, then `npm run build`. Commit `web/public/site.json` when content changed (or rely on CI compile). UI/React: `web/src/`.
 - **Deploy:** GitHub Actions workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes `dist/` (enable Pages → source: GitHub Actions). `.nojekyll` in `web/public/`.
 - **Design iteration:** Neo Mirai / impeccable polish passes on CSS and JS; reference screenshots under `reference/polish-shots/`.
-- **QA:** `node scripts/parity-gate.mjs` after compile; `node tools/audit-live-ui.mjs` against `npm run preview` URL (default port 4173).
-- **Live browser:** Impeccable live mode — point at Vite dev URL or `dist/index.html` after build; re-run `npm run compile:content` after content block changes.
+- **QA:** `node scripts/parity-gate.mjs` after `npm run build` (same step as CI). Ручная проверка UI: `npm run preview` и браузер на preview URL (по умолчанию порт 4173).
+- **Live browser:** Impeccable live mode — point at Vite dev URL (`npm run dev`) or `dist/index.html` after build; re-run `npm run compile:content` after content block changes.
 
 ## Capabilities and Constraints
 
-- Landing sections: hero, truth layer, agenda (9 challenge–scenario–solution bundles), chapters, values, skills, longread body, finale block from `ARTICLE.md` markers.
+- Landing sections: hero, truth layer, agenda (9 bundles), chapters, challenges/solutions, development, product arch, values, skills, longread HTML from article JSON, finale CTAs from `finale-ctas.json`.
 - Typography policy (project): Playfair Display headings, Echo 2 / Cosmetics MS labels, Inter body (`assets/fonts-slava.css`).
 - Palette anchors: green `#1f5c4a`, bronze `#8a6a3b`, cream `#f7faf8` / `#f6efe4`, ink `#14201b`, mint `#dcefe6`.
 - **Do not delete** landing content for parity with Figma Make reference; polish via CSS/JS, not removal.
@@ -54,7 +54,7 @@ Unlike a feature list or pitch deck, this repo is a **journalistic investigation
 ## Evidence on Hand
 
 - `README.md` — structure, build, publish, text rules.
-- `ARTICLE.md` — full manifesto source and “how to read” conventions.
+- `content/blocks/article/` — longread JSON (intro, chapters, sources, finale).
 - `content/blocks/*.json`, `scripts/content/compile-site.mjs` — site payload and Node compile.
 - `assets/figma-make-parity.css`, `reference/figma-make/` — Make ribbon reference.
 - `reference/polish-shots/` — audit screenshots (390 / 768 / 1440).

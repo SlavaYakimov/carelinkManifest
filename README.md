@@ -6,16 +6,15 @@
 
 | Путь | Что это |
 |---|---|
-| `index.html` | Готовая страница для GitHub Pages: обычный HTML без сборки, редакционная вёрстка |
+| `web/` | Vite + React → `dist/` для GitHub Pages |
+| `content/blocks/` | Редакционный JSON: лендинг, лонгрид (`article/chapters/01.json`…), `landing-cards.json`, `chapter-images.json` |
+| `scripts/content/` | Сборка `content/blocks` → `web/public/site.json` (Node) |
 | `assets/style.css` | Стили. Палитра: тёмно-зелёный `#1f5c4a`, бронза `#8a6a3b`, кремовый `#f7faf8`, чернила `#14201b`, мятный `#dcefe6` |
 | `assets/carelink-owl-avatar.svg` | Аватар-сова с книгой (SVGO), для маски и `<img>` |
 | `assets/carelink-owl-128.png` | Favicon / apple-touch-icon и марка в шапке |
-| `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
-| `assets/images/` | Канон иллюстраций по блокам (`agenda`, `article`, `hero`, `chapters-landing`, `landing`, …). Публичный URL по-прежнему `images/…` |
-| `images/` | Compat-слой (симлинки на `assets/images/`). После клона или правок медиа: `npm run sync:images`. На Windows нужны симлинки в git (`core.symlinks true`) или WSL |
-| `content/blocks/` | Редакционный JSON: лендинг, лонгрид по главам (`article/chapters/01.json`…), `landing-cards.json` |
-| `ARTICLE.md` | Исходник лонгрида (Markdown); нарезка в JSON: `node scripts/migrate-article-to-json.mjs` |
-| `scripts/content/` | Сборка `content/blocks` → `web/public/site.json` (Node, без Python) |
+| `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 |
+| `assets/images/` | Канон иллюстраций по блокам. Публичный URL по-прежнему `images/…` |
+| `images/` | Compat-слой (симлинки на `assets/images/`). После клона: `npm run sync:images` |
 | `issues.json` | По одной задаче на каждый раздел статьи: `{title, body, labels}` |
 | `memory-context.md` | Контекст для CarelinkMemory |
 | `shots/` | Скриншоты страницы (Playwright, ширина 1280 и 390) |
@@ -24,31 +23,19 @@
 ## Как обновлять
 
 ```bash
-# 0. после clone или переноса файлов в assets/images/
-npm run sync:images
-
-# 1. правим JSON в content/blocks/ (или ARTICLE.md + migrate-article-to-json.mjs)
-npm run build                   # sync:images + compile:content + Vite → dist/ (GitHub Pages)
+npm run sync:images          # после clone или правок assets/images/
+# правим JSON в content/blocks/ (лонгрид — content/blocks/article/)
+npm run build                # sync + compile:content + Vite → dist/
 ```
 
-Соглашения в Markdown, которые понимает генератор:
-- `## N. Название` — глава. Номер становится моноширинной меткой «Глава 0N / N» (число глав считается автоматически) и пунктом оглавления.
-- `content/blocks/challenges.json` — блок «Вызовы» на лендинге (`#vyzovy`).
-- `<!-- landing:finale -->` в `ARTICLE.md` — финальный блок лендинга «Финальная ценность» (`#final-value`): карточка Neo Mirai + модалка; рендерится **после лонгрида**, последним блоком в `<main>` перед футером; в long-read не дублируется.
-- `` `Концепт` `` — бейдж «не найдено в источниках, требует подтверждения».
-- `> **Сценарий. Вымышленный пример.** …` — блок-сценка. Строки `**Имя:** реплика` превращаются в диалог.
-- `> **Вопрос читателю.** …` — вопрос читателю.
-- `> «…»` и строка `> — источник` — выносная цитата.
-- `![alt](images/…)` и следующая строка `*Иллюстрация NN · подпись*` — иллюстрация с подписью.
+Опционально: импорт из внешнего `ARTICLE.md` в JSON — `node scripts/migrate-article-to-json.mjs` (файл в репозиторий не входит).
+
+В лонгриде в JSON: блоки `paragraph`, `quote`, `list`, `reader_question`, `scenario`, `` `Концепт` `` в тексте → бейдж при сборке HTML.
 
 ## Публикация на GitHub Pages
 
-1. Скопируйте содержимое папки в корень репозитория (или в `docs/`).
-2. Откройте Settings → Pages → Deploy from branch и выберите ветку и папку.
-3. Все пути относительные, так что страница работает и из подпапки, и локально через `file://`.
+Сборка в CI: `npm run build`, артефакт `dist/`. Settings → Pages → GitHub Actions.
 
 ## Правила текста
 
-- Факты, цифры и названия функций взяты только из источников (см. «Об источниках» в конце статьи и `memory-context.md`).
-- Всё, чего нет в источниках, помечено как `Концепт`.
-- Все сценарии и диалоги вымышлены и помечены. Реальных цитат пользователей нет.
+См. вступление в `content/blocks/article/intro.json` и блок «Об источниках» в `content/blocks/article/sources.json`.

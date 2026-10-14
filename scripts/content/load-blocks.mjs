@@ -21,11 +21,7 @@ export function loadBlocks(root) {
     readJson(path.join(articleDir, rel)),
   );
 
-  let chapterImages = {};
-  const imgPath = path.join(root, 'tools/chapter-images.json');
-  if (fs.existsSync(imgPath)) {
-    chapterImages = readJson(imgPath);
-  }
+  const chapterImages = readJson(path.join(blocksDir, 'chapter-images.json'));
 
   return {
     meta: read('meta.json'),
