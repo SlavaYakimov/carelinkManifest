@@ -54,7 +54,6 @@
     var desktopCounter = document.querySelector('[data-bundle-desktop-counter]');
     var drag = { active: false, x: 0, scrollY: 0 };
     var raf = 0;
-    var lastNavIndex = -1;
 
     function bundleStageEngaged() {
       if (mqMobile.matches) return false;
@@ -66,7 +65,9 @@
     function setActiveNav(i) {
       navItems.forEach(function (li) {
         var n = parseInt(li.getAttribute('data-bundle-nav'), 10);
-        li.classList.toggle('is-active', n === i + 1);
+        var on = n === i + 1;
+        li.classList.toggle('is-active', on);
+        li.setAttribute('aria-current', on ? 'true' : 'false');
       });
       cards.forEach(function (card, ci) {
         var on = ci === i;
@@ -85,23 +86,6 @@
         if (spans[0]) spans[0].textContent = String(i + 1).padStart(2, '0');
       }
       bundleScroll.setAttribute('data-bundle-active', String(i + 1));
-      /* Fix scroll loop: scrollIntoView() also scrolls window (ancestor of sticky panel)
-         on every scroll tick, fighting the user's scroll. Scroll only the nav list itself,
-         and only when the active bundle changes. */
-      if (!mqMobile.matches && i !== lastNavIndex) {
-        lastNavIndex = i;
-        var activeLi = navItems.filter(function (li) {
-          return parseInt(li.getAttribute('data-bundle-nav'), 10) === i + 1;
-        })[0];
-        var box = activeLi && activeLi.parentElement;
-        while (box && box !== bundleScroll && box.scrollHeight <= box.clientHeight + 1) box = box.parentElement;
-        if (activeLi && box && box !== bundleScroll) {
-          var lr = activeLi.getBoundingClientRect();
-          var br = box.getBoundingClientRect();
-          var delta = lr.top < br.top ? lr.top - br.top : (lr.bottom > br.bottom ? lr.bottom - br.bottom : 0);
-          if (delta) box.scrollTop += delta;
-        }
-      }
     }
 
     function applyTransform() {
@@ -299,21 +283,21 @@
     }
     var titles = chapterTitles();
 
-    var focusedChapter = 0;
+    function chapterIndexFromProgress(p) {
+      var raw = p * (setCount - 1);
+      var setIdx = Math.min(setCount - 1, Math.max(0, Math.floor(raw + 0.0001)));
+      var fracInSet = Math.max(0, raw - setIdx);
+      var chapterInSet = Math.min(perSet - 1, Math.round(fracInSet * Math.max(perSet - 1, 1)));
+      return Math.min(setIdx * perSet + chapterInSet, navBtns.length - 1);
+    }
 
-    function updateNav(setIdx, focusIdx) {
+    function updateNav(setIdx, activeChapterIdx) {
       var start = setIdx * perSet;
-      if (focusIdx == null) {
-        focusIdx = focusedChapter;
-      }
-      if (focusIdx < start || focusIdx >= start + perSet) {
-        focusIdx = start;
-      }
-      focusedChapter = focusIdx;
       navBtns.forEach(function (btn, ti) {
         var li = btn.closest('li');
         var inSet = ti >= start && ti < start + perSet;
-        var active = ti === focusIdx;
+        var active = ti === activeChapterIdx;
+        btn.setAttribute('aria-current', active ? 'true' : 'false');
         if (li) {
           li.classList.toggle('is-active', active);
           li.classList.toggle('is-in-set', inSet && !active);
@@ -356,7 +340,7 @@
         var spans = desktopRange.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = range;
       }
-      if (mobileTitle && titles[focusIdx]) mobileTitle.textContent = titles[focusIdx];
+      if (mobileTitle && titles[activeChapterIdx]) mobileTitle.textContent = titles[activeChapterIdx];
     }
 
     function syncChapters() {
@@ -367,10 +351,8 @@
       progress = mqReduce.matches ? Math.round(raw) : raw;
       chaptersSets.style.setProperty('--chapters-progress', String(progress));
       var setIdx = Math.floor(progress + 0.0001);
-      if (focusedChapter < setIdx * perSet || focusedChapter >= (setIdx + 1) * perSet) {
-        focusedChapter = setIdx * perSet;
-      }
-      updateNav(setIdx, focusedChapter);
+      var activeChapter = chapterIndexFromProgress(p);
+      updateNav(setIdx, activeChapter);
     }
 
     function goChapter(chNum) {
@@ -395,7 +377,6 @@
       btn.addEventListener('click', function () {
         var ch = parseInt(btn.getAttribute('data-chapter-goto'), 10);
         if (isNaN(ch)) return;
-        focusedChapter = ch - 1;
         goChapter(ch);
       });
     });
@@ -415,8 +396,6 @@
         e.preventDefault();
         var ch = parseInt(navBtns[next].getAttribute('data-chapter-goto'), 10);
         if (isNaN(ch)) return;
-        focusedChapter = ch - 1;
-        navBtns[next].focus();
         goChapter(ch);
       });
     }
