@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T01:05:00.000Z",
+  "title": "Design System: Carelink Manifest",
+  "extensions": {
+    "colorMeta": {
+      "green": {
+        "role": "primary",
+        "displayName": "Keeper Green",
+        "canonical": "#1f5c4a",
+        "tonalRamp": ["#0a1f19", "#0f2e26", "#163f33", "#1f5c4a", "#3d7563", "#6a9484", "#9bb5a9", "#c5d8cf", "#dcefe6", "#f3f8f5"]
+      },
+      "bronze": {
+        "role": "secondary",
+        "displayName": "Archive Bronze",
+        "canonical": "#8a6a3b",
+        "tonalRamp": ["#2a2112", "#3d2f1a", "#524026", "#8a6a3b", "#a38455", "#b89a6f", "#cdb896", "#e0d0b8", "#efe6d8", "#fbf6ee"]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Reading Cream",
+        "canonical": "#f7faf8",
+        "tonalRamp": ["#1a1f1c", "#2a322e", "#3d4843", "#5a6660", "#78837c", "#9aa39d", "#b8c0bb", "#d3e2da", "#f7faf8", "#ffffff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink Body",
+        "canonical": "#14201b",
+        "tonalRamp": ["#050908", "#0a100e", "#14201b", "#24332c", "#3d4843", "#5a6660", "#78837c", "#9aa39d", "#c5ccc8", "#e8ecea"]
+      },
+      "mint": {
+        "role": "neutral",
+        "displayName": "Selection Mint",
+        "canonical": "#dcefe6",
+        "tonalRamp": ["#1a3d32", "#245244", "#2f6856", "#3d7563", "#5a9480", "#7aad9a", "#9bc5b3", "#b8d9cb", "#dcefe6", "#f3f8f5"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero h1 and largest editorial moments." },
+      "headline": { "displayName": "Headline", "purpose": "Section and panel titles." },
+      "title": { "displayName": "Title", "purpose": "Card and bundle mini headings." },
+      "body": { "displayName": "Body", "purpose": "Longread and dialog prose." },
+      "label": { "displayName": "Label", "purpose": "Nav, kickers, uppercase chain labels." }
+    },
+    "shadows": [
+      {
+        "name": "shadow-soft",
+        "value": "0 28px 90px rgba(20, 32, 27, 0.1)",
+        "purpose": "Hover lift on editorial list cards and hero CTA depth."
+      },
+      {
+        "name": "shadow-card",
+        "value": "0 18px 48px -28px rgba(31, 92, 74, 0.28)",
+        "purpose": "Default elevation on challenge/solution cards."
+      },
+      {
+        "name": "shadow-control",
+        "value": "0 6px 18px rgba(20, 32, 27, 0.12)",
+        "purpose": "Bundle/chapter circular navigation buttons."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default UI transitions (--ease)."
+      },
+      {
+        "name": "ease-quint",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Reveal and scroll-linked transforms."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "760px" },
+      { "name": "desktop-wide", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary CTA",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Header and hero primary actions.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#agenda\">К повестке <span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.55rem 0.95rem; border-radius: 999px; text-decoration: none; color: var(--cream, #f7faf8); background: var(--green, #1f5c4a); font-family: var(--font-label, Inter, sans-serif); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 8px 24px rgba(31, 92, 74, 0.18); transition: background 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: var(--green-d, #163f33); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(31, 92, 74, 0.55); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Mint Pill",
+      "kind": "button",
+      "refersTo": "button-ghost-mint",
+      "description": "Card read affordance on ticket grids.",
+      "html": "<span class=\"ds-btn-ghost-mint\">Читать</span>",
+      "css": ".ds-btn-ghost-mint { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 20px; border-radius: 999px; border: 1px solid rgba(31, 92, 74, 0.55); background: rgba(220, 239, 230, 0.62); color: var(--green-d, #163f33); font-family: var(--font-label, Inter, sans-serif); font-size: 14px; font-weight: 600; white-space: nowrap; transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease; } .ds-btn-ghost-mint:hover { background: rgba(220, 239, 230, 0.92); border-color: var(--green, #1f5c4a); color: var(--green, #1f5c4a); }"
+    },
+    {
+      "name": "Hero Chip",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "Hero topic tabs.",
+      "html": "<button type=\"button\" class=\"ds-chip\" aria-selected=\"true\">Данные семьи остаются в России</button>",
+      "css": ".ds-chip { border: 1px solid rgba(31, 92, 74, 0.28); border-radius: 999px; padding: 7px 14px; color: var(--green-d, #163f33); background: rgba(247, 250, 248, 0.82); font-family: var(--font-label, Inter, sans-serif); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; min-height: 44px; } .ds-chip[aria-selected=\"true\"] { box-shadow: inset 0 -2px 0 var(--green, #1f5c4a); color: var(--green, #1f5c4a); } .ds-chip:focus-visible { outline: 3px solid rgba(31, 92, 74, 0.55); outline-offset: 2px; }"
+    },
+    {
+      "name": "Top Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Fixed header section links.",
+      "html": "<a class=\"ds-nav-link\" href=\"#agenda\">Повестка</a>",
+      "css": ".ds-nav-link { color: var(--mut, #3d4843); text-decoration: none; font-family: var(--font-label, Inter, sans-serif); font-size: 10px; letter-spacing: 0.12em; padding: 10px 4px; min-height: 44px; display: inline-flex; align-items: center; border-bottom: 2px solid transparent; transition: color 0.18s ease, border-color 0.18s ease; } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: var(--green-d, #163f33); border-bottom-color: rgba(31, 92, 74, 0.4); }"
+    },
+    {
+      "name": "Ticket Card",
+      "kind": "card",
+      "refersTo": "card-ticket",
+      "description": "Neo Mirai ticket / chapter grid card.",
+      "html": "<article class=\"ds-card-ticket\"><p class=\"ds-card-kicker\">Глава 01</p><h3 class=\"ds-card-title\">Одинокие астронавты</h3><p class=\"ds-card-teaser\">Краткий тизер текста главы.</p></article>",
+      "css": ".ds-card-ticket { display: flex; flex-direction: column; gap: 10px; padding: clamp(18px, 2.2vw, 24px); background: var(--cream, #f7faf8); border: 1px solid rgba(31, 92, 74, 0.16); border-radius: 4px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset; min-height: 100%; } .ds-card-kicker { margin: 0; color: var(--bronze, #8a6a3b); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-family: var(--font-label, Inter, sans-serif); } .ds-card-title { margin: 0; font-family: var(--head, 'Playfair Display', serif); font-weight: 600; font-size: clamp(16px, 1.15vw, 19px); line-height: 1.32; color: var(--ink, #14201b); letter-spacing: -0.02em; } .ds-card-teaser { margin: 0; font-size: 14px; line-height: 1.55; color: var(--mut, #3d4843); }"
+    },
+    {
+      "name": "Panel Chain Row",
+      "kind": "custom",
+      "refersTo": "button-ghost-mint",
+      "description": "Agenda/chapter side panel chain button (label + title grid).",
+      "html": "<button type=\"button\" class=\"ds-chain-row\"><b>Вызов</b><strong>Атомизация людей внутри семьи</strong></button>",
+      "css": ".ds-chain-row { display: grid; grid-template-columns: 7.15rem minmax(0, 1fr); column-gap: 0.65rem; align-items: baseline; width: 100%; text-align: left; cursor: pointer; background: transparent; border: 0; border-left: 2px solid transparent; padding: 0.35rem 0.45rem; min-height: 44px; color: #5a4636; font-family: var(--font-body, Inter, sans-serif); } .ds-chain-row b { grid-column: 1; font-family: var(--font-label, Inter, sans-serif); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green, #1f5c4a); white-space: nowrap; } .ds-chain-row strong { grid-column: 2; font-size: 0.8125rem; font-weight: 500; line-height: 1.35; } .ds-chain-row:hover, .ds-chain-row:focus-visible { background: rgba(247, 250, 248, 0.92); border-left-color: rgba(138, 106, 59, 0.45); outline: none; } .ds-chain-row:focus-visible { outline: 3px solid rgba(31, 92, 74, 0.55); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Family Gazette",
+    "overview": "The surface reads like a calm Russian editorial publication layered with a scroll-driven exhibition landing (Figma Make parity). Paper warmth, forest green authority, and bronze accents carry the voice of Carelink without SaaS theatrics. Neo Mirai polish refines hierarchy, mint selection states, and 4px structural radius on top of Make behavior.",
+    "keyCharacteristics": [
+      "Playfair Display for display and section titles; Inter stands in until Echo 2 and Cosmetics MS files are confirmed.",
+      "Green/bronze/cream palette with mint for selection—not purple gradients or glassmorphism.",
+      "4px Mirai radius on polished controls; larger radii on longread cards where already established.",
+      "Scroll-jacked agenda/chapters on desktop; horizontal snap on mobile.",
+      "Photography with slight desaturation on landing minis."
+    ],
+    "rules": [
+      {
+        "name": "The No Gray-on-Tint Rule",
+        "body": "Body copy on cream, mint, or bronze-tinted panels uses ink or muted sage, not neutral gray alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Green-Rail Rule",
+        "body": "Active bundle/chapter rows use mint wash plus inset 3px green left rail—not solid bronze slabs.",
+        "section": "colors"
+      },
+      {
+        "name": "The Playfair-Head Rule",
+        "body": "Landing panel and card titles use Playfair via var(--head), not Cormorant SC from Make parity.",
+        "section": "typography"
+      },
+      {
+        "name": "The Measure Rule",
+        "body": "Prose blocks target 62ch; panel chain text may wrap with grid-separated labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-Until-Hover Rule",
+        "body": "Sticky scroll cards and panel rows stay flat at rest; mint active state replaces bronze fill.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use CSS variables from assets/style.css for new surfaces.",
+      "Do layer overrides: figma-make-parity → manifesto → impeccable-polish.",
+      "Do keep 44px minimum interactive targets on panel chains and dialogs.",
+      "Do respect prefers-reduced-motion where wired in CSS/JS."
+    ],
+    "donts": [
+      "Don't remove landing sections for simplicity—polish in place.",
+      "Don't reintroduce solid bronze panel active fills or Cormorant on chain labels.",
+      "Don't use generic AI landing patterns (purple gradients, Inter-only everything).",
+      "Don't hand-edit index.html for repeatable blocks—use tools/build.py."
+    ]
+  }
+}
