@@ -153,6 +153,7 @@ section_log = []
 
 
 def inline(t):
+    t = re.sub(r'<strong>(.+?)</strong>', r'**\1**', t, flags=re.I)
     t = html.escape(t, quote=False)
     def code(m):
         c = m.group(1)
