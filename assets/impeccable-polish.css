@@ -887,7 +887,19 @@
   }
 }
 
-@media (min-width: 761px) {
+@media (min-width: 761px) and (max-width: 999px) {
+  :root {
+    --stage-card-width: calc(100vw / 6);
+  }
+
+  .carelink-page .bundle-card {
+    flex: 0 0 var(--stage-card-width) !important;
+    max-width: none;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 1000px) {
   :root {
     --stage-card-width: calc(100vw / 3);
   }
