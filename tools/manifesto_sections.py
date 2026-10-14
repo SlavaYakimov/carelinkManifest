@@ -13,13 +13,39 @@ def _load(name):
     return json.loads((ROOT / 'tools' / name).read_text(encoding='utf-8'))
 
 
-def render_narrative_intro(h2, text, inline_fn, section_id=''):
+def render_narrative_intro(h2, text, inline_fn, section_id='', *, extra_html=''):
     sid = f' id="{section_id}"' if section_id else ''
     return (
         f'<section class="narrative-intro"{sid} data-reveal>'
         f'<h2>{html.escape(h2)}</h2>'
         f'<p>{inline_fn(text)}</p>'
+        f'{extra_html}'
         f'</section>'
+    )
+
+
+def render_truth_layer(inline_fn):
+    data = _load('landing-editorial.json')['truth_layer']
+    return (
+        f'<section class="truth-layer" id="manifest-truth" data-reveal aria-labelledby="truth-layer-title">'
+        f'<h2 id="truth-layer-title" class="truth-layer__title">{html.escape(data["heading"])}</h2>'
+        f'<p class="truth-layer__body">{inline_fn(data["body"])}</p>'
+        f'</section>'
+    )
+
+
+def render_glossary(inline_fn):
+    items = _load('landing-editorial.json')['glossary']
+    lis = []
+    for row in items:
+        lis.append(
+            f'<li><dfn>{html.escape(row["term"])}</dfn> — {inline_fn(row["definition"])}</li>'
+        )
+    return (
+        f'<aside class="landing-glossary" data-reveal aria-label="Короткий словарь">'
+        f'<h3 class="landing-glossary__title">Пять слов, которые встретятся дальше</h3>'
+        f'<ul class="landing-glossary__list">{"".join(lis)}</ul>'
+        f'</aside>'
     )
 
 
@@ -69,6 +95,10 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
             cid = f'agenda-{n}-{key}'
             label = item.get('label') or f'{_KIND_LABEL[kind]} · {n:02d}'
             title = item['title']
+            if key == 'reshenie':
+                chain_title = b.get('nav_solution_title') or title
+            else:
+                chain_title = title
             img = item.get('image', '')
             alt = title
             desc = item.get('description', '')
@@ -76,7 +106,7 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
             chain_buttons.append(
                 f'<button type="button" data-bundle-focus="{n}" data-bundle-kind="{key}">'
                 f'<b>{html.escape(_KIND_LABEL[kind])}</b>'
-                f'<strong>{html.escape(title)}</strong></button>'
+                f'<strong>{html.escape(chain_title)}</strong></button>'
             )
         cards.append(
             f'<article class="bundle-card" tabindex="0" data-bundle="{n}">'
@@ -89,7 +119,13 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
             f'</div></li>'
         )
 
-    intro = render_narrative_intro(data['intro_h2'], data['intro_text'], inline_fn, 'agenda-intro')
+    intro = render_narrative_intro(
+        data['intro_h2'],
+        data['intro_text'],
+        inline_fn,
+        'agenda-intro',
+        extra_html=render_glossary(inline_fn),
+    )
     return (
         intro
         + f'<section class="bundle-scroll" id="agenda" aria-label="CareLink — вызовы, сценарии и решения">'
@@ -192,14 +228,18 @@ def render_chapters_manifesto(inline_fn, img_picture_fn, detail_store: list):
                 f'<div class="chapter-card__copy">'
                 f'<p>Глава · {n:02d}/20</p>'
                 f'<h3>{html.escape(ch["title"])}</h3>'
-                f'<span>{inline_fn(ch["subtitle"])}</span>'
+                f'<span>{inline_fn(ch.get("teaser") or ch["subtitle"])}</span>'
                 f'</div></article>'
             )
         set_html.append(
             f'<div class="chapters-set" style="--chapter-set-index:{si}">{"".join(cards)}</div>'
         )
 
-    intro = render_narrative_intro(data['intro_h2'], data['intro_text'], inline_fn, 'glavy-intro')
+    note = _load('landing-editorial.json').get('chapters_intro_note', '')
+    extra = f'<p class="narrative-intro__note">{inline_fn(note)}</p>' if note else ''
+    intro = render_narrative_intro(
+        data['intro_h2'], data['intro_text'], inline_fn, 'glavy-intro', extra_html=extra
+    )
     panel_lead = (
         'Манифест — это не правила, а разговор о том, как близким оставаться рядом.'
     )
