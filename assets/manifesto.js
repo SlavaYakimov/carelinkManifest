@@ -194,13 +194,25 @@
     }
     var titles = chapterTitles();
 
+    var focusedChapter = 0;
+
     function updateNav(setIdx, focusIdx) {
       var start = setIdx * perSet;
+      if (focusIdx == null) {
+        focusIdx = focusedChapter;
+      }
+      if (focusIdx < start || focusIdx >= start + perSet) {
+        focusIdx = start;
+      }
+      focusedChapter = focusIdx;
       navBtns.forEach(function (btn, ti) {
         var li = btn.closest('li');
         var inSet = ti >= start && ti < start + perSet;
-        var active = focusIdx === null ? inSet : ti === focusIdx;
-        if (li) li.classList.toggle('is-active', active);
+        var active = ti === focusIdx;
+        if (li) {
+          li.classList.toggle('is-active', active);
+          li.classList.toggle('is-in-set', inSet && !active);
+        }
       });
       var sets = chaptersSets.querySelectorAll('.chapters-set');
       sets.forEach(function (setEl, si) {
@@ -247,7 +259,11 @@
       var raw = p * (setCount - 1);
       progress = mqReduce.matches ? Math.round(raw) : raw;
       chaptersSets.style.setProperty('--chapters-progress', String(progress));
-      updateNav(Math.floor(progress + 0.0001), null);
+      var setIdx = Math.floor(progress + 0.0001);
+      if (focusedChapter < setIdx * perSet || focusedChapter >= (setIdx + 1) * perSet) {
+        focusedChapter = setIdx * perSet;
+      }
+      updateNav(setIdx, focusedChapter);
     }
 
     function goChapter(chNum) {
@@ -270,7 +286,9 @@
     window.addEventListener('resize', scheduleC);
     navBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        goChapter(parseInt(btn.getAttribute('data-chapter-goto'), 10));
+        var ch = parseInt(btn.getAttribute('data-chapter-goto'), 10);
+        focusedChapter = ch - 1;
+        goChapter(ch);
       });
     });
     syncChapters();
