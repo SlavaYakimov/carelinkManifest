@@ -10,12 +10,15 @@
   --bronze-ink: #7a5e34;
   --title-on-wash: #163f33;
   --ui-label-min: 11px; /* functional floor (rem drifts when root ≠ 16px) */
+  --bronze: var(--bronze-ink);
 }
 
+.carelink-page,
 .carelink-page .narrative-intro,
 .carelink-page .values-row,
 .carelink-page .skills-section,
-.carelink-page .bundle-panel {
+.carelink-page .bundle-panel,
+.carelink-page .truth-layer {
   --bronze: var(--bronze-ink);
 }
 
@@ -114,7 +117,7 @@
 }
 
 .carelink-page .carelink-hero__kicker {
-  color: var(--bronze);
+  color: var(--bronze-ink);
   letter-spacing: 0.14em;
 }
 
@@ -693,4 +696,60 @@
   .carelink-page .bundle-progress i {
     transition: none !important;
   }
+}
+
+/* --- Landing polish (site chrome + type floor) --- */
+
+.has-site-header .top-nav a,
+.has-site-header .top-cta,
+.has-site-header .top-cta .mono,
+.has-site-header .top-r {
+  font-size: var(--ui-label-min) !important;
+  color: var(--bronze-ink, #7a5e34);
+}
+
+.carelink-page .carelink-hero__kicker {
+  font-size: var(--ui-label-min) !important;
+  font-weight: 600;
+}
+
+.carelink-page .carelink-hero__chips button {
+  font-size: var(--ui-label-min) !important;
+  line-height: 1.35;
+}
+
+.carelink-page .carelink-hero__cta,
+.carelink-page .carelink-hero__secondary {
+  font-size: var(--ui-label-min) !important;
+}
+
+.carelink-page .chapters-panel__mobile,
+.carelink-page [data-chapters-mobile-range],
+.carelink-page [data-chapters-desktop-range],
+.carelink-page [data-chapters-mobile-title] {
+  font-size: var(--ui-label-min) !important;
+}
+
+.carelink-page .chapters-panel li > button strong {
+  font-size: max(var(--ui-label-min), 0.8125rem) !important;
+}
+
+.carelink-page .chapter-card .chapter-card__copy > p {
+  font-size: 12px !important;
+  color: var(--bronze-ink) !important;
+  letter-spacing: 0.08em;
+}
+
+.carelink-page .badge {
+  color: var(--bronze-ink);
+  border-color: rgba(122, 94, 52, 0.72);
+}
+
+.carelink-page {
+  caret-color: var(--green);
+}
+
+.carelink-page ::selection {
+  background: rgba(220, 239, 230, 0.92);
+  color: var(--ink);
 }

@@ -220,7 +220,7 @@ body.has-site-header .chapters-panel {
 }
 
 .carelink-page .bundle-panel__heading > p {
-  color: #5a4636;
+  color: var(--bronze-ink, #7a5e34);
 }
 
 .narrative-intro__skip {
