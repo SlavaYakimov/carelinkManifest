@@ -185,3 +185,155 @@ body.has-site-header .chapters-panel {
   font: 400 14px/1.5 var(--font-body);
   color: #5a4636;
 }
+
+/* --- ui-ux-pro-max (a11y, touch, focus, contrast, motion, layout) --- */
+
+.carelink-page {
+  overflow-x: clip;
+}
+
+.carelink-page .carelink-hero__kicker {
+  color: #3d4843;
+}
+
+.carelink-page .carelink-hero__chips button {
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
+  color: #3d4843;
+}
+
+.carelink-page .carelink-hero__chips button[aria-selected='true'] {
+  color: #1f5c4a;
+}
+
+.carelink-page .carelink-hero__cta,
+.carelink-page .carelink-hero__secondary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+.carelink-page .bundle-panel__heading > p {
+  color: #5a4636;
+}
+
+.narrative-intro__skip {
+  margin: 1rem 0 0;
+  font: 500 13px/1.4 var(--font-label);
+}
+
+.narrative-intro__skip a {
+  color: #1f5c4a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.carelink-page .bundle-panel__chain button,
+.carelink-page .bundle-arrow {
+  min-height: 44px;
+  min-width: 44px;
+  box-sizing: border-box;
+}
+
+.carelink-page .bundle-panel__chain button {
+  padding-block: 0.55rem;
+}
+
+.carelink-page .bundle-mini > button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.carelink-page .chapters-panel li > button {
+  min-height: 44px;
+  padding-block: 0.55rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.carelink-page .chapters-set[aria-hidden='true'] .chapter-card {
+  pointer-events: none;
+}
+
+.carelink-page .detail-dialog-close {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-nav a {
+  min-width: 44px;
+  justify-content: center;
+  padding-inline: 10px;
+}
+
+.carelink-page .bundle-panel__chain button:focus-visible,
+.carelink-page .chapters-panel li > button:focus-visible,
+.carelink-page .carelink-hero__chips button:focus-visible,
+.carelink-page .bundle-mini > button:focus-visible,
+.carelink-page .bundle-arrow:focus-visible,
+.carelink-page .chapter-card:focus-visible,
+.carelink-page .carelink-hero__cta:focus-visible,
+.carelink-page .carelink-hero__secondary:focus-visible {
+  outline: 3px solid rgba(31, 92, 74, 0.55);
+  outline-offset: 3px;
+}
+
+.values-track {
+  scroll-padding-inline: 1rem;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.values-mini .agenda-mini-read,
+.values-mini button[data-detail-open],
+.skills-section .agenda-mini-read {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.foot-nav a {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 8px;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carelink-page .bundle-track,
+  .carelink-page .chapters-sets {
+    will-change: auto !important;
+  }
+
+  .carelink-page .bundle-scroll,
+  .carelink-page .chapters-scroll {
+    scroll-behavior: auto;
+  }
+
+  .carelink-page .carelink-hero__cta,
+  .carelink-page .carelink-hero__chips button,
+  .carelink-page .bundle-card,
+  .carelink-page .chapter-card {
+    transition: none !important;
+  }
+}
