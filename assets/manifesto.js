@@ -18,6 +18,7 @@
       }
     }
     tabs.forEach(function (tab) {
+      tab.setAttribute('aria-controls', 'hero-tab-panel');
       tab.addEventListener('click', function () { selectTab(tab); });
     });
     tabRoot.addEventListener('keydown', function (e) {
@@ -41,9 +42,10 @@
   var bundleTrack = document.querySelector('[data-bundle-track]');
   if (bundleScroll && bundleViewport && bundleTrack) {
     var cards = [].slice.call(bundleTrack.querySelectorAll('.bundle-card'));
-    var total = cards.length || 9;
+    var total = Math.max(cards.length || 9, 1);
     var index = 0;
     var frac = 0;
+    var dragPointerId = null;
     var progressEl = document.querySelector('[data-bundle-progress]');
     var prevBtn = document.querySelector('[data-bundle-prev]');
     var nextBtn = document.querySelector('[data-bundle-next]');
@@ -52,6 +54,13 @@
     var desktopCounter = document.querySelector('[data-bundle-desktop-counter]');
     var drag = { active: false, x: 0, scrollY: 0 };
     var raf = 0;
+
+    function bundleStageEngaged() {
+      if (mqMobile.matches) return false;
+      var rect = bundleScroll.getBoundingClientRect();
+      var header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 74;
+      return rect.top <= header + 6 && rect.bottom >= window.innerHeight * 0.42;
+    }
 
     function setActiveNav(i) {
       navItems.forEach(function (li) {
@@ -74,6 +83,7 @@
         var spans = desktopCounter.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = String(i + 1).padStart(2, '0');
       }
+      bundleScroll.setAttribute('data-bundle-active', String(i + 1));
       if (!mqMobile.matches) {
         var activeLi = navItems.filter(function (li) {
           return parseInt(li.getAttribute('data-bundle-nav'), 10) === i + 1;
@@ -127,7 +137,8 @@
       }
       var top = window.scrollY + bundleScroll.getBoundingClientRect().top;
       var scrollRange = Math.max(bundleScroll.offsetHeight - window.innerHeight, 1);
-      window.scrollTo({ top: top + (index / (total - 1)) * scrollRange, behavior: behavior });
+      var denom = Math.max(total - 1, 1);
+      window.scrollTo({ top: top + (index / denom) * scrollRange, behavior: behavior });
     }
 
     function onScrollTick() {
@@ -145,41 +156,117 @@
 
     if (!mqReduce.matches) {
       bundleScroll.addEventListener('wheel', function (e) {
-        if (mqMobile.matches) return;
+        if (mqMobile.matches || !bundleStageEngaged()) return;
         if (Math.abs(e.deltaX) < 1 && !e.shiftKey) return;
         e.preventDefault();
         window.scrollBy({ top: Math.abs(e.deltaX) >= 1 ? e.deltaX : e.deltaY });
       }, { passive: false });
     }
 
+    function clearDrag() {
+      drag.active = false;
+      dragPointerId = null;
+    }
+
     bundleViewport.addEventListener('pointerdown', function (e) {
-      if (mqReduce.matches || mqMobile.matches || e.target.closest('button')) return;
+      if (mqReduce.matches || mqMobile.matches || !bundleStageEngaged()) return;
+      if (e.target.closest('button')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
       drag.active = true;
+      dragPointerId = e.pointerId;
       drag.x = e.clientX;
       drag.scrollY = window.scrollY;
-      bundleViewport.setPointerCapture(e.pointerId);
+      try {
+        bundleViewport.setPointerCapture(e.pointerId);
+      } catch (err) {
+        clearDrag();
+      }
     });
     bundleViewport.addEventListener('pointermove', function (e) {
-      if (!drag.active) return;
+      if (!drag.active || e.pointerId !== dragPointerId) return;
       var maxX = Math.max(bundleTrack.scrollWidth - bundleViewport.clientWidth, 1);
       var scrollRange = Math.max(bundleScroll.offsetHeight - window.innerHeight, 1);
       var dx = e.clientX - drag.x;
       window.scrollTo({ top: drag.scrollY - (dx / maxX) * scrollRange });
     });
     function endDrag(e) {
-      drag.active = false;
-      if (bundleViewport.hasPointerCapture(e.pointerId)) bundleViewport.releasePointerCapture(e.pointerId);
+      if (dragPointerId != null && e.pointerId !== dragPointerId) return;
+      if (bundleViewport.hasPointerCapture(e.pointerId)) {
+        try {
+          bundleViewport.releasePointerCapture(e.pointerId);
+        } catch (err) { /* ignore */ }
+      }
+      clearDrag();
     }
     bundleViewport.addEventListener('pointerup', endDrag);
     bundleViewport.addEventListener('pointercancel', endDrag);
+    bundleViewport.addEventListener('lostpointercapture', clearDrag);
+    window.addEventListener('blur', clearDrag);
 
-    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(index - 1); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(index + 1); });
+    function navToBundle(i) {
+      var n = parseInt(i, 10);
+      if (isNaN(n)) return;
+      goTo(n - 1);
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () { goTo(index - 1); });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () { goTo(index + 1); });
+    }
     navItems.forEach(function (li) {
-      li.addEventListener('click', function () {
-        goTo(parseInt(li.getAttribute('data-bundle-nav'), 10) - 1);
+      li.addEventListener('click', function (e) {
+        if (e.target.closest('button[data-bundle-focus]')) return;
+        navToBundle(li.getAttribute('data-bundle-nav'));
       });
     });
+    [].slice.call(document.querySelectorAll('[data-bundle-focus]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        navToBundle(btn.getAttribute('data-bundle-focus'));
+      });
+    });
+
+    var navOl = document.querySelector('ol[data-bundle-nav]');
+    if (navOl) {
+      navOl.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Home' && e.key !== 'End') return;
+        var next = index;
+        if (e.key === 'ArrowDown') next = Math.min(index + 1, total - 1);
+        else if (e.key === 'ArrowUp') next = Math.max(index - 1, 0);
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = total - 1;
+        if (next === index) return;
+        e.preventDefault();
+        goTo(next);
+        var li = navItems.filter(function (el) {
+          return parseInt(el.getAttribute('data-bundle-nav'), 10) === next + 1;
+        })[0];
+        var focusBtn = li && li.querySelector('button[data-bundle-focus]');
+        if (focusBtn) focusBtn.focus();
+      });
+    }
+
+    bundleScroll.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (!bundleScroll.contains(document.activeElement)) return;
+      e.preventDefault();
+      goTo(index + (e.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    if (mobileCounter) {
+      mobileCounter.setAttribute('role', 'status');
+      mobileCounter.setAttribute('aria-live', 'polite');
+      mobileCounter.setAttribute('aria-atomic', 'true');
+    }
+    if (desktopCounter) {
+      desktopCounter.setAttribute('role', 'status');
+      desktopCounter.setAttribute('aria-live', 'polite');
+      desktopCounter.setAttribute('aria-atomic', 'true');
+    }
+
+    mqMobile.addEventListener('change', schedule);
+    mqReduce.addEventListener('change', schedule);
 
     syncFromScroll();
   }
@@ -223,6 +310,8 @@
         if (li) {
           li.classList.toggle('is-active', active);
           li.classList.toggle('is-in-set', inSet && !active);
+          li.classList.toggle('is-nav-hidden', !inSet);
+          li.setAttribute('aria-hidden', inSet ? 'false' : 'true');
         }
       });
       var sets = chaptersSets.querySelectorAll('.chapters-set');
@@ -260,7 +349,7 @@
         var spans = desktopRange.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = range;
       }
-      if (mobileTitle && titles[start]) mobileTitle.textContent = titles[start];
+      if (mobileTitle && titles[focusIdx]) mobileTitle.textContent = titles[focusIdx];
     }
 
     function syncChapters() {
@@ -298,10 +387,47 @@
     navBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var ch = parseInt(btn.getAttribute('data-chapter-goto'), 10);
+        if (isNaN(ch)) return;
         focusedChapter = ch - 1;
         goChapter(ch);
       });
     });
+
+    var chaptersNav = document.querySelector('.chapters-panel nav');
+    if (chaptersNav) {
+      chaptersNav.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Home' && e.key !== 'End') return;
+        var idx = navBtns.indexOf(document.activeElement);
+        if (idx < 0) return;
+        var next = idx;
+        if (e.key === 'ArrowDown') next = Math.min(idx + 1, navBtns.length - 1);
+        else if (e.key === 'ArrowUp') next = Math.max(idx - 1, 0);
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = navBtns.length - 1;
+        if (next === idx) return;
+        e.preventDefault();
+        var ch = parseInt(navBtns[next].getAttribute('data-chapter-goto'), 10);
+        if (isNaN(ch)) return;
+        focusedChapter = ch - 1;
+        navBtns[next].focus();
+        goChapter(ch);
+      });
+    }
+
+    if (mobileRange) {
+      mobileRange.setAttribute('role', 'status');
+      mobileRange.setAttribute('aria-live', 'polite');
+      mobileRange.setAttribute('aria-atomic', 'true');
+    }
+    if (desktopRange) {
+      desktopRange.setAttribute('role', 'status');
+      desktopRange.setAttribute('aria-live', 'polite');
+      desktopRange.setAttribute('aria-atomic', 'true');
+    }
+
+    mqMobile.addEventListener('change', scheduleC);
+    mqReduce.addEventListener('change', scheduleC);
+
     syncChapters();
   }
 })();
