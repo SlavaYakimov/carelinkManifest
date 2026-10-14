@@ -712,16 +712,22 @@
 
   .has-site-header .top-cta {
     white-space: nowrap;
+    flex-wrap: nowrap;
     flex-shrink: 0;
-    max-width: min(42vw, 11.5rem);
-    padding-inline: 0.62rem;
-    font-size: clamp(8px, 2.35vw, 10px);
-    letter-spacing: 0.07em;
+    max-width: none;
+    padding-inline: 0.55rem 0.5rem;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    gap: 0.3rem;
   }
 
-  .has-site-header .top-cta span:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .has-site-header .top-cta span {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .has-site-header .top-cta .top-cta-arrow {
+    flex-shrink: 0;
   }
 }
 
@@ -833,17 +839,31 @@
     min-height: 0;
   }
 
+  .carelink-page .bundle-panel__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-height: min(42vh, 14.5rem);
+    overflow: hidden;
+  }
+
   .carelink-page .bundle-panel__heading h2 {
-    font-size: clamp(0.92rem, 1.15vw, 1.32rem) !important;
-    line-height: 1.14 !important;
-    letter-spacing: 0.035em !important;
-    margin: 0.12rem 0 0.4rem !important;
+    font-size: clamp(0.82rem, 1vw, 1.18rem) !important;
+    line-height: 1.12 !important;
+    letter-spacing: 0.03em !important;
+    margin: 0 !important;
     max-width: 100%;
     overflow-wrap: break-word;
+    flex-shrink: 0;
   }
 
   .carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] {
-    margin-top: 0.25rem !important;
+    margin-top: 0 !important;
+    flex-shrink: 0;
+  }
+
+  .carelink-page .bundle-panel nav {
+    margin-top: 0.15rem;
   }
 
   .carelink-page .chapters-panel li > button {
