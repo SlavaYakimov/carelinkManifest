@@ -351,8 +351,8 @@
         if (li) {
           li.classList.toggle('is-active', active);
           li.classList.toggle('is-in-set', inSet && !active);
-          li.classList.toggle('is-nav-hidden', !inSet);
-          li.setAttribute('aria-hidden', inSet ? 'false' : 'true');
+          li.classList.remove('is-nav-hidden');
+          li.setAttribute('aria-hidden', 'false');
         }
       });
       var sets = chaptersSets.querySelectorAll('.chapters-set');
@@ -395,6 +395,20 @@
         if (spans[0]) spans[0].textContent = range;
       }
       if (mobileTitle && titles[activeChapterIdx]) mobileTitle.textContent = titles[activeChapterIdx];
+      if (!mqMobile.matches) {
+        var activeBtn = navBtns[activeChapterIdx];
+        var navList = activeBtn && activeBtn.closest('ol');
+        var activeLi = activeBtn && activeBtn.closest('li');
+        if (navList && activeLi) {
+          var listRect = navList.getBoundingClientRect();
+          var liRect = activeLi.getBoundingClientRect();
+          if (liRect.top < listRect.top) {
+            navList.scrollTop -= listRect.top - liRect.top;
+          } else if (liRect.bottom > listRect.bottom) {
+            navList.scrollTop += liRect.bottom - listRect.bottom;
+          }
+        }
+      }
     }
 
     function syncChapters() {
