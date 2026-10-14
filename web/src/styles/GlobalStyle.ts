@@ -11,7 +11,14 @@ export const GlobalStyle = createGlobalStyle`
     --bronze-ink: ${theme.colors.bronzeInk};
     --title-on-wash: ${theme.colors.titleOnWash};
     --ui-label-min: ${theme.uiLabelMin};
+    --hero-block-min-h: ${theme.heroBlockMinH};
     --bronze: var(--bronze-ink);
+  }
+
+  @media (max-width: 760px) {
+    :root {
+      --hero-block-min-h: ${theme.heroBlockMinHMobile};
+    }
   }
 
   @media (max-width: 760px) {

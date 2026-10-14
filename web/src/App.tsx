@@ -45,25 +45,25 @@ export default function App() {
       <main id="top">
         <CarelinkPage>
           <ManifestHero hero={structured.hero} />
-        </CarelinkPage>
-          <TruthLayer truth={structured.truth} />
-          <AgendaScroll agenda={structured.agenda} glossary={structured.glossary} />
+          <TruthLayer truth={structured.truth} glossary={structured.glossary} />
+          <AgendaScroll agenda={structured.agenda} />
           <ChaptersScroll
             data={structured.chaptersLanding}
             introNote={structured.chaptersIntroNote}
           />
-        <ChallengesSection data={structured.challenges} />
-        <DevelopmentSection data={structured.development} />
-        <ProductArchSection data={structured.productArch} />
-        <ArticleLayout article={article} tocItems={structured.article.tocItems} />
-        <ValuesRow data={structured.values} />
-        <SkillsSection data={structured.skills} />
-        <FinaleSection data={structured.finaleCtas} />
-      <LandingCardStore cards={landingCards} />
-      <DetailDialogShell />
-      <LandingDrawerShell />
-      <ChapterDialogShell numChapters={meta.numChapters} />
-      <SiteFooter brandOwlHtml={brandOwlHtml} />
+          <ChallengesSection data={structured.challenges} />
+          <DevelopmentSection data={structured.development} />
+          <ProductArchSection data={structured.productArch} />
+          <ArticleLayout article={article} tocItems={structured.article.tocItems} />
+          <ValuesRow data={structured.values} />
+          <SkillsSection data={structured.skills} />
+          <FinaleSection data={structured.finaleCtas} />
+        </CarelinkPage>
+        <LandingCardStore cards={landingCards} />
+        <DetailDialogShell />
+        <LandingDrawerShell />
+        <ChapterDialogShell numChapters={meta.numChapters} />
+        <SiteFooter brandOwlHtml={brandOwlHtml} />
       </main>
     </>
   );

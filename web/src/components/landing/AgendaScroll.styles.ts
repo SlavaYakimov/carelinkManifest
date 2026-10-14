@@ -18,6 +18,7 @@ export const BundleStage = styled.div.attrs({
 export const BundleViewport = styled.div.attrs({
   className: 'bundle-viewport',
 })`
+  position: relative;
   scroll-padding-inline: var(--bundle-viewport-pad);
   padding-inline: var(--bundle-viewport-pad);
   box-sizing: border-box;
@@ -66,6 +67,7 @@ export const BundleArrow = styled.button.attrs<{ $variant: 'previous' | 'next' }
   min-height: 44px;
   min-width: 44px;
   box-sizing: border-box;
+  transition: transform 160ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1));
 
   ${(p) =>
     p.$variant === 'previous'
@@ -80,12 +82,20 @@ export const BundleArrow = styled.button.attrs<{ $variant: 'previous' | 'next' }
   }
 
   &:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: scale(0.97);
   }
 
   &:focus-visible {
     outline: 3px solid rgba(31, 92, 74, 0.55);
     outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
   }
 `;
 
@@ -228,9 +238,10 @@ export const BundlePanelChain = styled.div.attrs({
     padding-block: 0.55rem;
     font-family: ${theme.fonts.body} !important;
     line-height: 1.35 !important;
+    transition: transform 160ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1));
 
     &:active {
-      transform: translateY(1px);
+      transform: scale(0.97);
     }
 
     &:hover,

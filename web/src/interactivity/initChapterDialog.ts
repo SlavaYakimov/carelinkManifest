@@ -67,7 +67,7 @@ export function initChapterDialog() {
     });
   }
 
-  function selectTab(idx) {
+  function selectTab(idx, animate) {
     tabs.forEach(function (tab, i) {
       var on = i === idx;
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -77,35 +77,37 @@ export function initChapterDialog() {
     panelSource.hidden = idx !== 1;
     panelStructure.classList.toggle('is-active', idx === 0);
     panelSource.classList.toggle('is-active', idx === 1);
-    flashTabPanel(idx === 0 ? panelStructure : panelSource);
+    if (animate) {
+      flashTabPanel(idx === 0 ? panelStructure : panelSource);
+    }
   }
 
   function onTabKeydown(e, idx) {
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      selectTab((idx + 1) % tabs.length);
+      selectTab((idx + 1) % tabs.length, false);
       tabs[(idx + 1) % tabs.length].focus();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      selectTab((idx + tabs.length - 1) % tabs.length);
+      selectTab((idx + tabs.length - 1) % tabs.length, false);
       tabs[(idx + tabs.length - 1) % tabs.length].focus();
     } else if (e.key === 'Home') {
       e.preventDefault();
-      selectTab(0);
+      selectTab(0, false);
       tabStructure.focus();
     } else if (e.key === 'End') {
       e.preventDefault();
-      selectTab(tabs.length - 1);
+      selectTab(tabs.length - 1, false);
       tabSource.focus();
     }
   }
 
-  tabStructure.addEventListener('click', function () { selectTab(0); });
-  tabSource.addEventListener('click', function () { selectTab(1); });
+  tabStructure.addEventListener('click', function () { selectTab(0, true); });
+  tabSource.addEventListener('click', function () { selectTab(1, true); });
   tabStructure.addEventListener('keydown', function (e) { onTabKeydown(e, 0); });
   tabSource.addEventListener('keydown', function (e) { onTabKeydown(e, 1); });
 
-  function selectVersionTab(wrapper, vnum) {
+  function selectVersionTab(wrapper, vnum, animate) {
     var vtabs = [].slice.call(wrapper.querySelectorAll('[data-version-tab]'));
     var vpanels = [].slice.call(wrapper.querySelectorAll('[data-version-panel]'));
     var id = String(vnum);
@@ -118,7 +120,10 @@ export function initChapterDialog() {
       if (pan.getAttribute('data-version-panel') === id) pan.removeAttribute('hidden');
       else pan.setAttribute('hidden', '');
     });
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (
+      animate &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       var active = wrapper.querySelector('[data-version-panel="' + id + '"]');
       if (active) {
         active.classList.remove('is-tab-enter');
@@ -132,7 +137,7 @@ export function initChapterDialog() {
     var wrapper = container.querySelector('[data-chapter-versions]');
     if (!wrapper) return;
     wrapper.removeAttribute('hidden');
-    selectVersionTab(wrapper, DEFAULT_VERSION);
+    selectVersionTab(wrapper, DEFAULT_VERSION, false);
   }
 
   function onVersionTabKeydown(e, wrapper) {
@@ -144,21 +149,21 @@ export function initChapterDialog() {
     if (e.key === 'ArrowRight') {
       e.preventDefault();
       var next = vtabs[(idx + 1) % vtabs.length];
-      selectVersionTab(wrapper, next.getAttribute('data-version-tab'));
+      selectVersionTab(wrapper, next.getAttribute('data-version-tab'), false);
       next.focus();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
       var prev = vtabs[(idx + vtabs.length - 1) % vtabs.length];
-      selectVersionTab(wrapper, prev.getAttribute('data-version-tab'));
+      selectVersionTab(wrapper, prev.getAttribute('data-version-tab'), false);
       prev.focus();
     } else if (e.key === 'Home') {
       e.preventDefault();
-      selectVersionTab(wrapper, vtabs[0].getAttribute('data-version-tab'));
+      selectVersionTab(wrapper, vtabs[0].getAttribute('data-version-tab'), false);
       vtabs[0].focus();
     } else if (e.key === 'End') {
       e.preventDefault();
       var last = vtabs[vtabs.length - 1];
-      selectVersionTab(wrapper, last.getAttribute('data-version-tab'));
+      selectVersionTab(wrapper, last.getAttribute('data-version-tab'), false);
       last.focus();
     }
   }
@@ -168,7 +173,7 @@ export function initChapterDialog() {
     if (!btn) return;
     var wrapper = btn.closest('[data-chapter-versions]');
     if (!wrapper || !panelStructure.contains(wrapper)) return;
-    selectVersionTab(wrapper, btn.getAttribute('data-version-tab'));
+    selectVersionTab(wrapper, btn.getAttribute('data-version-tab'), true);
   });
 
   panelStructure.addEventListener('keydown', function (e) {
@@ -190,7 +195,7 @@ export function initChapterDialog() {
     panelSource.innerHTML = sourcePane ? sourcePane.innerHTML : '';
     panelStructure.innerHTML = structPane ? structPane.innerHTML : '';
     initVersionTabs(panelStructure);
-    selectTab(0);
+    selectTab(0, false);
     btnPrev.disabled = n <= 1;
     btnNext.disabled = n >= total;
     current = n;

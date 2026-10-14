@@ -24,6 +24,24 @@ export type HeroTab = {
   panelText: string;
 };
 
+export type HeroCta = {
+  href: string;
+  label: string;
+};
+
+export type HeroBlock = {
+  image: string;
+  imageAlt: string;
+  kicker: string;
+  /** Factual honesty line (sources, fiction, Концепт) — not a decorative kicker */
+  trustNote?: string;
+  title: string;
+  subtitle: string;
+  tabs: HeroTab[];
+  primaryCta: HeroCta;
+  secondaryCta: HeroCta;
+};
+
 export type AgendaMini = {
   key: 'vyzov' | 'scenario' | 'reshenie';
   cardId: string;
@@ -40,14 +58,36 @@ export type AgendaBundle = {
   minis: AgendaMini[];
 };
 
+export type TruthScaleKey = 'now' | 'roadmap' | 'language';
+
+export type TruthLayerBlock = {
+  heading: string;
+  lead: string;
+  supports: { label: string; detail: string }[];
+  pillars: {
+    id: string;
+    title: string;
+    summary: string;
+    bullets: string[];
+    scale: TruthScaleKey;
+  }[];
+  scaleLegend: {
+    key: TruthScaleKey;
+    title: string;
+    description: string;
+  }[];
+};
+
 export type Structured = {
-  hero: { image: string; imageAlt: string; tabs: HeroTab[] };
-  truth: { heading: string; body: string };
+  hero: HeroBlock;
+  truth: TruthLayerBlock;
   glossary: { term: string; definition: string }[];
   chaptersIntroNote: string;
   agenda: {
     intro_h2: string;
     intro_text: string;
+    intro_note?: string;
+    intro_bg?: string;
     bundles: {
       num: number;
       vyzov: { label?: string; title: string; description?: string; image?: string };

@@ -3,8 +3,55 @@
 
 .carelink-page [data-reveal]{
 --reveal-y:0.65rem;
---reveal-blur:1px;
-transition:opacity 320ms var(--ease-out-ui),filter 320ms var(--ease-out-ui),transform 320ms var(--ease-out-ui)!important;
+--reveal-blur:0;
+filter:none!important;
+transition:opacity 320ms var(--ease-out-ui),transform 320ms var(--ease-out-ui)!important;
+}
+
+.carelink-page .section-panel .section-label,
+.carelink-page .section-panel .challenges-title,
+.carelink-page .section-panel .solutions-title,
+.carelink-page .section-panel .chapter-index-title,
+.carelink-page .section-panel .development-title,
+.carelink-page .section-panel .product-arch-title-main,
+.carelink-page .section-panel .landing-finale-title,
+.carelink-page .section-panel .landing-finale-lead,
+.carelink-page .section-panel .solutions-lead,
+.carelink-page .section-panel .challenges-intro,
+.carelink-page .section-panel .solutions-intro,
+.carelink-page .section-panel .chapter-index-lead,
+.carelink-page .section-panel .development-intro,
+.carelink-page .section-panel .product-arch-intro,
+.carelink-page .section-panel .challenge-list > .challenge-item,
+.carelink-page .section-panel .solution-list > .solution-item,
+.carelink-page .section-panel .chapter-grid > li,
+.carelink-page .section-panel .dev-list > .dev-item,
+.carelink-page .section-panel .product-arch-grid > .product-arch-item,
+.carelink-page .section-panel .challenge-examples-grid > .challenge-example{
+filter:none!important;
+transition:opacity 300ms var(--ease-out-ui),transform 300ms var(--ease-out-ui)!important;
+}
+
+.carelink-page .section-panel.is-visible .challenge-list > .challenge-item,
+.carelink-page .section-panel.is-visible .solution-list > .solution-item,
+.carelink-page .section-panel.is-visible .solution-list--featured > .solution-item,
+.carelink-page .section-panel.is-visible .solution-list--detail > .solution-item,
+.carelink-page .section-panel.is-visible .chapter-grid > li,
+.carelink-page .section-panel.is-visible .dev-list > .dev-item,
+.carelink-page .section-panel.is-visible .product-arch-grid > .product-arch-item,
+.carelink-page .section-panel.is-visible .challenge-examples-grid > .challenge-example{
+transition-delay:0!important;
+}
+
+.chapter-dialog-close,
+.detail-dialog-close,
+.landing-drawer-close{
+transition:transform 160ms var(--ease-out-ui),border-color .18s var(--ease-out-ui),background .18s var(--ease-out-ui);
+}
+.chapter-dialog-close:active,
+.detail-dialog-close:active,
+.landing-drawer-close:active{
+transform:scale(.97);
 }
 
 #detail-dialog.detail-dialog--instant,
@@ -65,4 +112,32 @@ to{opacity:1;transform:none}
 .landing-drawer-body{transition:none!important}
 .landing-drawer-body.is-swapping{opacity:1!important}
 .chapter-tabpanel.is-tab-enter{animation:none!important}
+.carelink-page .section-panel .section-label,
+.carelink-page .section-panel .challenges-title,
+.carelink-page .section-panel .solutions-title,
+.carelink-page .section-panel .chapter-index-title,
+.carelink-page .section-panel .development-title,
+.carelink-page .section-panel .product-arch-title-main,
+.carelink-page .section-panel .landing-finale-title,
+.carelink-page .section-panel .landing-finale-lead,
+.carelink-page .section-panel .solutions-lead,
+.carelink-page .section-panel .challenges-intro,
+.carelink-page .section-panel .solutions-intro,
+.carelink-page .section-panel .chapter-index-lead,
+.carelink-page .section-panel .development-intro,
+.carelink-page .section-panel .product-arch-intro,
+.carelink-page .section-panel .challenge-list > .challenge-item,
+.carelink-page .section-panel .solution-list > .solution-item,
+.carelink-page .section-panel .chapter-grid > li,
+.carelink-page .section-panel .dev-list > .dev-item,
+.carelink-page .section-panel .product-arch-grid > .product-arch-item,
+.carelink-page .section-panel .challenge-examples-grid > .challenge-example{
+opacity:1!important;
+filter:none!important;
+transform:none!important;
+transition-delay:0!important;
+}
+.chapter-dialog-close:active,
+.detail-dialog-close:active,
+.landing-drawer-close:active{transform:none!important}
 }

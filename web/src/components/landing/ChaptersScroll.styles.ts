@@ -37,7 +37,7 @@ export const ChapterCard = styled.article.attrs({
 })`
   & > img {
     filter: saturate(0.94) contrast(1.02);
-    transition: transform 240ms ease-out !important;
+    transition: transform 240ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1)) !important;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -97,7 +97,31 @@ export const ScrollStageHint = styled.span.attrs<{ $variant: 'desktop' | 'mobile
   (p) => ({
     className: `scroll-stage-hint scroll-stage-hint--${p.$variant}`,
   }),
-)``;
+)`
+  position: absolute;
+  z-index: 2;
+  top: 0.35rem;
+  left: max(0.65rem, calc(var(--bundle-viewport-pad, 1.15rem)));
+  font: 600 10px/1.35 ${theme.fonts.label};
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: ${theme.colors.bronzeInk};
+  pointer-events: none;
+
+  &.scroll-stage-hint--desktop {
+    @media (max-width: 760px) {
+      display: none;
+    }
+  }
+
+  &.scroll-stage-hint--mobile {
+    display: none;
+
+    @media (max-width: 760px) {
+      display: block;
+    }
+  }
+`;
 
 export const ChapterNavButton = styled.button`
   min-height: 44px;

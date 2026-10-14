@@ -19,11 +19,25 @@
     "hero": {
       "image": "images/hero-family-table.jpg",
       "imageAlt": "",
-      "tabs": []
+      "kicker": "",
+      "title": "Carelink",
+      "subtitle": "",
+      "tabs": [],
+      "primaryCta": {
+        "href": "#agenda",
+        "label": "Открыть манифест"
+      },
+      "secondaryCta": {
+        "href": "#glavy-manifest",
+        "label": "Как это устроено →"
+      }
     },
     "truth": {
       "heading": "",
-      "body": ""
+      "lead": "",
+      "supports": [],
+      "pillars": [],
+      "scaleLegend": []
     },
     "glossary": [],
     "chaptersIntroNote": "",

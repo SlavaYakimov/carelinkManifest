@@ -1,7 +1,13 @@
 import type { Structured } from '../../content/site.types';
+import { inlineHtml } from '../../lib/inlineHtml';
 import { buildAgendaBundles, chainTitle } from '../../lib/agendaModel';
-import { Glossary } from './Glossary';
-import { NarrativeIntro } from './NarrativeIntro';
+import {
+  AgendaFormatRail,
+  AgendaFormatStep,
+  NarrativeIntro,
+  NarrativeNote,
+} from './NarrativeIntro';
+import { ScrollStageHint } from './ChaptersScroll.styles';
 import { BundleMini } from './BundleMini';
 import {
   BundleArrow,
@@ -26,10 +32,9 @@ const KIND_LABEL: Record<string, string> = {
 
 type Props = {
   agenda: Structured['agenda'];
-  glossary: Structured['glossary'];
 };
 
-export function AgendaScroll({ agenda, glossary }: Props) {
+export function AgendaScroll({ agenda }: Props) {
   const bundles = buildAgendaBundles(agenda);
 
   return (
@@ -38,12 +43,39 @@ export function AgendaScroll({ agenda, glossary }: Props) {
         h2={agenda.intro_h2}
         text={agenda.intro_text}
         sectionId="agenda-intro"
-        extra={<Glossary items={glossary} />}
-        skipHref="#cennosti"
+        beforeAgenda
+        backgroundImage={agenda.intro_bg}
+        extra={
+          <>
+            <AgendaFormatRail>
+              <AgendaFormatStep>
+                <b>Вызов</b>
+                <span>Разрыв, который называем проблемой</span>
+              </AgendaFormatStep>
+              <AgendaFormatStep>
+                <b>Сценарий</b>
+                <span>Вымысел — не факт и не озвучка бота</span>
+              </AgendaFormatStep>
+              <AgendaFormatStep>
+                <b>Решение</b>
+                <span>Ответ манифеста и Carelink</span>
+              </AgendaFormatStep>
+            </AgendaFormatRail>
+            {agenda.intro_note ? (
+              <NarrativeNote
+                dangerouslySetInnerHTML={{ __html: inlineHtml(agenda.intro_note) }}
+              />
+            ) : null}
+          </>
+        }
+        skipHref="#glavy-intro"
+        skipLabel="Пропустить связки — к главам"
       />
       <BundleScroll id="agenda" aria-label="Carelink — вызовы, сценарии и решения">
         <BundleStage data-bundle-stage>
           <BundleViewport data-bundle-viewport>
+            <ScrollStageHint $variant="desktop">Крутите страницу вниз</ScrollStageHint>
+            <ScrollStageHint $variant="mobile">Листайте вбок</ScrollStageHint>
             <BundleTrack data-bundle-track>
               {bundles.map((bundle) => (
                 <BundleCard key={bundle.num} tabIndex={0} data-bundle={bundle.num}>

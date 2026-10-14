@@ -13,6 +13,25 @@ export const theme = {
     wash: '#f6efe4',
     titleOnWash: '#163f33',
   },
+  /** Semantic roles — Persuade surfaces (hero, trust chrome) */
+  semantic: {
+    trust: {
+      surface: 'rgba(247, 250, 248, 0.94)',
+      surfaceBorder: 'rgba(31, 92, 74, 0.18)',
+      note: '#5a6b64',
+    },
+    text: {
+      display: '#1f5c4a',
+      lead: '#14201b',
+      body: '#3d4843',
+      onPrimary: '#f7faf8',
+    },
+    action: {
+      primary: '#1f5c4a',
+      primaryHover: '#163f33',
+      secondary: '#7a5e34',
+    },
+  },
   fonts: {
     head: "'Playfair Display', Georgia, 'Times New Roman', serif",
     body: "'Echo 2', Inter, ui-sans-serif, system-ui, sans-serif",
@@ -32,6 +51,9 @@ export const theme = {
   miraiIntroY: 'clamp(3.5rem, 7.5vw, 6.5rem)',
   bundleChainLabel: '7.15rem',
   bundleViewportPad: 'clamp(1.15rem, 2.75vw, 2rem)',
+  /** Hero section min block height (content can grow taller). */
+  heroBlockMinH: 'clamp(30rem, 78vh, 62rem)',
+  heroBlockMinHMobile: 'clamp(32rem, 98vh, 40rem)',
   uiLabelMin: '11px',
   shadowSoft: '0 28px 90px rgba(20,32,27,.1)',
 } as const;

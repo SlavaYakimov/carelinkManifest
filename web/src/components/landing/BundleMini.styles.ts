@@ -6,12 +6,13 @@ export const BundleMiniArticle = styled.article.attrs({
 })`
   & > img {
     filter: saturate(0.94) contrast(1.02);
-    transition: transform 240ms ease-out !important;
+    transition: transform 240ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1)) !important;
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover > img {
       filter: saturate(0.98) contrast(1.03);
+      transition: transform 240ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1)) !important;
     }
 
     & > button:hover {
@@ -20,11 +21,8 @@ export const BundleMiniArticle = styled.article.attrs({
     }
   }
 
-  & > button:active {
-    transform: translateY(1px);
-  }
-
   & > button {
+    transition: transform 160ms var(--ease-out-ui, cubic-bezier(0.23, 1, 0.32, 1));
     min-width: 44px !important;
     min-height: 44px !important;
     display: inline-flex;
@@ -42,9 +40,21 @@ export const BundleMiniArticle = styled.article.attrs({
     border: 1px solid ${theme.miraiHairline} !important;
     box-shadow: 0 4px 14px rgba(20, 32, 27, 0.1);
 
+    &:active {
+      transform: scale(0.97);
+    }
+
     &:focus-visible {
       outline: 3px solid rgba(31, 92, 74, 0.55);
       outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
+      &:active {
+        transform: none;
+      }
     }
   }
 `;

@@ -1,4 +1,4 @@
-import type { Structured } from '../../content/site.types';
+import type { HeroBlock } from '../../content/site.types';
 import { inlineHtml } from '../../lib/inlineHtml';
 import {
   CarelinkHero,
@@ -6,20 +6,31 @@ import {
   HeroContent,
   HeroCta,
   HeroFooter,
+  HeroHeadPanel,
   HeroImage,
-  HeroKicker,
+  HeroLead,
   HeroOverlay,
   HeroSecondary,
   HeroStandfirst,
-  HeroSubtitle,
+  HeroTopic,
 } from './ManifestHero.styles';
 
 type Props = {
-  hero: Structured['hero'];
+  hero: HeroBlock;
 };
+
+const DEFAULT_PRIMARY = { href: '#agenda', label: 'Читать манифест' };
+const DEFAULT_SECONDARY = { href: '#glavy-manifest', label: 'Что входит в Workspace →' };
+const DEFAULT_TITLE = 'Carelink';
+const DEFAULT_LEAD =
+  'Спокойная забота — без одной головы. Хранители ведут контакты, здоровье и договорённости в Workspace — приглашения родным, данные по 152‑ФЗ.';
 
 export function ManifestHero({ hero }: Props) {
   const firstPanel = hero.tabs.find((t) => t.selected)?.panelText ?? hero.tabs[0]?.panelText ?? '';
+  const primary = hero.primaryCta ?? DEFAULT_PRIMARY;
+  const secondary = hero.secondaryCta ?? DEFAULT_SECONDARY;
+  const title = hero.title?.trim() || DEFAULT_TITLE;
+  const lead = hero.subtitle?.trim() || DEFAULT_LEAD;
 
   return (
     <CarelinkHero aria-labelledby="hero-title">
@@ -33,38 +44,41 @@ export function ManifestHero({ hero }: Props) {
       />
       <HeroOverlay aria-hidden="true" />
       <HeroContent data-reveal>
-        <HeroKicker>Манифест CareLink · Для тех, кто рядом</HeroKicker>
-        <h1 id="hero-title">Carelink</h1>
-        <HeroSubtitle>
-          <i aria-hidden="true" />
-          <p>вся семья в одном месте</p>
-        </HeroSubtitle>
-        <HeroStandfirst
-          id="hero-tab-panel"
-          data-hero-standfirst
-          dangerouslySetInnerHTML={{ __html: inlineHtml(firstPanel) }}
-        />
-        <HeroChips role="tablist" aria-label="Темы героя" data-hero-tabs>
-          {hero.tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              id={tab.id}
-              role="tab"
-              aria-selected={tab.selected ? 'true' : 'false'}
-              data-hero-tab
-              data-hero-text={tab.panelText}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </HeroChips>
+        <HeroHeadPanel>
+          <h1 id="hero-title">{title}</h1>
+          <HeroLead>{lead}</HeroLead>
+        </HeroHeadPanel>
+        <HeroTopic>
+          <HeroChips role="tablist" aria-label="Тема абзаца" data-hero-tabs>
+            {hero.tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                id={tab.id}
+                role="tab"
+                aria-selected={tab.selected ? 'true' : 'false'}
+                aria-controls="hero-tab-panel"
+                data-hero-tab
+                data-hero-text={tab.panelText}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </HeroChips>
+          <HeroStandfirst
+            id="hero-tab-panel"
+            role="tabpanel"
+            aria-live="polite"
+            data-hero-standfirst
+            dangerouslySetInnerHTML={{ __html: inlineHtml(firstPanel) }}
+          />
+        </HeroTopic>
         <HeroFooter>
-          <HeroCta href="#agenda">
+          <HeroCta href={primary.href}>
             <span aria-hidden="true">→</span>
-            Открыть манифест
+            {primary.label}
           </HeroCta>
-          <HeroSecondary href="#glavy-manifest">Как это устроено →</HeroSecondary>
+          <HeroSecondary href={secondary.href}>{secondary.label}</HeroSecondary>
         </HeroFooter>
       </HeroContent>
     </CarelinkHero>
