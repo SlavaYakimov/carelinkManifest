@@ -47,21 +47,28 @@
     btnClose.focus();
   }
 
-  function closeDetail() {
-    if (!dialog.open) return;
-    dialog.close();
+  function onDialogClosed() {
     lockScroll(false);
     dialog.removeEventListener('keydown', trapFocus);
     if (lastFocus && typeof lastFocus.focus === 'function') {
-      try { lastFocus.focus(); } catch (err) { /* ignore */ }
+      try {
+        lastFocus.focus();
+      } catch (err) {
+        /* ignore */
+      }
       lastFocus = null;
     }
+  }
+
+  function closeDetail() {
+    if (!dialog.open) return;
+    dialog.close();
   }
 
   dialog.addEventListener('click', function (e) {
     if (e.target === dialog) closeDetail();
   });
-  dialog.addEventListener('close', closeDetail);
+  dialog.addEventListener('close', onDialogClosed);
   btnClose.addEventListener('click', closeDetail);
   dialog.addEventListener('cancel', function (e) {
     e.preventDefault();
