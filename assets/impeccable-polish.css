@@ -95,3 +95,48 @@
   max-width: min(var(--content-max), 100%);
   margin-inline: auto;
 }
+
+/* color + contrast (green / bronze palette) */
+.carelink-page {
+  color: var(--mut);
+}
+
+.carelink-page .carelink-hero__kicker {
+  color: var(--bronze);
+  letter-spacing: 0.14em;
+}
+
+.carelink-page .carelink-hero h1 {
+  color: var(--green) !important;
+}
+
+.carelink-page .carelink-hero__subtitle p,
+.carelink-page .carelink-hero__standfirst {
+  color: var(--mut) !important;
+}
+
+.carelink-page .carelink-hero__chips button {
+  color: var(--green-d);
+  border-color: var(--mirai-hairline);
+}
+
+.carelink-page .carelink-hero__chips button[aria-selected='true'] {
+  color: var(--green);
+  background: rgba(220, 239, 230, 0.82);
+  border-color: rgba(31, 92, 74, 0.48);
+  box-shadow: inset 0 -2px 0 var(--green);
+}
+
+.landing-glossary__list,
+.narrative-intro__note {
+  color: var(--mut);
+}
+
+.narrative-intro__skip a {
+  color: var(--green-d);
+}
+
+.carelink-page .bundle-panel__heading > p,
+.carelink-page .chapter-card__copy > p {
+  color: var(--bronze);
+}
