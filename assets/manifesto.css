@@ -29,7 +29,6 @@ body.has-site-header .chapters-panel {
 /* Slava font mapping (Playfair / Echo 2 / Cosmetics MS) */
 .carelink-page .carelink-hero h1,
 .carelink-page .narrative-intro h2,
-.carelink-page .bundle-panel__heading h2,
 .carelink-page .chapters-panel__heading h2,
 .carelink-page .bundle-mini__copy h3,
 .carelink-page .chapters-set .chapter-card__copy h3,
@@ -50,7 +49,6 @@ body.has-site-header .chapters-panel {
 .carelink-page .carelink-hero__cta,
 .carelink-page .carelink-hero__secondary,
 .carelink-page .carelink-hero__subtitle p,
-.carelink-page .bundle-panel__heading > p,
 .carelink-page .bundle-panel__chain > span,
 .carelink-page .bundle-panel__chain button b,
 .carelink-page .bundle-mini__copy p,
@@ -217,10 +215,6 @@ body.has-site-header .chapters-panel {
   align-items: center;
   padding-top: 0.35rem;
   padding-bottom: 0.35rem;
-}
-
-.carelink-page .bundle-panel__heading > p {
-  color: var(--bronze-ink, #7a5e34);
 }
 
 .narrative-intro__skip {
