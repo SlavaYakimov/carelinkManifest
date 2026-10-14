@@ -22,6 +22,10 @@ body.has-site-header .chapters-panel {
   }
 }
 
+.carelink-page [data-bundle-viewport] {
+  touch-action: pan-x pan-y;
+}
+
 /* Slava font mapping (Playfair / Echo 2 / Cosmetics MS) */
 .carelink-page .carelink-hero h1,
 .carelink-page .narrative-intro h2,
