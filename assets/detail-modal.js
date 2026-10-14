@@ -3,6 +3,11 @@
   var store = document.getElementById('landing-card-store');
   if (!dialog || !store || typeof dialog.showModal !== 'function') return;
 
+  var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function motionOk() {
+    return !mqReduce.matches;
+  }
+
   var kickerEl = document.getElementById('detail-dialog-kicker');
   var titleEl = document.getElementById('detail-dialog-title');
   var bodyEl = document.getElementById('detail-dialog-body');
@@ -40,11 +45,18 @@
     bodyEl.innerHTML = inner ? inner.innerHTML : '';
     lastFocus = document.activeElement;
     if (!dialog.open) {
+      if (!motionOk()) {
+        dialog.classList.add('detail-dialog--instant');
+      } else {
+        dialog.classList.remove('detail-dialog--instant');
+      }
       dialog.showModal();
       lockScroll(true);
       dialog.addEventListener('keydown', trapFocus);
     }
-    btnClose.focus();
+    if (motionOk()) {
+      btnClose.focus();
+    }
   }
 
   function onDialogClosed() {

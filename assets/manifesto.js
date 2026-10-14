@@ -1,6 +1,19 @@
 (function () {
   var mqMobile = window.matchMedia('(max-width: 760px)');
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var userScrollUntil = 0;
+
+  function markUserScroll() {
+    userScrollUntil = Date.now() + 150;
+  }
+
+  function wantSmoothScroll() {
+    return !mqReduce.matches && Date.now() > userScrollUntil;
+  }
+
+  window.addEventListener('wheel', markUserScroll, { passive: true, capture: true });
+  window.addEventListener('touchstart', markUserScroll, { passive: true, capture: true });
+  window.addEventListener('touchmove', markUserScroll, { passive: true, capture: true });
 
   /* Hero chips */
   var tabRoot = document.querySelector('[data-hero-tabs]');
@@ -54,6 +67,8 @@
     var desktopCounter = document.querySelector('[data-bundle-desktop-counter]');
     var drag = { active: false, x: 0, scrollY: 0 };
     var raf = 0;
+    var dragScrollRaf = 0;
+    var dragScrollTop = null;
 
     function bundleStageEngaged() {
       if (mqMobile.matches) return false;
@@ -96,7 +111,9 @@
         bundleTrack.style.willChange = 'auto';
       }
       bundleTrack.style.transform = 'translate3d(' + (-frac * maxX) + 'px,0,0)';
-      if (progressEl) progressEl.style.width = (frac * 100) + '%';
+      if (progressEl) {
+        progressEl.style.transform = 'scaleX(' + frac + ')';
+      }
       if (prevBtn) prevBtn.disabled = index <= 0;
       if (nextBtn) nextBtn.disabled = index >= total - 1;
       setActiveNav(index);
@@ -120,7 +137,8 @@
 
     function goTo(i, smooth) {
       index = Math.max(0, Math.min(total - 1, i));
-      var behavior = mqReduce.matches || smooth === false ? 'auto' : 'smooth';
+      var behavior =
+        mqReduce.matches || smooth === false || !wantSmoothScroll() ? 'auto' : 'smooth';
       if (mqMobile.matches) {
         var card = cards[index];
         if (card) bundleViewport.scrollTo({ left: card.offsetLeft, behavior: behavior });
@@ -178,7 +196,15 @@
       var maxX = Math.max(bundleTrack.scrollWidth - bundleViewport.clientWidth, 1);
       var scrollRange = Math.max(bundleScroll.offsetHeight - window.innerHeight, 1);
       var dx = e.clientX - drag.x;
-      window.scrollTo({ top: drag.scrollY - (dx / maxX) * scrollRange });
+      dragScrollTop = drag.scrollY - (dx / maxX) * scrollRange;
+      if (!dragScrollRaf) {
+        dragScrollRaf = window.requestAnimationFrame(function () {
+          dragScrollRaf = 0;
+          if (dragScrollTop != null) {
+            window.scrollTo({ top: dragScrollTop, behavior: 'auto' });
+          }
+        });
+      }
     });
     function endDrag(e) {
       if (dragPointerId != null && e.pointerId !== dragPointerId) return;
@@ -389,12 +415,13 @@
       updateNav(setIdx, activeChapter);
     }
 
-    function goChapter(chNum) {
+    function goChapter(chNum, smooth) {
       var i = chNum - 1;
       var setIdx = Math.floor(i / perSet);
       var top = window.scrollY + chaptersScroll.getBoundingClientRect().top;
       var scrollRange = Math.max(chaptersScroll.offsetHeight - window.innerHeight, 1);
-      var behavior = mqReduce.matches ? 'auto' : 'smooth';
+      var behavior =
+        mqReduce.matches || smooth === false || !wantSmoothScroll() ? 'auto' : 'smooth';
       window.scrollTo({
         top: top + (setIdx / Math.max(setCount - 1, 1)) * scrollRange,
         behavior: behavior,
@@ -421,7 +448,7 @@
       btn.addEventListener('click', function () {
         var ch = parseInt(btn.getAttribute('data-chapter-goto'), 10);
         if (isNaN(ch)) return;
-        goChapter(ch);
+        goChapter(ch, true);
       });
     });
 
@@ -440,7 +467,7 @@
         e.preventDefault();
         var ch = parseInt(navBtns[next].getAttribute('data-chapter-goto'), 10);
         if (isNaN(ch)) return;
-        goChapter(ch);
+        goChapter(ch, false);
       });
     }
 
