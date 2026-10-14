@@ -1,4 +1,10 @@
 import type { AgendaMini } from '../../content/site.types';
+import {
+  BundleMiniArticle,
+  BundleMiniCopy,
+  BundleMiniFiction,
+  BundleMiniWash,
+} from './BundleMini.styles';
 
 type Props = {
   mini: AgendaMini;
@@ -6,7 +12,7 @@ type Props = {
 
 export function BundleMini({ mini }: Props) {
   return (
-    <article className="bundle-mini">
+    <BundleMiniArticle>
       <img
         src={mini.image}
         alt={mini.title}
@@ -14,7 +20,7 @@ export function BundleMini({ mini }: Props) {
         width={640}
         height={480}
       />
-      <div className="bundle-mini__wash" aria-hidden="true" />
+      <BundleMiniWash aria-hidden="true" />
       <button
         type="button"
         aria-label={`Открыть карточку: ${mini.title}`}
@@ -22,13 +28,13 @@ export function BundleMini({ mini }: Props) {
       >
         →
       </button>
-      <div className="bundle-mini__copy">
+      <BundleMiniCopy>
         {mini.fictionBadge ? (
-          <span className="bundle-mini__fiction">Вымышленный сценарий</span>
+          <BundleMiniFiction>Вымышленный сценарий</BundleMiniFiction>
         ) : null}
         <p>{mini.label}</p>
         <h3>{mini.title}</h3>
-      </div>
-    </article>
+      </BundleMiniCopy>
+    </BundleMiniArticle>
   );
 }

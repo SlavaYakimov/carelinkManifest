@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static site: **Vite + React** in [`web/`](web/) → `dist/index.html` for GitHub Pages (Actions → `dist/`). Content compile: `ARTICLE.md` + `tools/*.json` → `web/public/site.json` via `python3 tools/build.py --emit-json` (invoked by `npm run compile:content`). Global CSS remains in [`assets/`](assets/) (Make parity, manifesto overrides, `impeccable-polish.css`). Scroll-stage and modals: TypeScript in [`web/src/interactivity/`](web/src/interactivity/) (ported from `assets/manifesto.js`, `chapters.js`, etc.), initialized via [`useSiteInteractivity`](web/src/hooks/useSiteInteractivity.ts). Local dev: `npm run compile:content` then `npm run dev` (repo root). Preview production: `npm run preview`.
+Static site: **Vite + React** in [`web/`](web/) → `dist/index.html` for GitHub Pages (Actions → `dist/`). Content compile: `ARTICLE.md` + `tools/*.json` → `web/public/site.json` via `python3 tools/build.py --emit-json` (invoked by `npm run compile:content`). Editorial images live under [`assets/images/`](assets/images/) by block; public paths stay `images/…` via repo-root `images/` compat symlinks (`npm run sync:images`). Global CSS remains in [`assets/`](assets/) (Make parity, manifesto overrides, `impeccable-polish.css`). Scroll-stage and modals: TypeScript in [`web/src/interactivity/`](web/src/interactivity/) (ported from `assets/manifesto.js`, `chapters.js`, etc.), initialized via [`useSiteInteractivity`](web/src/hooks/useSiteInteractivity.ts). Local dev: `npm run compile:content` then `npm run dev` (repo root). Preview production: `npm run preview`.
 
 ## Users
 

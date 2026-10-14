@@ -1,5 +1,6 @@
 import type { Structured } from '../../content/site.types';
 import { inlineHtml } from '../../lib/inlineHtml';
+import { GlossaryList, GlossaryTitle, LandingGlossary } from './Glossary.styles';
 
 type Props = {
   items: Structured['glossary'];
@@ -7,16 +8,16 @@ type Props = {
 
 export function Glossary({ items }: Props) {
   return (
-    <aside className="landing-glossary" data-reveal aria-label="Короткий словарь">
-      <h3 className="landing-glossary__title">Пять слов, которые встретятся дальше</h3>
-      <ul className="landing-glossary__list">
+    <LandingGlossary data-reveal aria-label="Короткий словарь">
+      <GlossaryTitle>Пять слов, которые встретятся дальше</GlossaryTitle>
+      <GlossaryList>
         {items.map((row) => (
           <li key={row.term}>
             <dfn>{row.term}</dfn> —{' '}
             <span dangerouslySetInnerHTML={{ __html: inlineHtml(row.definition) }} />
           </li>
         ))}
-      </ul>
-    </aside>
+      </GlossaryList>
+    </LandingGlossary>
   );
 }

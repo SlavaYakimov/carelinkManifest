@@ -17,6 +17,12 @@ import { ArticleLayout } from './components/article/ArticleLayout';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import { useSiteData } from './hooks/useSiteData';
 import { useSiteInteractivity } from './hooks/useSiteInteractivity';
+import { CarelinkPage } from './styles/CarelinkPage.styles';
+import styled from 'styled-components';
+
+const LoadingMessage = styled.p.attrs({ className: 'mono' })`
+  padding: 2rem;
+`;
 
 export default function App() {
   const { site, loading } = useSiteData();
@@ -25,34 +31,24 @@ export default function App() {
   useSiteInteractivity(!loading && site !== null);
 
   if (loading || !site) {
-    return (
-      <p className="mono" style={{ padding: '2rem' }}>
-        Загрузка манифеста…
-      </p>
-    );
+    return <LoadingMessage>Загрузка манифеста…</LoadingMessage>;
   }
 
   const { meta, brandOwlHtml, sections, article, landingCards, structured } = site;
 
   return (
     <>
-      <a className="skip" href="#top">
-        К основному содержимому
-      </a>
-      <div className="progress" aria-hidden="true">
-        <i id="bar" />
-      </div>
       <SiteHeader meta={meta} brandOwlHtml={brandOwlHtml} />
       <main id="top">
-        <div className="carelink-page">
+        <CarelinkPage>
           <ManifestHero hero={structured.hero} />
+        </CarelinkPage>
           <TruthLayer truth={structured.truth} />
           <AgendaScroll agenda={structured.agenda} glossary={structured.glossary} />
           <ChaptersScroll
             data={structured.chaptersLanding}
             introNote={structured.chaptersIntroNote}
           />
-        </div>
         <HtmlSection html={sections.challengesLegacy} />
         <HtmlSection html={sections.chapterIndexLegacy} />
         <HtmlSection html={sections.development} />
@@ -61,12 +57,12 @@ export default function App() {
         <ValuesRow data={structured.values} />
         <SkillsSection data={structured.skills} />
         <HtmlSection html={sections.finaleLegacy} />
-      </main>
       <LandingCardStore cards={landingCards} />
       <DetailDialogShell />
       <LandingDrawerShell />
       <ChapterDialogShell numChapters={meta.numChapters} />
       <SiteFooter brandOwlHtml={brandOwlHtml} />
+      </main>
     </>
   );
 }

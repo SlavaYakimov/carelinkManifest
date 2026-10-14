@@ -1,4 +1,12 @@
 import type { SitePayload } from '../../content/site.types';
+import {
+  ArticleLayoutRoot,
+  ArticleMain,
+  ArticleToc,
+  ReadChapters,
+  ReadLead,
+  ReadTail,
+} from './ArticleLayout.styles';
 
 type Props = {
   article: SitePayload['article'];
@@ -7,8 +15,8 @@ type Props = {
 
 export function ArticleLayout({ article, tocItems }: Props) {
   return (
-    <div className="layout">
-      <nav className="toc" aria-label="Оглавление">
+    <ArticleLayoutRoot>
+      <ArticleToc aria-label="Оглавление">
         <span className="mono">Содержание</span>
         <ol>
           {tocItems.map((item) => (
@@ -26,12 +34,12 @@ export function ArticleLayout({ article, tocItems }: Props) {
             </a>
           </li>
         </ol>
-      </nav>
-      <article className="article read-stream">
-        <div className="read-lead" dangerouslySetInnerHTML={{ __html: article.introHtml }} />
-        <div className="read-chapters" dangerouslySetInnerHTML={{ __html: article.chapterHtml }} />
-        <div className="read-tail" dangerouslySetInnerHTML={{ __html: article.sourcesHtml }} />
-      </article>
-    </div>
+      </ArticleToc>
+      <ArticleMain>
+        <ReadLead dangerouslySetInnerHTML={{ __html: article.introHtml }} />
+        <ReadChapters dangerouslySetInnerHTML={{ __html: article.chapterHtml }} />
+        <ReadTail dangerouslySetInnerHTML={{ __html: article.sourcesHtml }} />
+      </ArticleMain>
+    </ArticleLayoutRoot>
   );
 }

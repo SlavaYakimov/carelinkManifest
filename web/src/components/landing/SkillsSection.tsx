@@ -1,5 +1,15 @@
 import type { Structured } from '../../content/site.types';
 import { inlineHtml } from '../../lib/inlineHtml';
+import {
+  SkillsCard,
+  SkillsCardBody,
+  SkillsCardImg,
+  SkillsGrid,
+  SkillsIn,
+  SkillsLead,
+  SkillsSectionRoot,
+  SkillsSlug,
+} from './SkillsSection.styles';
 
 type Props = {
   data: Structured['skills'];
@@ -7,22 +17,19 @@ type Props = {
 
 export function SkillsSection({ data }: Props) {
   return (
-    <section className="skills-section" id="navyki" aria-labelledby="navyki-title">
-      <div className="skills-in section-panel" data-reveal>
+    <SkillsSectionRoot id="navyki" aria-labelledby="navyki-title">
+      <SkillsIn data-reveal>
         <p className="section-label">Память проекта</p>
         <h2 id="navyki-title">{data.title}</h2>
-        <p
-          className="skills-lead"
-          dangerouslySetInnerHTML={{ __html: inlineHtml(data.lead || '') }}
-        />
-        <div className="skills-grid">
+        <SkillsLead dangerouslySetInnerHTML={{ __html: inlineHtml(data.lead || '') }} />
+        <SkillsGrid>
           {data.items.map((item) => (
-            <article key={item.id} className="skills-card">
+            <SkillsCard key={item.id}>
               {item.image ? (
-                <img src={item.image} alt={item.title} loading="lazy" className="skills-card-img" />
+                <SkillsCardImg src={item.image} alt={item.title} loading="lazy" />
               ) : null}
-              <div className="skills-card-body">
-                <span className="mono skills-slug">{item.slug || ''}</span>
+              <SkillsCardBody>
+                <SkillsSlug>{item.slug || ''}</SkillsSlug>
                 <h3>{item.title}</h3>
                 <p dangerouslySetInnerHTML={{ __html: inlineHtml(item.teaser || '') }} />
                 <button
@@ -33,11 +40,11 @@ export function SkillsSection({ data }: Props) {
                 >
                   →
                 </button>
-              </div>
-            </article>
+              </SkillsCardBody>
+            </SkillsCard>
           ))}
-        </div>
-      </div>
-    </section>
+        </SkillsGrid>
+      </SkillsIn>
+    </SkillsSectionRoot>
   );
 }

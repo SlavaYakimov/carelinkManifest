@@ -11,7 +11,8 @@
 | `assets/carelink-owl-avatar.svg` | Аватар-сова с книгой (SVGO), для маски и `<img>` |
 | `assets/carelink-owl-128.png` | Favicon / apple-touch-icon и марка в шапке |
 | `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
-| `images/` | Шесть иллюстраций (01–06) |
+| `assets/images/` | Канон иллюстраций по блокам (`agenda`, `article`, `hero`, `chapters-landing`, `landing`, …). Публичный URL по-прежнему `images/…` |
+| `images/` | Compat-слой (симлинки на `assets/images/`). После клона или правок медиа: `npm run sync:images`. На Windows нужны симлинки в git (`core.symlinks true`) или WSL |
 | `ARTICLE.md` | Тот же текст в чистом Markdown с относительными путями к картинкам. Это источник для `index.html` |
 | `tools/build.py` | Генератор `ARTICLE.md` → `index.html`. Python 3, без зависимостей |
 | `issues.json` | По одной задаче на каждый раздел статьи: `{title, body, labels}` |
@@ -22,6 +23,9 @@
 ## Как обновлять
 
 ```bash
+# 0. после clone или переноса файлов в assets/images/
+npm run sync:images
+
 # 1. правим ARTICLE.md и JSON в tools/
 npm run build                   # compile:content + Vite → dist/ (GitHub Pages)
 # или только HTML-лонгрид без React:

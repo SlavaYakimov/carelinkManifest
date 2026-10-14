@@ -1,4 +1,14 @@
 import type { SiteMeta } from '../../content/site.types';
+import {
+  BrandLink,
+  BrandText,
+  TopCta,
+  TopCtaArrow,
+  TopHeader,
+  TopLabel,
+  TopMeta,
+  TopNav,
+} from './SiteHeader.styles';
 
 type Props = {
   meta: SiteMeta;
@@ -10,15 +20,15 @@ export function SiteHeader({ meta, brandOwlHtml }: Props) {
   const chapters = String(meta.numChapters).padStart(2, '0');
 
   return (
-    <header className="top">
-      <a className="brand" href="#top" aria-label="Carelink">
+    <TopHeader>
+      <BrandLink href="#top" aria-label="Carelink">
         <span dangerouslySetInnerHTML={{ __html: brandOwlHtml }} />
-        <span className="bt">
+        <BrandText>
           <b>Carelink</b>
           <small>Спокойная забота</small>
-        </span>
-      </a>
-      <nav className="top-nav mono" aria-label="Разделы">
+        </BrandText>
+      </BrandLink>
+      <TopNav aria-label="Разделы">
         <a href="#agenda">Повестка</a>
         <a href="#glavy-manifest">Главы</a>
         <a href="#cennosti">Ценности</a>
@@ -26,17 +36,15 @@ export function SiteHeader({ meta, brandOwlHtml }: Props) {
         <a href="#razrabotka">Разработка</a>
         <a href="#product-arch">Архитектура</a>
         <a href="#top">Лонгрид</a>
-      </nav>
-      <span className="mono top-l">Манифест · живой лонгрид</span>
-      <a className="top-cta mono" href="#glavy-manifest">
+      </TopNav>
+      <TopLabel>Манифест · живой лонгрид</TopLabel>
+      <TopCta href="#glavy-manifest">
         <span>К главам</span>
-        <span className="top-cta-arrow" aria-hidden="true">
-          →
-        </span>
-      </a>
-      <span className="mono top-r">
+        <TopCtaArrow aria-hidden="true">→</TopCtaArrow>
+      </TopCta>
+      <TopMeta>
         {words} слов · {chapters} глав
-      </span>
-    </header>
+      </TopMeta>
+    </TopHeader>
   );
 }

@@ -1,6 +1,22 @@
 import type { Structured } from '../../content/site.types';
 import { inlineHtml } from '../../lib/inlineHtml';
-import { NarrativeIntro } from './NarrativeIntro';
+import { NarrativeIntro, NarrativeNote } from './NarrativeIntro';
+import {
+  ChapterCard,
+  ChapterCardCopy,
+  ChapterCardShade,
+  ChapterNavButton,
+  ChaptersPanel,
+  ChaptersPanelHeading,
+  ChaptersPanelList,
+  ChaptersPanelMobile,
+  ChaptersScrollSection,
+  ChaptersSet,
+  ChaptersSets,
+  ChaptersStage,
+  ChaptersViewport,
+  ScrollStageHint,
+} from './ChaptersScroll.styles';
 
 type Props = {
   data: Structured['chaptersLanding'];
@@ -22,25 +38,20 @@ export function ChaptersScroll({ data, introNote }: Props) {
         sectionId="glavy-intro"
         extra={
           introNote ? (
-            <p
-              className="narrative-intro__note"
-              dangerouslySetInnerHTML={{ __html: inlineHtml(introNote) }}
-            />
+            <NarrativeNote dangerouslySetInnerHTML={{ __html: inlineHtml(introNote) }} />
           ) : null
         }
         skipHref="#top"
         skipLabel="Пропустить интерактивный обзор глав — перейти к лонгриду"
       />
-      <section
-        className="chapters-scroll"
+      <ChaptersScrollSection
         id="glavy-manifest"
         style={{ ['--chapter-sets' as string]: sets }}
         aria-labelledby="chapters-title"
       >
-        <div className="chapters-stage" data-chapters-stage>
-          <div className="chapters-viewport" data-chapters-viewport>
-            <div
-              className="chapters-sets"
+        <ChaptersStage data-chapters-stage>
+          <ChaptersViewport data-chapters-viewport>
+            <ChaptersSets
               data-chapters-sets
               style={{ ['--chapters-progress' as string]: 0 }}
             >
@@ -48,9 +59,8 @@ export function ChaptersScroll({ data, introNote }: Props) {
                 const chunk = chapters.slice(si * perSet, (si + 1) * perSet);
                 const setHidden = si === 0 ? 'false' : 'true';
                 return (
-                  <div
+                  <ChaptersSet
                     key={si}
-                    className="chapters-set"
                     style={{ ['--chapter-set-index' as string]: si }}
                     aria-hidden={setHidden}
                   >
@@ -59,9 +69,8 @@ export function ChaptersScroll({ data, introNote }: Props) {
                       const cid = `chapter-poster-${n}`;
                       const active = si === 0;
                       return (
-                        <article
+                        <ChapterCard
                           key={n}
-                          className="chapter-card"
                           tabIndex={active ? 0 : -1}
                           {...(active ? { role: 'button' as const } : {})}
                           data-chapter-card={n}
@@ -70,8 +79,8 @@ export function ChaptersScroll({ data, introNote }: Props) {
                           aria-label={`Открыть главу: ${ch.title}`}
                         >
                           <img src={ch.image || ''} alt={ch.title} loading="lazy" />
-                          <div className="chapter-card__shade" aria-hidden="true" />
-                          <div className="chapter-card__copy">
+                          <ChapterCardShade aria-hidden="true" />
+                          <ChapterCardCopy>
                             <p>{`Глава · ${String(n).padStart(2, '0')}/20`}</p>
                             <h3>{ch.title}</h3>
                             <span
@@ -79,27 +88,23 @@ export function ChaptersScroll({ data, introNote }: Props) {
                                 __html: inlineHtml(ch.teaser || ch.subtitle),
                               }}
                             />
-                          </div>
-                        </article>
+                          </ChapterCardCopy>
+                        </ChapterCard>
                       );
                     })}
-                  </div>
+                  </ChaptersSet>
                 );
               })}
-            </div>
-          </div>
-          <aside className="chapters-panel">
-            <div className="chapters-panel__mobile" data-chapters-mobile>
+            </ChaptersSets>
+          </ChaptersViewport>
+          <ChaptersPanel>
+            <ChaptersPanelMobile data-chapters-mobile>
               <span data-chapters-mobile-range>01–04 / 20</span>
               <strong data-chapters-mobile-title>{chapters[0]?.title}</strong>
-              <span className="scroll-stage-hint scroll-stage-hint--desktop">
-                Крутите страницу вниз
-              </span>
-              <span className="scroll-stage-hint scroll-stage-hint--mobile">
-                Листайте вбок
-              </span>
-            </div>
-            <div className="chapters-panel__heading">
+              <ScrollStageHint $variant="desktop">Крутите страницу вниз</ScrollStageHint>
+              <ScrollStageHint $variant="mobile">Листайте вбок</ScrollStageHint>
+            </ChaptersPanelMobile>
+            <ChaptersPanelHeading>
               <p>{panelLead}</p>
               <h2 id="chapters-title">Главы</h2>
               <div data-chapters-desktop-range>
@@ -107,22 +112,22 @@ export function ChaptersScroll({ data, introNote }: Props) {
                 <i />
                 <span>20</span>
               </div>
-            </div>
+            </ChaptersPanelHeading>
             <nav aria-label="Главы манифеста">
-              <ol data-chapters-nav>
+              <ChaptersPanelList data-chapters-nav="">
                 {chapters.map((ch) => (
                   <li key={ch.num} data-chapter-nav={ch.num}>
-                    <button type="button" data-chapter-goto={ch.num}>
+                    <ChapterNavButton type="button" data-chapter-goto={ch.num}>
                       <span>{String(ch.num).padStart(2, '0')}</span>
                       <strong>{ch.title}</strong>
-                    </button>
+                    </ChapterNavButton>
                   </li>
                 ))}
-              </ol>
+              </ChaptersPanelList>
             </nav>
-          </aside>
-        </div>
-      </section>
+          </ChaptersPanel>
+        </ChaptersStage>
+      </ChaptersScrollSection>
     </>
   );
 }

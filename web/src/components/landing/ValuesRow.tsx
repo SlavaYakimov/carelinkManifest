@@ -1,5 +1,13 @@
 import type { Structured } from '../../content/site.types';
 import { inlineHtml } from '../../lib/inlineHtml';
+import {
+  ValuesMini,
+  ValuesMiniTeaser,
+  ValuesRowIn,
+  ValuesRowLead,
+  ValuesRowSection,
+  ValuesTrack,
+} from './ValuesRow.styles';
 
 type Props = {
   data: Structured['values'];
@@ -7,15 +15,15 @@ type Props = {
 
 export function ValuesRow({ data }: Props) {
   return (
-    <section className="values-row" id="cennosti" aria-labelledby="cennosti-title">
-      <div className="values-row-in section-panel" data-reveal>
+    <ValuesRowSection id="cennosti" aria-labelledby="cennosti-title">
+      <ValuesRowIn data-reveal>
         <p className="section-label">Финал</p>
         <h2 id="cennosti-title">{data.title}</h2>
-        <p className="values-row-lead">{data.lead || ''}</p>
-      </div>
-      <div className="values-track" data-values-track>
+        <ValuesRowLead>{data.lead || ''}</ValuesRowLead>
+      </ValuesRowIn>
+      <ValuesTrack data-values-track>
         {data.items.map((item) => (
-          <article key={item.id} className="values-mini agenda-mini">
+          <ValuesMini key={item.id}>
             {item.image ? (
               <picture>
                 <img
@@ -29,8 +37,7 @@ export function ValuesRow({ data }: Props) {
             <div className="agenda-mini-text">
               <span className="mono agenda-mini-label">{item.kicker}</span>
               <h3 className="agenda-mini-title">{item.title}</h3>
-              <p
-                className="values-mini-teaser"
+              <ValuesMiniTeaser
                 dangerouslySetInnerHTML={{ __html: inlineHtml(item.teaser || '') }}
               />
             </div>
@@ -42,9 +49,9 @@ export function ValuesRow({ data }: Props) {
             >
               <span aria-hidden="true">→</span>
             </button>
-          </article>
+          </ValuesMini>
         ))}
-      </div>
-    </section>
+      </ValuesTrack>
+    </ValuesRowSection>
   );
 }
