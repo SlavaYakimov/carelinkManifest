@@ -6,6 +6,17 @@
   --mirai-hairline: rgba(31, 92, 74, 0.16);
   --bundle-chain-label: 7.15rem;
   --bundle-viewport-pad: clamp(1.15rem, 2.75vw, 2rem);
+  /* AA on warm section wash #f6efe4 and Make bronze ribbon #d9b98a */
+  --bronze-ink: #7a5e34;
+  --title-on-wash: #163f33;
+  --ui-label-min: 11px; /* functional floor (rem drifts when root ≠ 16px) */
+}
+
+.carelink-page .narrative-intro,
+.carelink-page .values-row,
+.carelink-page .skills-section,
+.carelink-page .bundle-panel {
+  --bronze: var(--bronze-ink);
 }
 
 /* typography rhythm */
@@ -21,6 +32,10 @@
   font-size: clamp(1rem, 1.08vw, 1.28rem) !important;
   line-height: 1.12 !important;
   letter-spacing: -0.02em;
+}
+
+.carelink-page .bundle-mini__copy h3 {
+  color: var(--title-on-wash) !important;
 }
 
 .carelink-page .narrative-intro h2 {
@@ -135,7 +150,7 @@
 
 .carelink-page .bundle-panel__heading > p,
 .carelink-page .chapter-card__copy > p {
-  color: var(--bronze);
+  color: var(--bronze-ink);
 }
 
 /* cards: Neo Mirai radius + hairline shadow */
@@ -330,7 +345,7 @@
 .carelink-page .bundle-panel__heading h2 i {
   font-family: var(--head) !important;
   font-style: normal;
-  color: var(--bronze);
+  color: var(--bronze-ink);
 }
 
 .carelink-page .bundle-panel__chain button {
@@ -345,7 +360,7 @@
 .carelink-page .bundle-panel__chain button b {
   grid-column: 1;
   font-family: var(--font-label) !important;
-  font-size: 0.62rem !important;
+  font-size: var(--ui-label-min) !important;
   font-weight: 600 !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase;
@@ -369,7 +384,7 @@
 
 .carelink-page .bundle-panel__chain > span {
   font-family: var(--font-label) !important;
-  font-size: 0.66rem !important;
+  font-size: var(--ui-label-min) !important;
   letter-spacing: 0.08em;
 }
 
@@ -485,7 +500,7 @@
 
 .carelink-page .chapters-panel li > button span {
   font-family: var(--font-label) !important;
-  font-size: 0.62rem !important;
+  font-size: var(--ui-label-min) !important;
   letter-spacing: 0.1em !important;
   white-space: nowrap;
 }
@@ -557,7 +572,7 @@
 }
 
 .carelink-page .bundle-panel__chain button b {
-  font-size: 0.62rem !important;
+  font-size: var(--ui-label-min) !important;
 }
 
 .carelink-page .bundle-panel__chain button strong {
@@ -576,20 +591,20 @@
 
 .carelink-page .bundle-panel__heading > p {
   font-family: var(--font-label) !important;
-  font-size: 0.62rem !important;
+  font-size: var(--ui-label-min) !important;
   font-weight: 600 !important;
   letter-spacing: 0.14em !important;
   text-transform: uppercase;
-  color: var(--bronze) !important;
+  color: var(--bronze-ink) !important;
   margin: 0 0 0.55rem !important;
 }
 
 .carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] {
   font-family: var(--font-label) !important;
-  font-size: 0.72rem !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
   letter-spacing: 0.06em;
-  color: var(--bronze);
+  color: var(--bronze-ink);
 }
 
 .carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] i {
@@ -598,7 +613,7 @@
 
 .carelink-page .bundle-panel__mobile {
   font-family: var(--font-label) !important;
-  font-size: 0.68rem !important;
+  font-size: var(--ui-label-min) !important;
   letter-spacing: 0.08em;
   color: var(--mut);
 }
@@ -636,11 +651,11 @@
 
 .carelink-page .bundle-mini__copy p {
   font-family: var(--font-label) !important;
-  font-size: clamp(0.58rem, 0.72vw, 0.68rem) !important;
+  font-size: clamp(0.6875rem, 0.72vw, 0.75rem) !important;
   font-weight: 600 !important;
   letter-spacing: 0.1em !important;
   text-transform: uppercase;
-  color: var(--bronze) !important;
+  color: var(--ink) !important;
 }
 
 .carelink-page .bundle-progress {
