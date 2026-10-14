@@ -265,6 +265,7 @@
   /* Chapters vertical sets */
   var chaptersScroll = document.querySelector('.chapters-scroll');
   var chaptersSets = document.querySelector('[data-chapters-sets]');
+  var chaptersViewport = document.querySelector('[data-chapters-viewport]');
   if (chaptersScroll && chaptersSets) {
     var setCount = parseInt(getComputedStyle(chaptersScroll).getPropertyValue('--chapter-sets'), 10) || 5;
     var navBtns = [].slice.call(document.querySelectorAll('[data-chapter-goto]'));
@@ -274,6 +275,7 @@
     var perSet = 4;
     var rafC = 0;
     var progress = 0;
+    var lastMobileSetIdx = -1;
 
     function chapterTitles() {
       return navBtns.map(function (b) {
@@ -289,6 +291,28 @@
       var fracInSet = Math.max(0, raw - setIdx);
       var chapterInSet = Math.min(perSet - 1, Math.round(fracInSet * Math.max(perSet - 1, 1)));
       return Math.min(setIdx * perSet + chapterInSet, navBtns.length - 1);
+    }
+
+    function chapterIndexFromMobileScroll(setIdx) {
+      if (!chaptersViewport) return setIdx * perSet;
+      var setEl = chaptersSets.querySelectorAll('.chapters-set')[setIdx];
+      if (!setEl) return setIdx * perSet;
+      var cards = [].slice.call(setEl.querySelectorAll('[data-chapter-card]'));
+      if (!cards.length) return setIdx * perSet;
+      var vpRect = chaptersViewport.getBoundingClientRect();
+      var vpCenter = vpRect.left + vpRect.width / 2;
+      var idxInSet = 0;
+      var bestDist = Infinity;
+      cards.forEach(function (card, ci) {
+        var r = card.getBoundingClientRect();
+        var center = r.left + r.width / 2;
+        var dist = Math.abs(center - vpCenter);
+        if (dist < bestDist) {
+          bestDist = dist;
+          idxInSet = ci;
+        }
+      });
+      return Math.min(setIdx * perSet + idxInSet, navBtns.length - 1);
     }
 
     function updateNav(setIdx, activeChapterIdx) {
@@ -335,7 +359,11 @@
       var from = start + 1;
       var to = Math.min(start + perSet, titles.length);
       var range = String(from).padStart(2, '0') + '–' + String(to).padStart(2, '0');
-      if (mobileRange) mobileRange.textContent = range + ' / 20';
+      if (mobileRange) {
+        mobileRange.textContent = mqMobile.matches
+          ? String(activeChapterIdx + 1).padStart(2, '0') + ' / 20'
+          : range + ' / 20';
+      }
       if (desktopRange) {
         var spans = desktopRange.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = range;
@@ -351,7 +379,13 @@
       progress = mqReduce.matches ? Math.round(raw) : raw;
       chaptersSets.style.setProperty('--chapters-progress', String(progress));
       var setIdx = Math.floor(progress + 0.0001);
-      var activeChapter = chapterIndexFromProgress(p);
+      if (mqMobile.matches && setIdx !== lastMobileSetIdx && chaptersViewport) {
+        chaptersViewport.scrollLeft = 0;
+        lastMobileSetIdx = setIdx;
+      }
+      var activeChapter = mqMobile.matches
+        ? chapterIndexFromMobileScroll(setIdx)
+        : chapterIndexFromProgress(p);
       updateNav(setIdx, activeChapter);
     }
 
@@ -365,6 +399,13 @@
         top: top + (setIdx / Math.max(setCount - 1, 1)) * scrollRange,
         behavior: behavior,
       });
+      if (mqMobile.matches && chaptersViewport) {
+        var setEl = chaptersSets.querySelectorAll('.chapters-set')[setIdx];
+        var card = setEl && setEl.querySelector('[data-chapter-card="' + chNum + '"]');
+        if (card) {
+          chaptersViewport.scrollTo({ left: card.offsetLeft, behavior: behavior });
+        }
+      }
     }
 
     function scheduleC() {
@@ -373,6 +414,9 @@
 
     window.addEventListener('scroll', scheduleC, { passive: true });
     window.addEventListener('resize', scheduleC);
+    if (chaptersViewport) {
+      chaptersViewport.addEventListener('scroll', scheduleC, { passive: true });
+    }
     navBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var ch = parseInt(btn.getAttribute('data-chapter-goto'), 10);

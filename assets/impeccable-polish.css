@@ -826,6 +826,38 @@
 }
 
 @media (max-width: 760px) {
+  .carelink-page .chapters-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  .carelink-page .chapters-set {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.75rem;
+    position: absolute;
+    inset: 0;
+    width: max-content;
+    min-width: 100%;
+    transform: none !important;
+  }
+
+  .carelink-page .chapters-set[aria-hidden='true'] {
+    display: none;
+  }
+
+  .carelink-page .chapters-set .chapter-card {
+    flex: 0 0 min(85vw, calc(100vw - 1.7rem));
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100%;
+    min-height: 0;
+  }
+
   .carelink-page .bundle-panel,
   .carelink-page .chapters-panel {
     display: none !important;
