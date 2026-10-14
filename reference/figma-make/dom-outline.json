@@ -1,0 +1,1466 @@
+{
+  "sections": [
+    {
+      "i": 0,
+      "tag": "SECTION",
+      "class": "carelink-hero",
+      "h": 450,
+      "text": "Манифест CareLink · Для тех, кто рядомCarelinkвся семья в одном местеВсё, что семья хранит в Carelink, остаётся на серве"
+    },
+    {
+      "i": 1,
+      "tag": "SECTION",
+      "class": "narrative-intro",
+      "h": 488.53125,
+      "text": "Что мы видим, как это бывает и что предлагаемСемья распадается не в один день: сначала теряется общая картина, потом — т"
+    },
+    {
+      "i": 2,
+      "tag": "SECTION",
+      "class": "bundle-scroll",
+      "h": 8100,
+      "text": "→Вызов · 01Атомизация людей внутри семьи→Сценарий · 01Переезд и тишина в наушниках→Решение · 01Атомизация людей внутри с"
+    },
+    {
+      "i": 3,
+      "tag": "SECTION",
+      "class": "narrative-intro",
+      "h": 398.046875,
+      "text": "Двадцать глав манифестаМанифест — это не правила, а разговор о том, как близким оставаться рядом. Каждая глава раскрывае"
+    },
+    {
+      "i": 4,
+      "tag": "SECTION",
+      "class": "chapters-scroll",
+      "h": 4500,
+      "text": "Глава · 01/20Одинокие астронавтыЗачем это Carelink: каждый член семьи видит ситуацию только со своей стороны, поэтому се"
+    }
+  ],
+  "tree": {
+    "tag": "div",
+    "cls": "",
+    "id": "root",
+    "text": "",
+    "kids": [
+      {
+        "tag": "main",
+        "cls": "carelink-page",
+        "id": "",
+        "text": "",
+        "kids": [
+          {
+            "tag": "section",
+            "cls": "carelink-hero",
+            "id": "",
+            "text": "",
+            "kids": [
+              {
+                "tag": "img",
+                "cls": "carelink-hero__image",
+                "id": "",
+                "text": "",
+                "kids": []
+              },
+              {
+                "tag": "div",
+                "cls": "carelink-hero__overlay",
+                "id": "",
+                "text": "",
+                "kids": []
+              },
+              {
+                "tag": "div",
+                "cls": "carelink-hero__content",
+                "id": "",
+                "text": "",
+                "kids": [
+                  {
+                    "tag": "p",
+                    "cls": "carelink-hero__kicker",
+                    "id": "",
+                    "text": "Манифест CareLink · Для тех, кто рядом",
+                    "kids": []
+                  },
+                  {
+                    "tag": "h1",
+                    "cls": "",
+                    "id": "hero-title",
+                    "text": "Carelink",
+                    "kids": []
+                  },
+                  {
+                    "tag": "div",
+                    "cls": "carelink-hero__subtitle",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "p",
+                        "cls": "",
+                        "id": "",
+                        "text": "вся семья в одном месте",
+                        "kids": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "p",
+                    "cls": "carelink-hero__standfirst",
+                    "id": "hero-tab-panel",
+                    "text": "Всё, что семья хранит в Carelink, остаётся на серверах в России.",
+                    "kids": []
+                  },
+                  {
+                    "tag": "div",
+                    "cls": "carelink-hero__chips",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "button",
+                        "cls": "",
+                        "id": "hero-tab-0",
+                        "text": "Данные семьи остаются в России",
+                        "kids": []
+                      },
+                      {
+                        "tag": "button",
+                        "cls": "",
+                        "id": "hero-tab-1",
+                        "text": "Общий дом для близких",
+                        "kids": []
+                      },
+                      {
+                        "tag": "button",
+                        "cls": "",
+                        "id": "hero-tab-2",
+                        "text": "Идея, которую строим вместе",
+                        "kids": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "div",
+                    "cls": "carelink-hero__footer",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "a",
+                        "cls": "carelink-hero__cta",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "span",
+                            "cls": "",
+                            "id": "",
+                            "text": "→",
+                            "kids": []
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "a",
+                        "cls": "carelink-hero__secondary",
+                        "id": "",
+                        "text": "Как это устроено →",
+                        "kids": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "section",
+            "cls": "narrative-intro",
+            "id": "",
+            "text": "",
+            "kids": [
+              {
+                "tag": "h2",
+                "cls": "",
+                "id": "agenda-intro-title",
+                "text": "Что мы видим, как это бывает и что предлагаем",
+                "kids": []
+              },
+              {
+                "tag": "p",
+                "cls": "",
+                "id": "",
+                "text": "Семья распадается не в один день: сначала теряется общая картина, потом — тихие ",
+                "kids": []
+              }
+            ]
+          },
+          {
+            "tag": "section",
+            "cls": "bundle-scroll",
+            "id": "agenda",
+            "text": "",
+            "kids": [
+              {
+                "tag": "div",
+                "cls": "bundle-stage",
+                "id": "",
+                "text": "",
+                "kids": [
+                  {
+                    "tag": "div",
+                    "cls": "bundle-viewport",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "div",
+                        "cls": "bundle-track",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "article",
+                            "cls": "bundle-card",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "div",
+                                "cls": "bundle-card__minis",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "article",
+                                    "cls": "bundle-mini",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "button",
+                        "cls": "bundle-arrow bundle-arrow--previous",
+                        "id": "",
+                        "text": "‹",
+                        "kids": []
+                      },
+                      {
+                        "tag": "button",
+                        "cls": "bundle-arrow bundle-arrow--next",
+                        "id": "",
+                        "text": "›",
+                        "kids": []
+                      },
+                      {
+                        "tag": "div",
+                        "cls": "bundle-progress",
+                        "id": "",
+                        "text": "",
+                        "kids": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "aside",
+                    "cls": "bundle-panel",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "div",
+                        "cls": "bundle-panel__mobile",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "strong",
+                            "cls": "",
+                            "id": "",
+                            "text": "Вызов · Сценарий · Решение",
+                            "kids": []
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "div",
+                        "cls": "bundle-panel__heading",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "p",
+                            "cls": "",
+                            "id": "",
+                            "text": "CareLink · Манифест",
+                            "kids": []
+                          },
+                          {
+                            "tag": "h2",
+                            "cls": "",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "i",
+                                "cls": "",
+                                "id": "",
+                                "text": "·",
+                                "kids": []
+                              },
+                              {
+                                "tag": "i",
+                                "cls": "",
+                                "id": "",
+                                "text": "·",
+                                "kids": []
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "span",
+                                "cls": "",
+                                "id": "",
+                                "text": "01",
+                                "kids": []
+                              },
+                              {
+                                "tag": "span",
+                                "cls": "",
+                                "id": "",
+                                "text": "09",
+                                "kids": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "nav",
+                        "cls": "",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "div",
+                            "cls": "bundle-panel__rail",
+                            "id": "",
+                            "text": "",
+                            "kids": []
+                          },
+                          {
+                            "tag": "ol",
+                            "cls": "",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "bundle-panel__chain",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "section",
+            "cls": "narrative-intro",
+            "id": "",
+            "text": "",
+            "kids": [
+              {
+                "tag": "h2",
+                "cls": "",
+                "id": "chapters-intro-title",
+                "text": "Двадцать глав манифеста",
+                "kids": []
+              },
+              {
+                "tag": "p",
+                "cls": "",
+                "id": "",
+                "text": "Манифест — это не правила, а разговор о том, как близким оставаться рядом. Кажда",
+                "kids": []
+              }
+            ]
+          },
+          {
+            "tag": "section",
+            "cls": "chapters-scroll",
+            "id": "chapters",
+            "text": "",
+            "kids": [
+              {
+                "tag": "div",
+                "cls": "chapters-stage",
+                "id": "",
+                "text": "",
+                "kids": [
+                  {
+                    "tag": "div",
+                    "cls": "chapters-viewport",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "div",
+                        "cls": "chapters-sets",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "div",
+                            "cls": "chapters-set",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "chapters-set",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "chapters-set",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "chapters-set",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "chapters-set",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              },
+                              {
+                                "tag": "article",
+                                "cls": "chapter-card",
+                                "id": "",
+                                "text": "",
+                                "kids": [
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__shade",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  },
+                                  {
+                                    "tag": "div",
+                                    "cls": "chapter-card__copy",
+                                    "id": "",
+                                    "text": "",
+                                    "kids": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "aside",
+                    "cls": "chapters-panel",
+                    "id": "",
+                    "text": "",
+                    "kids": [
+                      {
+                        "tag": "div",
+                        "cls": "chapters-panel__mobile",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "strong",
+                            "cls": "",
+                            "id": "",
+                            "text": "Одинокие астронавты",
+                            "kids": []
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "div",
+                        "cls": "chapters-panel__heading",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "p",
+                            "cls": "",
+                            "id": "",
+                            "text": "Манифест — это не правила, а разговор о том, как близким оставаться рядом.",
+                            "kids": []
+                          },
+                          {
+                            "tag": "h2",
+                            "cls": "",
+                            "id": "chapters-title",
+                            "text": "Главы",
+                            "kids": []
+                          },
+                          {
+                            "tag": "div",
+                            "cls": "",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "span",
+                                "cls": "",
+                                "id": "",
+                                "text": "20",
+                                "kids": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "nav",
+                        "cls": "",
+                        "id": "",
+                        "text": "",
+                        "kids": [
+                          {
+                            "tag": "ol",
+                            "cls": "",
+                            "id": "",
+                            "text": "",
+                            "kids": [
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": []
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": []
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": []
+                              },
+                              {
+                                "tag": "li",
+                                "cls": "is-active",
+                                "id": "",
+                                "text": "",
+                                "kids": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
