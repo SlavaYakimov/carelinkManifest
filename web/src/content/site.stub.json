@@ -52,11 +52,26 @@
       "title": "",
       "items": []
     },
-    "development": {},
-    "productArch": {},
-    "challenges": {},
+    "development": {
+      "intro": "",
+      "done": [],
+      "in_progress": []
+    },
+    "productArch": {
+      "intro": "",
+      "items": []
+    },
+    "challenges": {
+      "intro": "",
+      "problems": [],
+      "examples": []
+    },
     "article": {
       "tocItems": []
+    },
+    "finaleCtas": {
+      "lead": "",
+      "ctas": []
     }
   }
 }

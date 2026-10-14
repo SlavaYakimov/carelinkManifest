@@ -1,0 +1,24 @@
+{
+  "image": "images/hero-family-table.jpg",
+  "imageAlt": "Вся семья за вечерним чаем",
+  "tabs": [
+    {
+      "id": "hero-tab-0",
+      "label": "Данные семьи остаются в России",
+      "selected": true,
+      "panelText": "Всё, что семья хранит в Carelink, остаётся на серверах в России."
+    },
+    {
+      "id": "hero-tab-1",
+      "label": "Общий дом для близких",
+      "selected": false,
+      "panelText": "Одно пространство, где у каждого в семье своё место и общая картина."
+    },
+    {
+      "id": "hero-tab-2",
+      "label": "Идея, которую строим вместе",
+      "selected": false,
+      "panelText": "Манифест открыт: мы собираем Carelink вместе с теми, кто рядом."
+    }
+  ]
+}

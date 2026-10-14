@@ -188,7 +188,7 @@ export function initManifesto() {
       drag.scrollY = window.scrollY;
       try {
         bundleViewport.setPointerCapture(e.pointerId);
-      } catch (err) {
+      } catch {
         clearDrag();
       }
     });
@@ -212,7 +212,7 @@ export function initManifesto() {
       if (bundleViewport.hasPointerCapture(e.pointerId)) {
         try {
           bundleViewport.releasePointerCapture(e.pointerId);
-        } catch (err) { /* ignore */ }
+        } catch { /* ignore */ }
       }
       clearDrag();
     }

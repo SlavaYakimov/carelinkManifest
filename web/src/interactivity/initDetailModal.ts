@@ -66,7 +66,7 @@ export function initDetailModal() {
     if (lastFocus && typeof lastFocus.focus === 'function') {
       try {
         lastFocus.focus();
-      } catch (err) {
+      } catch {
         /* ignore */
       }
       lastFocus = null;

@@ -229,7 +229,7 @@ export function initChapterDialog() {
     clearHash();
     current = null;
     if (lastFocus && typeof lastFocus.focus === 'function') {
-      try { lastFocus.focus(); } catch (err) { /* ignore */ }
+      try { lastFocus.focus(); } catch { /* ignore */ }
       lastFocus = null;
     }
   });

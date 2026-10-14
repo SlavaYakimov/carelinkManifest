@@ -1,6 +1,9 @@
 import { SiteFooter } from './components/shell/SiteFooter';
 import { SiteHeader } from './components/shell/SiteHeader';
-import { HtmlSection } from './components/HtmlSection';
+import { ChallengesSection } from './components/landing/ChallengesSection';
+import { DevelopmentSection } from './components/landing/DevelopmentSection';
+import { ProductArchSection } from './components/landing/ProductArchSection';
+import { FinaleSection } from './components/landing/FinaleSection';
 import { LandingCardStore } from './components/LandingCardStore';
 import {
   ChapterDialogShell,
@@ -34,7 +37,7 @@ export default function App() {
     return <LoadingMessage>Загрузка манифеста…</LoadingMessage>;
   }
 
-  const { meta, brandOwlHtml, sections, article, landingCards, structured } = site;
+  const { meta, brandOwlHtml, article, landingCards, structured } = site;
 
   return (
     <>
@@ -49,14 +52,13 @@ export default function App() {
             data={structured.chaptersLanding}
             introNote={structured.chaptersIntroNote}
           />
-        <HtmlSection html={sections.challengesLegacy} />
-        <HtmlSection html={sections.chapterIndexLegacy} />
-        <HtmlSection html={sections.development} />
-        <HtmlSection html={sections.productArch} />
+        <ChallengesSection data={structured.challenges} />
+        <DevelopmentSection data={structured.development} />
+        <ProductArchSection data={structured.productArch} />
         <ArticleLayout article={article} tocItems={structured.article.tocItems} />
         <ValuesRow data={structured.values} />
         <SkillsSection data={structured.skills} />
-        <HtmlSection html={sections.finaleLegacy} />
+        <FinaleSection data={structured.finaleCtas} />
       <LandingCardStore cards={landingCards} />
       <DetailDialogShell />
       <LandingDrawerShell />

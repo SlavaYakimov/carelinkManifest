@@ -8,12 +8,13 @@ const sitePath = path.join(root, 'web/public/site.json');
 const site = JSON.parse(fs.readFileSync(sitePath, 'utf8'));
 
 const errors = [];
-const { meta, sections, article, landingCards, structured } = site;
+const { meta, article, landingCards, structured } = site;
 
 if (!meta.numChapters || meta.numChapters < 1) errors.push('meta.numChapters missing');
 if (!meta.words || meta.words < 1000) errors.push('meta.words too low');
-if (!sections.development?.length) errors.push('sections.development missing');
-if (!sections.productArch?.length) errors.push('sections.productArch missing');
+if (!structured?.development?.intro) errors.push('structured.development missing');
+if (!structured?.productArch?.items?.length) errors.push('structured.productArch missing');
+if (!structured?.challenges?.problems?.length) errors.push('structured.challenges missing');
 if (!article.chapterHtml?.includes('id="glava-')) errors.push('chapter HTML missing');
 if (!landingCards?.length) errors.push('landingCards empty');
 if (!structured?.agenda?.bundles?.length) errors.push('structured.agenda missing');

@@ -92,21 +92,60 @@ export type Structured = {
       image?: string;
     }[];
   };
-  development: Record<string, unknown>;
-  productArch: Record<string, unknown>;
-  challenges: Record<string, unknown>;
+  development: {
+    intro: string;
+    done_label?: string;
+    in_progress_label?: string;
+    done: { title: string; description: string }[];
+    in_progress: { title: string; description: string; needs_confirmation?: boolean }[];
+  };
+  productArch: {
+    intro: string;
+    items: { title: string; description: string; note?: '' | 'direction' | 'partial' }[];
+  };
+  challenges: {
+    intro: string;
+    solutions_intro?: string;
+    solutions_detail_lbl?: string;
+    examples_note?: string;
+    problems: {
+      title: string;
+      description: string;
+      image?: string;
+      response?: string;
+    }[];
+    examples: { title: string; body: string; image?: string }[];
+    featured_solutions?: {
+      title: string;
+      problem_ref: string;
+      description: string;
+      image?: string;
+    }[];
+  };
+  finaleCtas: {
+    lead?: string;
+    ctas: {
+      id: string;
+      phrase: string;
+      drawer_short?: string;
+      image?: string;
+      image_alt?: string;
+      card_kicker?: string;
+    }[];
+  };
   article: { tocItems: TocItem[] };
 };
 
 export type SitePayload = {
   meta: SiteMeta;
   brandOwlHtml: string;
-  sections: {
-    challengesLegacy: string;
-    chapterIndexLegacy: string;
-    development: string;
-    productArch: string;
-    finaleLegacy: string;
+  /** @deprecated Legacy HTML sections; empty when content is rendered in React. */
+  sections?: {
+    challengesLegacy?: string;
+    chapterIndexLegacy?: string;
+    development?: string;
+    productArch?: string;
+    finaleLegacy?: string;
   };
   article: {
     introHtml: string;

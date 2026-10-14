@@ -97,7 +97,7 @@ export function initLandingDrawer() {
       root.hidden = true;
       root.setAttribute('aria-hidden', 'true');
       if (lastFocus && typeof lastFocus.focus === 'function') {
-        try { lastFocus.focus(); } catch (err) { /* ignore */ }
+        try { lastFocus.focus(); } catch { /* ignore */ }
         lastFocus = null;
       }
     };

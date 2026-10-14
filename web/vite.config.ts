@@ -5,6 +5,7 @@ import type { Plugin } from 'vite'
 import { defineConfig } from 'vite'
 
 const VITE_BUNDLE_JS = /^index-[\w-]+\.js$/
+const webRoot = import.meta.dirname
 
 function stripLegacyPublicJs(outDir: string): Plugin {
   return {
@@ -23,17 +24,17 @@ function stripLegacyPublicJs(outDir: string): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), stripLegacyPublicJs(path.resolve(__dirname, '../dist'))],
+  plugins: [react(), stripLegacyPublicJs(path.resolve(webRoot, '../dist'))],
   base: '/',
-  root: path.resolve(__dirname),
+  root: path.resolve(webRoot),
   publicDir: 'public',
   build: {
-    outDir: path.resolve(__dirname, '../dist'),
+    outDir: path.resolve(webRoot, '../dist'),
     emptyOutDir: true,
   },
   server: {
     fs: {
-      allow: [path.resolve(__dirname, '..')],
+      allow: [path.resolve(webRoot, '..')],
     },
   },
 })

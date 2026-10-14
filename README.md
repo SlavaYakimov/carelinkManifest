@@ -13,8 +13,9 @@
 | `fonts/` | Локальные шрифты: Inter 400/500, Manrope 600/700 из `carelink-manifesto/fonts`. Тонкие заголовки набраны `manrope-variable.woff2`, это подмножество Manrope Variable (OFL) с латиницей и кириллицей |
 | `assets/images/` | Канон иллюстраций по блокам (`agenda`, `article`, `hero`, `chapters-landing`, `landing`, …). Публичный URL по-прежнему `images/…` |
 | `images/` | Compat-слой (симлинки на `assets/images/`). После клона или правок медиа: `npm run sync:images`. На Windows нужны симлинки в git (`core.symlinks true`) или WSL |
-| `ARTICLE.md` | Тот же текст в чистом Markdown с относительными путями к картинкам. Это источник для `index.html` |
-| `tools/build.py` | Генератор `ARTICLE.md` → `index.html`. Python 3, без зависимостей |
+| `content/blocks/` | Редакционный JSON: лендинг, лонгрид по главам (`article/chapters/01.json`…), `landing-cards.json` |
+| `ARTICLE.md` | Исходник лонгрида (Markdown); нарезка в JSON: `node scripts/migrate-article-to-json.mjs` |
+| `scripts/content/` | Сборка `content/blocks` → `web/public/site.json` (Node, без Python) |
 | `issues.json` | По одной задаче на каждый раздел статьи: `{title, body, labels}` |
 | `memory-context.md` | Контекст для CarelinkMemory |
 | `shots/` | Скриншоты страницы (Playwright, ширина 1280 и 390) |
@@ -26,15 +27,13 @@
 # 0. после clone или переноса файлов в assets/images/
 npm run sync:images
 
-# 1. правим ARTICLE.md и JSON в tools/
-npm run build                   # compile:content + Vite → dist/ (GitHub Pages)
-# или только HTML-лонгрид без React:
-python3 tools/build.py          # index.html в корне
+# 1. правим JSON в content/blocks/ (или ARTICLE.md + migrate-article-to-json.mjs)
+npm run build                   # sync:images + compile:content + Vite → dist/ (GitHub Pages)
 ```
 
 Соглашения в Markdown, которые понимает генератор:
 - `## N. Название` — глава. Номер становится моноширинной меткой «Глава 0N / N» (число глав считается автоматически) и пунктом оглавления.
-- `tools/challenges.json` — блок «Вызовы» на лендинге (`#vyzovy`): шесть проблем и три помеченных «Пример» кейса.
+- `content/blocks/challenges.json` — блок «Вызовы» на лендинге (`#vyzovy`).
 - `<!-- landing:finale -->` в `ARTICLE.md` — финальный блок лендинга «Финальная ценность» (`#final-value`): карточка Neo Mirai + модалка; рендерится **после лонгрида**, последним блоком в `<main>` перед футером; в long-read не дублируется.
 - `` `Концепт` `` — бейдж «не найдено в источниках, требует подтверждения».
 - `> **Сценарий. Вымышленный пример.** …` — блок-сценка. Строки `**Имя:** реплика` превращаются в диалог.

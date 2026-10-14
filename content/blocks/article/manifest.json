@@ -1,0 +1,25 @@
+{
+  "numChapters": 20,
+  "chapterFiles": [
+    "chapters/01.json",
+    "chapters/02.json",
+    "chapters/03.json",
+    "chapters/04.json",
+    "chapters/05.json",
+    "chapters/06.json",
+    "chapters/07.json",
+    "chapters/08.json",
+    "chapters/09.json",
+    "chapters/10.json",
+    "chapters/11.json",
+    "chapters/12.json",
+    "chapters/13.json",
+    "chapters/14.json",
+    "chapters/15.json",
+    "chapters/16.json",
+    "chapters/17.json",
+    "chapters/18.json",
+    "chapters/19.json",
+    "chapters/20.json"
+  ]
+}
