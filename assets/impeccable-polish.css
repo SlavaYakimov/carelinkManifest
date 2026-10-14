@@ -1,0 +1,59 @@
+/* Impeccable / Neo Mirai polish — after manifesto.css (Make parity preserved) */
+
+:root {
+  --mirai-radius: 4px;
+  --mirai-intro-y: clamp(3.5rem, 7.5vw, 6.5rem);
+  --mirai-hairline: rgba(31, 92, 74, 0.16);
+}
+
+/* typography rhythm */
+.carelink-page .bundle-mini__copy h3,
+.carelink-page .chapters-set .chapter-card__copy h3,
+.carelink-page .bundle-panel__chain button,
+.carelink-page .bundle-panel__chain button b,
+.carelink-page .bundle-panel__chain button strong,
+.carelink-page .chapters-panel li > button,
+.carelink-page .chapters-panel li > button span,
+.carelink-page .chapters-panel li > button strong {
+  font-family: var(--head) !important;
+}
+
+.carelink-page .bundle-mini__copy h3,
+.carelink-page .chapters-set .chapter-card__copy h3 {
+  font-weight: 700 !important;
+  font-size: clamp(1rem, 1.08vw, 1.28rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em;
+}
+
+.carelink-page .narrative-intro h2 {
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+  font-weight: 700;
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.carelink-page .narrative-intro p,
+.carelink-page .landing-glossary,
+.carelink-page .landing-glossary__list {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+.values-row .section-label {
+  text-align: center;
+  font-family: var(--font-label) !important;
+  font-weight: 600;
+  font-size: clamp(0.68rem, 0.8vw, 0.78rem);
+  letter-spacing: 0.12em;
+}
+
+.values-row h2,
+.skills-section h2 {
+  letter-spacing: -0.03em;
+}
+
+.skills-section .mono {
+  letter-spacing: 0.14em;
+}
