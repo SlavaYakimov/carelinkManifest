@@ -23,9 +23,11 @@ function stripLegacyPublicJs(outDir: string): Plugin {
   }
 }
 
+const pagesBase = process.env.VITE_BASE?.replace(/\/?$/, '/') ?? '/carelinkManifest/'
+
 export default defineConfig({
   plugins: [react(), stripLegacyPublicJs(path.resolve(webRoot, '../dist'))],
-  base: '/',
+  base: pagesBase,
   root: path.resolve(webRoot),
   publicDir: 'public',
   build: {

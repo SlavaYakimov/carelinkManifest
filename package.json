@@ -5,7 +5,8 @@
     "sync:images": "node scripts/sync-images-compat.mjs",
     "compile:content": "node scripts/compile-content.mjs",
     "build": "npm run sync:images && npm run compile:content && npm run build --prefix web",
-    "dev": "npm run compile:content && npm run dev --prefix web",
+    "dev": "npm run compile:content && VITE_BASE=/ npm run dev --prefix web",
+    "start": "npm run preview",
     "preview": "npm run preview --prefix web",
     "lint": "npm run lint --prefix web"
   }

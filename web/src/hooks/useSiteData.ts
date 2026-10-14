@@ -8,7 +8,7 @@ export function useSiteData() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/site.json')
+    fetch(`${import.meta.env.BASE_URL}site.json`)
       .then((r) => {
         if (!r.ok) throw new Error(String(r.status));
         return r.json();

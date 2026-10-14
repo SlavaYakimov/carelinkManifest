@@ -27,6 +27,8 @@ jobs:
       - name: Install web dependencies
         run: npm ci --prefix web
       - name: Build
+        env:
+          VITE_BASE: /carelinkManifest/
         run: npm run build
       - name: Parity gate
         run: node scripts/parity-gate.mjs

@@ -32,9 +32,11 @@ npm run build                # sync + compile:content + Vite → dist/
 
 В лонгриде в JSON: блоки `paragraph`, `quote`, `list`, `reader_question`, `scenario`, `` `Концепт` `` в тексте → бейдж при сборке HTML.
 
-## Публикация на GitHub Pages
+## Публикация
 
-Сборка в CI: `npm run build`, артефакт `dist/`. Settings → Pages → GitHub Actions.
+**Vercel (рекомендуется):** в корне есть `vercel.json` — `VITE_BASE=/`, сборка `npm run build`, выход `dist/`. Из корня репозитория: `npx vercel` (preview) или `npx vercel --prod`.
+
+**GitHub Pages:** `VITE_BASE=/carelinkManifest/` задаётся в `.github/workflows/pages.yml`. Settings → Pages → GitHub Actions.
 
 ## Правила текста
 
