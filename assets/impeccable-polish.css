@@ -140,3 +140,38 @@
 .carelink-page .chapter-card__copy > p {
   color: var(--bronze);
 }
+
+/* cards: Neo Mirai radius + hairline shadow */
+.skills-card {
+  border-radius: var(--mirai-radius);
+  border: 1px solid var(--mirai-hairline);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.detail-dialog,
+.chapter-detail,
+.bundle-detail {
+  border-radius: var(--mirai-radius) !important;
+  border: 1px solid var(--mirai-hairline);
+  box-shadow: var(--shadow-soft);
+}
+
+.challenge-item,
+.solution-item {
+  border-radius: var(--mirai-radius);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.challenge-example {
+  border-radius: var(--mirai-radius);
+}
+
+.owl {
+  border-radius: var(--mirai-radius);
+}
+
+.values-mini.agenda-mini {
+  border-radius: var(--mirai-radius);
+  overflow: hidden;
+  border: 1px solid var(--mirai-hairline);
+}
