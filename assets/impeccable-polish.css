@@ -4,16 +4,12 @@
   --mirai-radius: 4px;
   --mirai-intro-y: clamp(3.5rem, 7.5vw, 6.5rem);
   --mirai-hairline: rgba(31, 92, 74, 0.16);
+  --bundle-chain-label: 6.85rem;
 }
 
 /* typography rhythm */
 .carelink-page .bundle-mini__copy h3,
 .carelink-page .chapters-set .chapter-card__copy h3,
-.carelink-page .bundle-panel__chain button,
-.carelink-page .bundle-panel__chain button b,
-.carelink-page .bundle-panel__chain button strong,
-.carelink-page .chapters-panel li > button,
-.carelink-page .chapters-panel li > button span,
 .carelink-page .chapters-panel li > button strong {
   font-family: var(--head) !important;
 }
@@ -203,12 +199,19 @@
   transform: translateY(1px);
 }
 
-.carelink-page .bundle-panel li.is-active .bundle-panel__chain button {
-  border-left-color: var(--green);
+.carelink-page .bundle-panel ol > li.is-active {
+  background: rgba(220, 239, 230, 0.55) !important;
+  box-shadow: inset 3px 0 0 var(--green) !important;
 }
 
-.carelink-page .chapters-panel li.is-active > button {
-  border-left-color: var(--green);
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button {
+  background: transparent !important;
+  border-left-color: transparent !important;
+}
+
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button strong {
+  font-weight: 600 !important;
+  color: var(--ink);
 }
 
 .carelink-page .carelink-hero__cta:focus-visible,
@@ -303,5 +306,196 @@
   .values-row-in.section-panel {
     max-width: var(--page-max);
     margin-inline: auto;
+  }
+}
+
+/* --- Round 2: agenda panel + carousel (1440 Chrome feedback) --- */
+
+.carelink-page .bundle-panel__heading h2 {
+  font-family: var(--head) !important;
+  font-weight: 700 !important;
+  font-size: clamp(1.28rem, 1.75vw, 1.75rem) !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.08 !important;
+  text-transform: uppercase;
+}
+
+.carelink-page .bundle-panel__heading h2 i {
+  font-family: var(--head) !important;
+  font-style: normal;
+  color: var(--bronze);
+}
+
+.carelink-page .bundle-panel__chain button {
+  display: grid !important;
+  grid-template-columns: var(--bundle-chain-label) minmax(0, 1fr) !important;
+  column-gap: 0.65rem !important;
+  align-items: baseline !important;
+  row-gap: 0.12rem;
+  padding: 0.35rem 0.45rem !important;
+}
+
+.carelink-page .bundle-panel__chain button b {
+  font-family: var(--font-label) !important;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.carelink-page .bundle-panel__chain button strong {
+  font-family: var(--font-body) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.carelink-page .bundle-panel__chain > span {
+  font-family: var(--font-label) !important;
+  font-size: 0.66rem !important;
+  letter-spacing: 0.08em;
+}
+
+.carelink-page .bundle-panel__chain button:hover,
+.carelink-page .bundle-panel__chain button:focus-visible,
+.carelink-page .bundle-panel__chain button.is-focused {
+  background: rgba(247, 250, 248, 0.92) !important;
+  border-left-color: rgba(138, 106, 59, 0.45) !important;
+}
+
+.carelink-page .bundle-panel ol > li {
+  border-bottom: 1px solid rgba(31, 92, 74, 0.1);
+}
+
+.carelink-page .bundle-viewport {
+  scroll-padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  box-sizing: border-box;
+}
+
+.carelink-page .bundle-track {
+  padding-inline: 0.35rem;
+}
+
+.carelink-page .bundle-card:first-child {
+  margin-left: 0 !important;
+}
+
+.carelink-page .bundle-card + .bundle-card {
+  margin-left: -8px;
+}
+
+.carelink-page .bundle-mini__copy {
+  left: clamp(0.85rem, 1.15vw, 1.15rem) !important;
+  right: clamp(3.1rem, 4.5vw, 3.35rem) !important;
+}
+
+.carelink-page .bundle-mini__copy h3 {
+  display: block;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+}
+
+.carelink-page .bundle-mini > button {
+  top: 0.72rem !important;
+  right: 0.72rem !important;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  font-size: 1.05rem !important;
+  z-index: 4;
+  background: rgba(247, 250, 248, 0.9) !important;
+  border: 1px solid var(--mirai-hairline) !important;
+  box-shadow: 0 4px 14px rgba(20, 32, 27, 0.1);
+}
+
+.carelink-page .bundle-arrow {
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  font-size: 1.2rem !important;
+  background: rgba(247, 250, 248, 0.94) !important;
+  border-color: var(--mirai-hairline) !important;
+  box-shadow: 0 6px 18px rgba(20, 32, 27, 0.12);
+}
+
+.carelink-page .bundle-arrow--previous {
+  left: clamp(0.35rem, 1.2vw, 0.85rem) !important;
+}
+
+.carelink-page .bundle-arrow--next {
+  right: clamp(0.35rem, 1.2vw, 0.85rem) !important;
+}
+
+.carelink-page .chapters-panel__heading h2 {
+  font-family: var(--head) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em;
+}
+
+.carelink-page .chapters-panel li.is-active > button {
+  background: rgba(220, 239, 230, 0.58) !important;
+  border-left-color: var(--green) !important;
+  box-shadow: inset 3px 0 0 var(--green);
+  font-weight: 600;
+}
+
+.carelink-page .chapters-panel li > button {
+  grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+  column-gap: 0.55rem !important;
+  align-items: baseline !important;
+}
+
+.carelink-page .chapters-panel li > button span {
+  font-family: var(--font-label) !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.1em !important;
+  white-space: nowrap;
+}
+
+.carelink-page .chapters-panel li > button strong {
+  font-family: var(--font-body) !important;
+  font-size: 0.8125rem !important;
+  overflow-wrap: anywhere;
+}
+
+.carelink-page .chapters-viewport {
+  scroll-padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  box-sizing: border-box;
+}
+
+.values-mini .agenda-mini-read,
+.values-mini button[data-detail-open] {
+  top: 0.65rem;
+  right: 0.65rem;
+  position: absolute;
+  z-index: 2;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --bundle-chain-label: 5.65rem;
+  }
+
+  .carelink-page .bundle-viewport,
+  .carelink-page .chapters-viewport {
+    padding-inline: 0.85rem;
+    scroll-padding-inline: 0.85rem;
+  }
+
+  .carelink-page .bundle-panel__chain button {
+    column-gap: 0.5rem !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  :root {
+    --bundle-chain-label: 6.35rem;
   }
 }

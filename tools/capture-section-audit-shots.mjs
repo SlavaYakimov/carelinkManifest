@@ -18,7 +18,7 @@ const sections = [
   { slug: 'values', sel: '#cennosti' },
   { slug: 'skills', sel: '#navyki' },
 ];
-const widths = [390, 1440];
+const widths = [390, 768, 1440];
 
 mkdirSync(join(outDir, prefix), { recursive: true });
 
