@@ -224,7 +224,7 @@
   .carelink-page .carelink-hero__chips button,
   .carelink-page .bundle-mini > button,
   .carelink-page .bundle-arrow {
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    transition: none !important;
     transform: none !important;
   }
 }
