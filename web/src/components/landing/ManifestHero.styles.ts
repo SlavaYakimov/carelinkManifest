@@ -34,19 +34,21 @@ export const CarelinkHero = styled.section.attrs({
 export const HeroImage = styled.img.attrs({
   className: 'carelink-hero__image',
 })`
-  filter: saturate(0.9) contrast(1.03);
+  filter: saturate(1.02) contrast(1.04);
 `;
 
 export const HeroOverlay = styled.div.attrs({
   className: 'carelink-hero__overlay',
 })`
   background: linear-gradient(
-    102deg,
-    rgba(247, 250, 248, 0.9) 0%,
-    rgba(247, 250, 248, 0.78) 34%,
-    rgba(246, 239, 228, 0.42) 52%,
-    rgba(20, 32, 27, 0.22) 100%
-  ) !important;
+      104deg,
+      rgba(247, 250, 248, 0.55) 0%,
+      rgba(247, 250, 248, 0.38) 30%,
+      rgba(246, 239, 228, 0.16) 52%,
+      rgba(20, 32, 27, 0.08) 78%,
+      rgba(20, 32, 27, 0.14) 100%
+    ),
+    linear-gradient(180deg, rgba(20, 32, 27, 0) 58%, rgba(20, 32, 27, 0.12) 100%) !important;
 `;
 
 export const HeroContent = styled.div.attrs({
@@ -55,10 +57,10 @@ export const HeroContent = styled.div.attrs({
   height: auto !important;
   min-height: var(--hero-block-min-h, ${theme.heroBlockMinH});
   justify-content: center !important;
-  gap: clamp(0.55rem, 1vw, 0.85rem);
+  gap: 0;
   padding-top: calc(var(--header-h, ${theme.headerH}) + clamp(0.75rem, 2vw, 1.25rem)) !important;
   padding-bottom: clamp(1.35rem, 3vw, 2.25rem) !important;
-  width: min(44rem, 58vw) !important;
+  width: min(46rem, 54vw) !important;
 
   @media (max-width: 760px) {
     width: 100% !important;
@@ -69,28 +71,27 @@ export const HeroContent = styled.div.attrs({
   }
 `;
 
-export const HeroHeadPanel = styled.div.attrs({
-  className: 'carelink-hero__panel carelink-hero__head-panel',
+export const HeroPanel = styled.div.attrs({
+  className: 'carelink-hero__panel',
 })`
   display: flex;
   flex-direction: column;
-  gap: clamp(0.45rem, 0.85vw, 0.65rem);
-  padding: clamp(1rem, 2vw, 1.35rem) clamp(1.05rem, 2.2vw, 1.45rem);
+  gap: clamp(0.55rem, 1vw, 0.85rem);
+  width: 100%;
   max-width: 42rem;
-  background: ${semantic.trust.surface};
+  padding: clamp(1.35rem, 2.5vw, 2.05rem) clamp(1.25rem, 2.4vw, 1.85rem);
+  background: rgba(247, 250, 248, 0.9);
   border: 1px solid ${semantic.trust.surfaceBorder};
-  border-radius: ${theme.miraiRadius};
-  box-shadow: ${theme.shadowSoft};
-`;
+  border-radius: clamp(18px, 1.75vw, 24px);
+  box-shadow:
+    0 28px 72px rgba(20, 32, 27, 0.11),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-export const HeroTopic = styled.div.attrs({
-  className: 'carelink-hero__topic',
-})`
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.35rem, 0.7vw, 0.5rem);
-  max-width: 42rem;
-  padding: clamp(0.35rem, 0.8vw, 0.55rem) clamp(0.15rem, 0.4vw, 0.35rem) 0;
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: ${semantic.trust.surface};
+  }
 `;
 
 export const HeroLead = styled.p.attrs({
@@ -101,9 +102,14 @@ export const HeroLead = styled.p.attrs({
   font-size: clamp(0.98rem, 0.25vw + 0.94rem, 1.08rem);
   font-weight: 500;
   line-height: 1.58;
-  max-width: min(42ch, 100%);
+  max-width: min(44ch, 100%);
   text-wrap: balance;
   color: ${semantic.text.lead} !important;
+
+  strong {
+    font-weight: 650;
+    color: ${semantic.text.lead};
+  }
 `;
 
 export const HeroStandfirst = styled.p.attrs({
@@ -113,15 +119,9 @@ export const HeroStandfirst = styled.p.attrs({
   font-size: clamp(0.95rem, 0.15vw + 0.92rem, 1.02rem);
   line-height: 1.65;
   max-width: min(48ch, 100%);
-  min-height: clamp(3.6em, 12vw, 4.6em);
   color: ${semantic.text.body} !important;
   margin: 0 !important;
-  padding-top: clamp(0.35rem, 0.8vw, 0.5rem);
-  border-top: 1px solid ${theme.miraiHairline};
-
-  @media (max-width: 760px) {
-    min-height: clamp(4.8em, 24vw, 5.8em);
-  }
+  padding-top: clamp(0.15rem, 0.4vw, 0.25rem);
 `;
 
 export const HeroChips = styled.div.attrs({
@@ -178,7 +178,7 @@ export const HeroChips = styled.div.attrs({
 export const HeroFooter = styled.div.attrs({
   className: 'carelink-hero__footer',
 })`
-  margin-top: 0 !important;
+  margin-top: clamp(0.15rem, 0.5vw, 0.35rem) !important;
   flex-wrap: wrap;
   align-items: center;
   gap: clamp(0.65rem, 1.2vw, 1.1rem) !important;

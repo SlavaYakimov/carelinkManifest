@@ -6,13 +6,12 @@ import {
   HeroContent,
   HeroCta,
   HeroFooter,
-  HeroHeadPanel,
   HeroImage,
   HeroLead,
   HeroOverlay,
+  HeroPanel,
   HeroSecondary,
   HeroStandfirst,
-  HeroTopic,
 } from './ManifestHero.styles';
 
 type Props = {
@@ -23,7 +22,7 @@ const DEFAULT_PRIMARY = { href: '#agenda', label: 'Читать манифест
 const DEFAULT_SECONDARY = { href: '#glavy-manifest', label: 'Что входит в Workspace →' };
 const DEFAULT_TITLE = 'Carelink';
 const DEFAULT_LEAD =
-  'Спокойная забота — без одной головы. Хранители ведут контакты, здоровье и договорённости в Workspace — приглашения родным, данные по 152‑ФЗ.';
+  '<strong>Спокойная забота — без одной головы.</strong> Хранители ведут контакты, здоровье и договорённости в <strong>Workspace — приглашения родным, данные по 152‑ФЗ.</strong>';
 
 export function ManifestHero({ hero }: Props) {
   const firstPanel = hero.tabs.find((t) => t.selected)?.panelText ?? hero.tabs[0]?.panelText ?? '';
@@ -44,11 +43,9 @@ export function ManifestHero({ hero }: Props) {
       />
       <HeroOverlay aria-hidden="true" />
       <HeroContent data-reveal>
-        <HeroHeadPanel>
+        <HeroPanel>
           <h1 id="hero-title">{title}</h1>
-          <HeroLead>{lead}</HeroLead>
-        </HeroHeadPanel>
-        <HeroTopic>
+          <HeroLead dangerouslySetInnerHTML={{ __html: inlineHtml(lead) }} />
           <HeroChips role="tablist" aria-label="Тема абзаца" data-hero-tabs>
             {hero.tabs.map((tab) => (
               <button
@@ -72,14 +69,14 @@ export function ManifestHero({ hero }: Props) {
             data-hero-standfirst
             dangerouslySetInnerHTML={{ __html: inlineHtml(firstPanel) }}
           />
-        </HeroTopic>
-        <HeroFooter>
-          <HeroCta href={primary.href}>
-            <span aria-hidden="true">→</span>
-            {primary.label}
-          </HeroCta>
-          <HeroSecondary href={secondary.href}>{secondary.label}</HeroSecondary>
-        </HeroFooter>
+          <HeroFooter>
+            <HeroCta href={primary.href}>
+              <span aria-hidden="true">→</span>
+              {primary.label}
+            </HeroCta>
+            <HeroSecondary href={secondary.href}>{secondary.label}</HeroSecondary>
+          </HeroFooter>
+        </HeroPanel>
       </HeroContent>
     </CarelinkHero>
   );
