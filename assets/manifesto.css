@@ -116,7 +116,7 @@ body.has-site-header .chapters-panel {
   grid-template-columns: 120px 1fr;
   gap: 1rem;
   background: #e9dcc7;
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 1rem;
 }
 .detail-dialog-title {

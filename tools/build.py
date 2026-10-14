@@ -1270,6 +1270,7 @@ page = f'''<!doctype html>
 <link rel="stylesheet" href="assets/motion.css">
 <link rel="stylesheet" href="assets/figma-make-parity.css">
 <link rel="stylesheet" href="assets/manifesto.css">
+<link rel="stylesheet" href="assets/impeccable-polish.css">
 </head>
 <body class="has-site-header">
 <a class="skip" href="#top">К основному содержимому</a>

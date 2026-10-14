@@ -1,0 +1,307 @@
+/* Impeccable / Neo Mirai polish — after manifesto.css (Make parity preserved) */
+
+:root {
+  --mirai-radius: 4px;
+  --mirai-intro-y: clamp(3.5rem, 7.5vw, 6.5rem);
+  --mirai-hairline: rgba(31, 92, 74, 0.16);
+}
+
+/* typography rhythm */
+.carelink-page .bundle-mini__copy h3,
+.carelink-page .chapters-set .chapter-card__copy h3,
+.carelink-page .bundle-panel__chain button,
+.carelink-page .bundle-panel__chain button b,
+.carelink-page .bundle-panel__chain button strong,
+.carelink-page .chapters-panel li > button,
+.carelink-page .chapters-panel li > button span,
+.carelink-page .chapters-panel li > button strong {
+  font-family: var(--head) !important;
+}
+
+.carelink-page .bundle-mini__copy h3,
+.carelink-page .chapters-set .chapter-card__copy h3 {
+  font-weight: 700 !important;
+  font-size: clamp(1rem, 1.08vw, 1.28rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em;
+}
+
+.carelink-page .narrative-intro h2 {
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+  font-weight: 700;
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.carelink-page .narrative-intro p,
+.carelink-page .landing-glossary,
+.carelink-page .landing-glossary__list {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+.values-row .section-label {
+  text-align: center;
+  font-family: var(--font-label) !important;
+  font-weight: 600;
+  font-size: clamp(0.68rem, 0.8vw, 0.78rem);
+  letter-spacing: 0.12em;
+}
+
+.values-row h2,
+.skills-section h2 {
+  letter-spacing: -0.03em;
+}
+
+.skills-section .mono {
+  letter-spacing: 0.14em;
+}
+
+/* spacing scale + alignment */
+.carelink-page .narrative-intro {
+  padding-block: var(--mirai-intro-y);
+  padding-inline: max(var(--section-x), 1.25rem);
+}
+
+.truth-layer {
+  max-width: none;
+  padding-inline: max(var(--section-x), 1.25rem);
+  padding-block: clamp(1.5rem, 4vw, 2.35rem);
+}
+
+.truth-layer__title,
+.truth-layer__body {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+.values-row-in,
+.skills-section {
+  padding-inline: max(var(--section-x), 1rem);
+}
+
+.values-row-lead {
+  max-width: var(--measure);
+  padding-inline: 0.5rem;
+}
+
+.values-track {
+  padding-inline: max(var(--section-x), 1rem);
+  gap: 0.75rem;
+}
+
+.skills-grid {
+  max-width: min(var(--content-max), 100%);
+  margin-inline: auto;
+}
+
+/* color + contrast (green / bronze palette) */
+.carelink-page {
+  color: var(--mut);
+}
+
+.carelink-page .carelink-hero__kicker {
+  color: var(--bronze);
+  letter-spacing: 0.14em;
+}
+
+.carelink-page .carelink-hero h1 {
+  color: var(--green) !important;
+}
+
+.carelink-page .carelink-hero__subtitle p,
+.carelink-page .carelink-hero__standfirst {
+  color: var(--mut) !important;
+}
+
+.carelink-page .carelink-hero__chips button {
+  color: var(--green-d);
+  border-color: var(--mirai-hairline);
+}
+
+.carelink-page .carelink-hero__chips button[aria-selected='true'] {
+  color: var(--green);
+  background: rgba(220, 239, 230, 0.82);
+  border-color: rgba(31, 92, 74, 0.48);
+  box-shadow: inset 0 -2px 0 var(--green);
+}
+
+.landing-glossary__list,
+.narrative-intro__note {
+  color: var(--mut);
+}
+
+.narrative-intro__skip a {
+  color: var(--green-d);
+}
+
+.carelink-page .bundle-panel__heading > p,
+.carelink-page .chapter-card__copy > p {
+  color: var(--bronze);
+}
+
+/* cards: Neo Mirai radius + hairline shadow */
+.skills-card {
+  border-radius: var(--mirai-radius);
+  border: 1px solid var(--mirai-hairline);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.detail-dialog,
+.chapter-detail,
+.bundle-detail {
+  border-radius: var(--mirai-radius) !important;
+  border: 1px solid var(--mirai-hairline);
+  box-shadow: var(--shadow-soft);
+}
+
+.challenge-item,
+.solution-item {
+  border-radius: var(--mirai-radius);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.challenge-example {
+  border-radius: var(--mirai-radius);
+}
+
+.owl {
+  border-radius: var(--mirai-radius);
+}
+
+.values-mini.agenda-mini {
+  border-radius: var(--mirai-radius);
+  overflow: hidden;
+  border: 1px solid var(--mirai-hairline);
+}
+
+/* hover / focus / active (keep 44px from manifesto.css) */
+@media (hover: hover) and (pointer: fine) {
+  .carelink-page .carelink-hero__cta:hover,
+  .carelink-page .carelink-hero__secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  .carelink-page .bundle-mini > button:hover,
+  .carelink-page .bundle-arrow:hover:not(:disabled) {
+    border-color: rgba(31, 92, 74, 0.55);
+    background: rgba(220, 239, 230, 0.92);
+  }
+
+  .values-mini button[data-detail-open]:hover,
+  .skills-section .agenda-mini-read:hover {
+    background: rgba(220, 239, 230, 0.95);
+    border-color: var(--green);
+  }
+}
+
+.carelink-page .carelink-hero__chips button:active,
+.carelink-page .bundle-panel__chain button:active,
+.carelink-page .bundle-mini > button:active,
+.carelink-page .bundle-arrow:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button {
+  border-left-color: var(--green);
+}
+
+.carelink-page .chapters-panel li.is-active > button {
+  border-left-color: var(--green);
+}
+
+.carelink-page .carelink-hero__cta:focus-visible,
+.carelink-page .carelink-hero__secondary:focus-visible,
+.narrative-intro__skip a:focus-visible {
+  outline: 3px solid rgba(31, 92, 74, 0.55);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carelink-page .carelink-hero__cta,
+  .carelink-page .carelink-hero__secondary,
+  .carelink-page .carelink-hero__chips button,
+  .carelink-page .bundle-mini > button,
+  .carelink-page .bundle-arrow {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* image treatment */
+.carelink-page .carelink-hero__image,
+.carelink-page .bundle-mini > img,
+.carelink-page .chapter-card > img,
+.values-mini picture img,
+.skills-card-img {
+  filter: saturate(0.94) contrast(1.02);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carelink-page .bundle-mini:hover > img,
+  .carelink-page .chapter-card:hover > img {
+    filter: saturate(0.98) contrast(1.03);
+  }
+}
+
+/* section backgrounds + transitions */
+.truth-layer {
+  background: linear-gradient(180deg, #f0e8dc 0%, #f6efe4 100%);
+  border-bottom: 1px solid rgba(138, 106, 59, 0.32);
+}
+
+.carelink-page .narrative-intro,
+.values-row,
+.skills-section {
+  background: #f6efe4;
+}
+
+.carelink-page .bundle-scroll,
+.carelink-page .chapters-scroll {
+  border-top: 1px solid rgba(138, 106, 59, 0.18);
+}
+
+/* mobile 390 + desktop 1440 */
+@media (max-width: 760px) {
+  .values-track .values-mini {
+    flex: 0 0 min(72vw, 280px);
+    min-width: min(72vw, 280px);
+  }
+
+  .carelink-page .narrative-intro h2 {
+    font-size: clamp(1.65rem, 8.5vw, 2.15rem);
+  }
+
+  .skills-card {
+    grid-template-columns: 1fr;
+  }
+
+  .skills-card picture,
+  .skills-card img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .truth-layer__title {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .truth-layer__title {
+    font-size: 1.22rem;
+  }
+
+  .values-track .values-mini {
+    flex: 0 0 calc((100% - 5 * 0.75rem) / 6);
+    max-width: 220px;
+  }
+
+  .values-row-in.section-panel {
+    max-width: var(--page-max);
+    margin-inline: auto;
+  }
+}
