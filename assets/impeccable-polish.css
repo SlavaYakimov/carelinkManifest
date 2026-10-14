@@ -824,3 +824,10 @@
   margin-bottom: 0.2rem;
   opacity: 0.88;
 }
+
+@media (max-width: 760px) {
+  .carelink-page .bundle-panel,
+  .carelink-page .chapters-panel {
+    display: none !important;
+  }
+}
