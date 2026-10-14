@@ -126,7 +126,7 @@ export function initManifesto() {
       var f = Math.min(Math.max(-rect.top / scrollRange, 0), 1);
       if (mqMobile.matches) {
         var card = cards[0];
-        var step = card ? card.offsetWidth + 12 : bundleViewport.clientWidth * 0.88;
+        var step = card ? card.offsetWidth + 5 : bundleViewport.clientWidth * 0.88;
         index = Math.min(Math.max(Math.round(bundleViewport.scrollLeft / step), 0), total - 1);
         frac = Math.min(Math.max(bundleViewport.scrollLeft / Math.max(bundleTrack.scrollWidth - bundleViewport.clientWidth, 1), 0), 1);
       } else {
