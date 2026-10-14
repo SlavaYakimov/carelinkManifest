@@ -2,9 +2,9 @@
   {
     "chapter": 1,
     "match": true,
-    "md_words": 467,
-    "html_words": 1185,
-    "word_ratio": 2.5375
+    "md_words": 532,
+    "html_words": 1250,
+    "word_ratio": 2.3496
   },
   {
     "chapter": 2,
@@ -44,9 +44,9 @@
   {
     "chapter": 7,
     "match": true,
-    "md_words": 442,
-    "html_words": 1039,
-    "word_ratio": 2.3507
+    "md_words": 502,
+    "html_words": 1099,
+    "word_ratio": 2.1892
   },
   {
     "chapter": 8,
@@ -58,9 +58,9 @@
   {
     "chapter": 9,
     "match": true,
-    "md_words": 438,
-    "html_words": 1089,
-    "word_ratio": 2.4863
+    "md_words": 487,
+    "html_words": 1139,
+    "word_ratio": 2.3388
   },
   {
     "chapter": 10,
@@ -86,9 +86,9 @@
   {
     "chapter": 13,
     "match": true,
-    "md_words": 435,
-    "html_words": 1050,
-    "word_ratio": 2.4138
+    "md_words": 756,
+    "html_words": 1370,
+    "word_ratio": 1.8122
   },
   {
     "chapter": 14,
