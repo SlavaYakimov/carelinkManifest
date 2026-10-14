@@ -54,6 +54,7 @@
     var desktopCounter = document.querySelector('[data-bundle-desktop-counter]');
     var drag = { active: false, x: 0, scrollY: 0 };
     var raf = 0;
+    var lastNavIndex = -1;
 
     function bundleStageEngaged() {
       if (mqMobile.matches) return false;
@@ -84,15 +85,21 @@
         if (spans[0]) spans[0].textContent = String(i + 1).padStart(2, '0');
       }
       bundleScroll.setAttribute('data-bundle-active', String(i + 1));
-      if (!mqMobile.matches) {
+      /* Fix scroll loop: scrollIntoView() also scrolls window (ancestor of sticky panel)
+         on every scroll tick, fighting the user's scroll. Scroll only the nav list itself,
+         and only when the active bundle changes. */
+      if (!mqMobile.matches && i !== lastNavIndex) {
+        lastNavIndex = i;
         var activeLi = navItems.filter(function (li) {
           return parseInt(li.getAttribute('data-bundle-nav'), 10) === i + 1;
         })[0];
-        if (activeLi && typeof activeLi.scrollIntoView === 'function') {
-          activeLi.scrollIntoView({
-            block: 'nearest',
-            behavior: mqReduce.matches ? 'auto' : 'smooth',
-          });
+        var box = activeLi && activeLi.parentElement;
+        while (box && box !== bundleScroll && box.scrollHeight <= box.clientHeight + 1) box = box.parentElement;
+        if (activeLi && box && box !== bundleScroll) {
+          var lr = activeLi.getBoundingClientRect();
+          var br = box.getBoundingClientRect();
+          var delta = lr.top < br.top ? lr.top - br.top : (lr.bottom > br.bottom ? lr.bottom - br.bottom : 0);
+          if (delta) box.scrollTop += delta;
         }
       }
     }

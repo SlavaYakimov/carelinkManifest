@@ -642,7 +642,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  /* auto (not contain): let wheel/touch chain to the page so the user is never trapped */
+  overscroll-behavior: auto;
   scroll-padding-block: 0.4rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(138, 106, 59, 0.42) rgba(247, 250, 248, 0.5);
