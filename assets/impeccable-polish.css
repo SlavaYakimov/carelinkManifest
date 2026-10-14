@@ -228,3 +228,80 @@
     transform: none !important;
   }
 }
+
+/* image treatment */
+.carelink-page .carelink-hero__image,
+.carelink-page .bundle-mini > img,
+.carelink-page .chapter-card > img,
+.values-mini picture img,
+.skills-card-img {
+  filter: saturate(0.94) contrast(1.02);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carelink-page .bundle-mini:hover > img,
+  .carelink-page .chapter-card:hover > img {
+    filter: saturate(0.98) contrast(1.03);
+  }
+}
+
+/* section backgrounds + transitions */
+.truth-layer {
+  background: linear-gradient(180deg, #f0e8dc 0%, #f6efe4 100%);
+  border-bottom: 1px solid rgba(138, 106, 59, 0.32);
+}
+
+.carelink-page .narrative-intro,
+.values-row,
+.skills-section {
+  background: #f6efe4;
+}
+
+.carelink-page .bundle-scroll,
+.carelink-page .chapters-scroll {
+  border-top: 1px solid rgba(138, 106, 59, 0.18);
+}
+
+/* mobile 390 + desktop 1440 */
+@media (max-width: 760px) {
+  .values-track .values-mini {
+    flex: 0 0 min(72vw, 280px);
+    min-width: min(72vw, 280px);
+  }
+
+  .carelink-page .narrative-intro h2 {
+    font-size: clamp(1.65rem, 8.5vw, 2.15rem);
+  }
+
+  .skills-card {
+    grid-template-columns: 1fr;
+  }
+
+  .skills-card picture,
+  .skills-card img {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .truth-layer__title {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .truth-layer__title {
+    font-size: 1.22rem;
+  }
+
+  .values-track .values-mini {
+    flex: 0 0 calc((100% - 5 * 0.75rem) / 6);
+    max-width: 220px;
+  }
+
+  .values-row-in.section-panel {
+    max-width: var(--page-max);
+    margin-inline: auto;
+  }
+}
