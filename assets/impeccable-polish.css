@@ -4,7 +4,8 @@
   --mirai-radius: 4px;
   --mirai-intro-y: clamp(3.5rem, 7.5vw, 6.5rem);
   --mirai-hairline: rgba(31, 92, 74, 0.16);
-  --bundle-chain-label: 6.85rem;
+  --bundle-chain-label: 7.15rem;
+  --bundle-viewport-pad: clamp(1.15rem, 2.75vw, 2rem);
 }
 
 /* typography rhythm */
@@ -199,9 +200,15 @@
   transform: translateY(1px);
 }
 
-.carelink-page .bundle-panel ol > li.is-active {
+.carelink-page .bundle-panel ol > li.is-active,
+.carelink-page .bundle-panel li.is-active {
   background: rgba(220, 239, 230, 0.55) !important;
   box-shadow: inset 3px 0 0 var(--green) !important;
+}
+
+.carelink-page .bundle-panel li.is-active > button {
+  background: transparent !important;
+  border-left-color: transparent !important;
 }
 
 .carelink-page .bundle-panel li.is-active .bundle-panel__chain button {
@@ -336,6 +343,7 @@
 }
 
 .carelink-page .bundle-panel__chain button b {
+  grid-column: 1;
   font-family: var(--font-label) !important;
   font-size: 0.62rem !important;
   font-weight: 600 !important;
@@ -343,15 +351,20 @@
   text-transform: uppercase;
   color: var(--green);
   white-space: nowrap;
+  display: block;
+  min-width: 0;
 }
 
 .carelink-page .bundle-panel__chain button strong {
+  grid-column: 2;
   font-family: var(--font-body) !important;
   font-size: 0.8125rem !important;
   font-weight: 500 !important;
   line-height: 1.35 !important;
   overflow-wrap: anywhere;
   hyphens: auto;
+  display: block;
+  min-width: 0;
 }
 
 .carelink-page .bundle-panel__chain > span {
@@ -372,13 +385,15 @@
 }
 
 .carelink-page .bundle-viewport {
-  scroll-padding-inline: clamp(1rem, 2.5vw, 1.75rem);
-  padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+  scroll-padding-inline: var(--bundle-viewport-pad);
+  padding-inline: var(--bundle-viewport-pad);
   box-sizing: border-box;
 }
 
 .carelink-page .bundle-track {
-  padding-inline: 0.35rem;
+  padding-inline: 0.5rem 0.35rem;
+  padding-block: 0.35rem 0.15rem;
+  box-sizing: border-box;
 }
 
 .carelink-page .bundle-card:first-child {
@@ -425,11 +440,11 @@
 }
 
 .carelink-page .bundle-arrow--previous {
-  left: clamp(0.35rem, 1.2vw, 0.85rem) !important;
+  left: max(0.65rem, calc(var(--bundle-viewport-pad) - 0.15rem)) !important;
 }
 
 .carelink-page .bundle-arrow--next {
-  right: clamp(0.35rem, 1.2vw, 0.85rem) !important;
+  right: max(0.65rem, calc(var(--bundle-viewport-pad) - 0.15rem)) !important;
 }
 
 .carelink-page .chapters-panel__heading h2 {
@@ -513,6 +528,46 @@
 
 @media (min-width: 761px) and (max-width: 1024px) {
   :root {
-    --bundle-chain-label: 6.35rem;
+    --bundle-chain-label: 6.75rem;
   }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --bundle-chain-label: 7.35rem;
+  }
+
+  .carelink-page .bundle-panel__chain button {
+    column-gap: 0.75rem !important;
+  }
+}
+
+/* Round 3: beat Make parity Cormorant + bronze active slab */
+.carelink-page .bundle-panel__chain > span,
+.carelink-page .bundle-panel__chain button,
+.carelink-page .bundle-panel__chain button b,
+.carelink-page .bundle-panel__chain button strong {
+  font-family: var(--font-body) !important;
+  line-height: 1.35 !important;
+}
+
+.carelink-page .bundle-panel__chain > span,
+.carelink-page .bundle-panel__chain button b {
+  font-family: var(--font-label) !important;
+}
+
+.carelink-page .bundle-panel__chain button b {
+  font-size: 0.62rem !important;
+}
+
+.carelink-page .bundle-panel__chain button strong {
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+}
+
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button:hover,
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button:focus-visible,
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button.is-focused {
+  background: rgba(247, 250, 248, 0.55) !important;
+  border-left-color: rgba(31, 92, 74, 0.2) !important;
 }
