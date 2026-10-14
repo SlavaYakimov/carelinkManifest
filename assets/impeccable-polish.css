@@ -175,3 +175,56 @@
   overflow: hidden;
   border: 1px solid var(--mirai-hairline);
 }
+
+/* hover / focus / active (keep 44px from manifesto.css) */
+@media (hover: hover) and (pointer: fine) {
+  .carelink-page .carelink-hero__cta:hover,
+  .carelink-page .carelink-hero__secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  .carelink-page .bundle-mini > button:hover,
+  .carelink-page .bundle-arrow:hover:not(:disabled) {
+    border-color: rgba(31, 92, 74, 0.55);
+    background: rgba(220, 239, 230, 0.92);
+  }
+
+  .values-mini button[data-detail-open]:hover,
+  .skills-section .agenda-mini-read:hover {
+    background: rgba(220, 239, 230, 0.95);
+    border-color: var(--green);
+  }
+}
+
+.carelink-page .carelink-hero__chips button:active,
+.carelink-page .bundle-panel__chain button:active,
+.carelink-page .bundle-mini > button:active,
+.carelink-page .bundle-arrow:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain button {
+  border-left-color: var(--green);
+}
+
+.carelink-page .chapters-panel li.is-active > button {
+  border-left-color: var(--green);
+}
+
+.carelink-page .carelink-hero__cta:focus-visible,
+.carelink-page .carelink-hero__secondary:focus-visible,
+.narrative-intro__skip a:focus-visible {
+  outline: 3px solid rgba(31, 92, 74, 0.55);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carelink-page .carelink-hero__cta,
+  .carelink-page .carelink-hero__secondary,
+  .carelink-page .carelink-hero__chips button,
+  .carelink-page .bundle-mini > button,
+  .carelink-page .bundle-arrow {
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    transform: none !important;
+  }
+}
