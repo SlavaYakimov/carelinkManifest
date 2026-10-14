@@ -195,6 +195,11 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
         f'<span class="scroll-stage-hint scroll-stage-hint--desktop">Крутите страницу вниз</span>'
         f'<span class="scroll-stage-hint scroll-stage-hint--mobile">Листайте вбок</span>'
         f'</div>'
+        f'<div class="bundle-panel__heading">'
+        f'<p>Carelink · Манифест</p>'
+        f'<h2>Вызовы <i>·</i> Сценарии <i>·</i> Решения</h2>'
+        f'<div data-bundle-desktop-counter><span>01</span><i></i><span>09</span></div>'
+        f'</div>'
         f'<nav aria-label="Связки повестки"><ol data-bundle-nav>{"".join(nav_items)}</ol></nav>'
         f'</aside></div></section>'
     )

@@ -4,11 +4,8 @@
   --mirai-radius: 4px;
   --mirai-intro-y: clamp(3.5rem, 7.5vw, 6.5rem);
   --mirai-hairline: rgba(31, 92, 74, 0.16);
-  --bundle-chain-label: 4.35rem;
+  --bundle-chain-label: 7.15rem;
   --bundle-viewport-pad: clamp(1.15rem, 2.75vw, 2rem);
-  --bundle-card-gap: 0.75rem;
-  --stage-card-width: 100vw;
-  --sticky-panel-width: calc(var(--stage-card-width) * 0.25);
   /* AA on warm section wash #f6efe4 and Make bronze ribbon #d9b98a */
   --bronze-ink: #7a5e34;
   --title-on-wash: #163f33;
@@ -154,6 +151,7 @@
   color: var(--green-d);
 }
 
+.carelink-page .bundle-panel__heading > p,
 .carelink-page .chapter-card__copy > p {
   color: var(--bronze-ink);
 }
@@ -343,10 +341,25 @@
 
 /* --- Round 2: agenda panel + carousel (1440 Chrome feedback) --- */
 
+.carelink-page .bundle-panel__heading h2 {
+  font-family: var(--head) !important;
+  font-weight: 700 !important;
+  font-size: clamp(1.28rem, 1.75vw, 1.75rem) !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.08 !important;
+  text-transform: uppercase;
+}
+
+.carelink-page .bundle-panel__heading h2 i {
+  font-family: var(--head) !important;
+  font-style: normal;
+  color: var(--bronze-ink);
+}
+
 .carelink-page .bundle-panel__chain button {
   display: grid !important;
-  grid-template-columns: minmax(var(--bundle-chain-label), max-content) minmax(0, 1fr) !important;
-  column-gap: 0.5rem !important;
+  grid-template-columns: var(--bundle-chain-label) minmax(0, 1fr) !important;
+  column-gap: 0.65rem !important;
   align-items: baseline !important;
   row-gap: 0.12rem;
   padding: 0.35rem 0.45rem !important;
@@ -371,9 +384,8 @@
   font-size: 0.8125rem !important;
   font-weight: 500 !important;
   line-height: 1.35 !important;
-  overflow-wrap: normal;
-  hyphens: none;
-  word-break: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
   display: block;
   min-width: 0;
 }
@@ -412,7 +424,7 @@
 }
 
 .carelink-page .bundle-card + .bundle-card {
-  margin-left: 0;
+  margin-left: -8px;
 }
 
 .carelink-page .bundle-mini__copy {
@@ -585,6 +597,28 @@
 
 /* --- Agenda polish (shipping pass) --- */
 
+.carelink-page .bundle-panel__heading > p {
+  font-family: var(--font-label) !important;
+  font-size: var(--ui-label-min) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase;
+  color: var(--bronze-ink) !important;
+  margin: 0 0 0.55rem !important;
+}
+
+.carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] {
+  font-family: var(--font-label) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  color: var(--bronze-ink);
+}
+
+.carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] i {
+  background: rgba(138, 106, 59, 0.38) !important;
+}
+
 .carelink-page .bundle-panel__mobile {
   font-family: var(--font-label) !important;
   font-size: var(--ui-label-min) !important;
@@ -654,19 +688,8 @@
 
 @media (max-width: 760px) {
   .carelink-page .bundle-viewport {
-    padding-inline: 0 !important;
-    scroll-padding-inline: 0;
-  }
-
-  .carelink-page .bundle-track {
-    padding-inline: 0 !important;
-    gap: var(--bundle-card-gap) !important;
-  }
-
-  .carelink-page .bundle-card {
-    flex: 0 0 100vw !important;
-    max-width: 100vw;
-    width: 100vw;
+    padding-inline: 1rem;
+    scroll-padding-inline: 1rem;
   }
 
   .carelink-page .bundle-mini__copy {
@@ -777,147 +800,95 @@
 
 @media (min-width: 761px) {
   .carelink-page .bundle-scroll {
-    height: calc((9 - 1) * 100vh + 100vh) !important;
+    height: calc(9 * 82vh) !important;
   }
 
-  #glavy-manifest.chapters-scroll {
-    height: calc((var(--chapter-sets, 5) - 1) * 100vh + 100vh) !important;
+  .carelink-page .chapters-scroll {
+    height: calc((var(--chapter-sets, 5) - 1) * 82vh + 100vh) !important;
   }
 
   .carelink-page .bundle-stage,
-  #glavy-manifest > .chapters-stage {
-    display: grid !important;
-    grid-template-columns: minmax(0, calc(100vw - var(--sticky-panel-width))) var(--sticky-panel-width) !important;
-    min-height: 0;
+  .carelink-page .chapters-stage {
+    grid-template-columns: minmax(0, 1fr) clamp(18rem, 22vw, 27rem) !important;
   }
 
   .carelink-page .bundle-viewport,
-  #glavy-manifest .chapters-viewport {
+  .carelink-page .chapters-viewport {
     min-width: 0;
     width: 100%;
     overflow: hidden;
-    padding-inline: 0 !important;
-    scroll-padding-inline: 0;
   }
 
-  .carelink-page .bundle-track {
-    padding-inline: 0 !important;
-    gap: var(--bundle-card-gap) !important;
+  .carelink-page .bundle-card {
+    flex: 0 0 min(22rem, calc((100vw - clamp(18rem, 22vw, 27rem) - 2rem) * 0.42)) !important;
+    max-width: 100%;
   }
 
-  #glavy-manifest .chapters-set {
+  .carelink-page .chapters-set {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
   }
 
-  .carelink-page .bundle-panel,
-  #glavy-manifest .chapters-panel {
+  .carelink-page .bundle-panel {
     display: grid !important;
-    grid-template-rows: minmax(0, 1fr);
-    gap: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.55rem;
     min-height: 0;
-    border-left: 1px solid rgba(138, 106, 59, 0.35);
-    min-width: 0;
   }
 
-  .carelink-page .bundle-panel nav ol {
-    display: block !important;
-    height: auto !important;
-    grid-template-rows: unset !important;
+  .carelink-page .bundle-panel__heading {
+    flex-shrink: 0;
+    min-height: 0;
   }
 
-  #glavy-manifest .chapters-panel li > button {
-    grid-template-columns: 1.65rem minmax(0, 1fr) !important;
-    column-gap: 0.35rem !important;
-  }
-
-  .carelink-page .bundle-panel,
-  #glavy-manifest .chapters-panel {
-    padding: clamp(0.65rem, 1.2vw, 1rem) clamp(0.35rem, 0.65vw, 0.55rem) !important;
-    min-width: 0;
-  }
-
-  .carelink-page .bundle-panel__chain {
-    grid-template-columns: 1.15rem minmax(0, 1fr) !important;
-    gap: 0.2rem !important;
-    padding: 0.35rem 0.15rem !important;
-  }
-
-  .carelink-page .bundle-panel__chain button {
-    grid-template-columns: minmax(0, 1fr) !important;
-    row-gap: 0.05rem !important;
-    padding: 0.2rem 0.15rem !important;
-  }
-
-  .carelink-page .bundle-panel__chain button b,
-  .carelink-page .bundle-panel__chain button strong {
-    grid-column: 1 !important;
-  }
-
-  .carelink-page .bundle-panel__chain button b {
-    font-size: 8px !important;
-    letter-spacing: 0.08em !important;
-  }
-
-  .carelink-page .bundle-panel__chain button strong {
-    font-size: 0.6875rem !important;
-    line-height: 1.25 !important;
-    white-space: nowrap;
+  .carelink-page .bundle-panel__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-height: min(42vh, 14.5rem);
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  #glavy-manifest .chapters-panel li > button span {
-    font-size: 0.625rem !important;
-  }
-
-  #glavy-manifest .chapters-panel li > button strong {
-    font-size: 0.6875rem !important;
-    white-space: nowrap;
+  .carelink-page .bundle-panel__heading h2 {
+    font-size: clamp(0.82rem, 1vw, 1.18rem) !important;
+    line-height: 1.12 !important;
+    letter-spacing: 0.03em !important;
+    margin: 0 !important;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    flex-shrink: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     overflow: hidden;
-    text-overflow: ellipsis;
-    hyphens: none;
+    max-height: 2.4em;
   }
 
-  #glavy-manifest .chapters-panel nav ol {
-    display: block !important;
-    height: auto !important;
-    grid-template-rows: unset !important;
-  }
-}
-
-@media (min-width: 761px) and (max-width: 999px) {
-  :root {
-    --stage-card-width: calc(100vw / 6);
+  .carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] {
+    margin-top: 0 !important;
+    flex-shrink: 0;
   }
 
-  .carelink-page .bundle-card {
-    flex: 0 0 var(--stage-card-width) !important;
-    max-width: none;
-    min-width: 0;
-  }
-}
-
-@media (min-width: 1000px) {
-  :root {
-    --stage-card-width: calc(100vw / 3);
+  .carelink-page .bundle-panel nav {
+    margin-top: 0.35rem;
+    padding-top: 0.15rem;
+    border-top: 1px solid rgba(138, 106, 59, 0.14);
   }
 
-  .carelink-page .bundle-card {
-    flex: 0 0 var(--stage-card-width) !important;
-    max-width: none;
-    min-width: 0;
+  .carelink-page .chapters-panel li > button {
+    grid-template-columns: 2.55rem minmax(0, 1fr) !important;
+    column-gap: 0.65rem !important;
   }
 }
 
 @media (min-width: 761px) and (prefers-reduced-motion: reduce) {
   .carelink-page .bundle-scroll {
-    height: calc((9 - 1) * 100vh + 100vh) !important;
+    height: calc(9 * 72vh) !important;
   }
 
-  #glavy-manifest.chapters-scroll {
-    height: calc((var(--chapter-sets, 5) - 1) * 100vh + 100vh) !important;
+  .carelink-page .chapters-scroll {
+    height: calc((var(--chapter-sets, 5) - 1) * 72vh + 100vh) !important;
   }
 }
 
@@ -953,32 +924,8 @@
   gap: 0.15rem;
 }
 
-#glavy-manifest .chapters-panel {
-  min-height: 0;
-}
-
-#glavy-manifest .chapters-panel nav {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-#glavy-manifest .chapters-panel nav ol {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: auto;
-  scroll-padding-block: 0.35rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(138, 106, 59, 0.42) rgba(247, 250, 248, 0.5);
-  display: block !important;
-  height: auto !important;
-  grid-template-rows: unset !important;
-}
-
-#glavy-manifest .chapters-panel li.is-nav-hidden {
-  display: list-item;
+.carelink-page .chapters-panel li.is-nav-hidden {
+  display: none;
 }
 
 .carelink-page .bundle-mini__fiction {
@@ -1027,16 +974,7 @@
   }
 
   .carelink-page .bundle-panel,
-  #glavy-manifest .chapters-panel {
+  .carelink-page .chapters-panel {
     display: none !important;
-  }
-}
-
-@media (min-width: 761px) {
-  body.has-site-header #glavy-manifest > .chapters-stage {
-    position: sticky !important;
-    top: var(--header-h, 74px);
-    height: calc(100vh - var(--header-h, 74px)) !important;
-    overflow: hidden;
   }
 }
