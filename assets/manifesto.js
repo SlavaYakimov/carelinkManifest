@@ -55,6 +55,13 @@
     var drag = { active: false, x: 0, scrollY: 0 };
     var raf = 0;
 
+    function bundleStageEngaged() {
+      if (mqMobile.matches) return false;
+      var rect = bundleScroll.getBoundingClientRect();
+      var header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 74;
+      return rect.top <= header + 6 && rect.bottom >= window.innerHeight * 0.42;
+    }
+
     function setActiveNav(i) {
       navItems.forEach(function (li) {
         var n = parseInt(li.getAttribute('data-bundle-nav'), 10);
@@ -149,7 +156,7 @@
 
     if (!mqReduce.matches) {
       bundleScroll.addEventListener('wheel', function (e) {
-        if (mqMobile.matches) return;
+        if (mqMobile.matches || !bundleStageEngaged()) return;
         if (Math.abs(e.deltaX) < 1 && !e.shiftKey) return;
         e.preventDefault();
         window.scrollBy({ top: Math.abs(e.deltaX) >= 1 ? e.deltaX : e.deltaY });
@@ -162,7 +169,8 @@
     }
 
     bundleViewport.addEventListener('pointerdown', function (e) {
-      if (mqReduce.matches || mqMobile.matches || e.target.closest('button')) return;
+      if (mqReduce.matches || mqMobile.matches || !bundleStageEngaged()) return;
+      if (e.target.closest('button')) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       drag.active = true;
       dragPointerId = e.pointerId;
@@ -302,6 +310,8 @@
         if (li) {
           li.classList.toggle('is-active', active);
           li.classList.toggle('is-in-set', inSet && !active);
+          li.classList.toggle('is-nav-hidden', !inSet);
+          li.setAttribute('aria-hidden', inSet ? 'false' : 'true');
         }
       });
       var sets = chaptersSets.querySelectorAll('.chapters-set');
@@ -339,7 +349,7 @@
         var spans = desktopRange.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = range;
       }
-      if (mobileTitle && titles[start]) mobileTitle.textContent = titles[start];
+      if (mobileTitle && titles[focusIdx]) mobileTitle.textContent = titles[focusIdx];
     }
 
     function syncChapters() {
