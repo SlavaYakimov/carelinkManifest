@@ -14,15 +14,23 @@ def _load(name):
 
 
 def render_narrative_intro(
-    h2, text, inline_fn, section_id='', *, extra_html='', skip_href=''
+    h2,
+    text,
+    inline_fn,
+    section_id='',
+    *,
+    extra_html='',
+    skip_href='',
+    skip_label='',
 ):
     sid = f' id="{section_id}"' if section_id else ''
     skip = ''
     if skip_href:
+        label = skip_label or 'Пропустить интерактивное листание — перейти к ценностям'
         skip = (
             f'<p class="narrative-intro__skip">'
             f'<a href="{html.escape(skip_href, quote=True)}">'
-            f'Пропустить интерактивное листание — перейти к ценностям</a></p>'
+            f'{html.escape(label)}</a></p>'
         )
     return (
         f'<section class="narrative-intro"{sid} data-reveal>'
@@ -76,16 +84,34 @@ def _img_src(path):
     return html.escape(path or '')
 
 
-def _bundle_mini(card_id, label, title, description, image, alt, inline_fn, img_picture_fn, detail_store):
+def _bundle_mini(
+    card_id,
+    label,
+    title,
+    description,
+    image,
+    alt,
+    inline_fn,
+    img_picture_fn,
+    detail_store,
+    *,
+    fiction_badge=False,
+):
     detail = _detail_card_html(card_id, label, title, description, image, alt, inline_fn, img_picture_fn)
     detail_store.append(detail)
+    fiction = (
+        '<span class="bundle-mini__fiction">Вымышленный сценарий</span>'
+        if fiction_badge
+        else ''
+    )
     return (
         f'<article class="bundle-mini">'
         f'<img src="{_img_src(image)}" alt="{html.escape(title)}" loading="lazy" width="640" height="480">'
         f'<div class="bundle-mini__wash" aria-hidden="true"></div>'
-        f'<button type="button" aria-label="Прочитать: {html.escape(title)}" '
+        f'<button type="button" aria-label="Открыть карточку: {html.escape(title)}" '
         f'data-detail-open="{html.escape(card_id)}">→</button>'
         f'<div class="bundle-mini__copy">'
+        f'{fiction}'
         f'<p>{html.escape(label)}</p>'
         f'<h3>{html.escape(title)}</h3>'
         f'</div></article>'
@@ -112,7 +138,20 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
             img = item.get('image', '')
             alt = title
             desc = item.get('description', '')
-            minis.append(_bundle_mini(cid, label, title, desc, img, alt, inline_fn, img_picture_fn, detail_store))
+            minis.append(
+                _bundle_mini(
+                    cid,
+                    label,
+                    title,
+                    desc,
+                    img,
+                    alt,
+                    inline_fn,
+                    img_picture_fn,
+                    detail_store,
+                    fiction_badge=(key == 'scenario'),
+                )
+            )
             chain_buttons.append(
                 f'<button type="button" data-bundle-focus="{n}" data-bundle-kind="{key}">'
                 f'<b>{html.escape(_KIND_LABEL[kind])}</b>'
@@ -139,7 +178,7 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
     )
     return (
         intro
-        + f'<section class="bundle-scroll" id="agenda" aria-label="CareLink — вызовы, сценарии и решения">'
+        + f'<section class="bundle-scroll" id="agenda" aria-label="Carelink — вызовы, сценарии и решения">'
         f'<div class="bundle-stage" data-bundle-stage>'
         f'<div class="bundle-viewport" data-bundle-viewport>'
         f'<div class="bundle-track" data-bundle-track>{"".join(cards)}</div>'
@@ -152,9 +191,12 @@ def render_agenda_section(inline_fn, img_picture_fn, detail_store: list):
         f'<aside class="bundle-panel">'
         f'<div class="bundle-panel__mobile" data-bundle-mobile>'
         f'<span data-bundle-mobile-counter>01 / 09</span>'
-        f'<strong>Вызов · Сценарий · Решение</strong></div>'
+        f'<strong>Вызов · Сценарий · Решение</strong>'
+        f'<span class="scroll-stage-hint scroll-stage-hint--desktop">Крутите страницу вниз</span>'
+        f'<span class="scroll-stage-hint scroll-stage-hint--mobile">Листайте вбок</span>'
+        f'</div>'
         f'<div class="bundle-panel__heading">'
-        f'<p>CareLink · Манифест</p>'
+        f'<p>Carelink · Манифест</p>'
         f'<h2>Вызовы <i>·</i> Сценарии <i>·</i> Решения</h2>'
         f'<div data-bundle-desktop-counter><span>01</span><i></i><span>09</span></div>'
         f'</div>'
@@ -256,7 +298,13 @@ def render_chapters_manifesto(inline_fn, img_picture_fn, detail_store: list):
     note = _load('landing-editorial.json').get('chapters_intro_note', '')
     extra = f'<p class="narrative-intro__note">{inline_fn(note)}</p>' if note else ''
     intro = render_narrative_intro(
-        data['intro_h2'], data['intro_text'], inline_fn, 'glavy-intro', extra_html=extra
+        data['intro_h2'],
+        data['intro_text'],
+        inline_fn,
+        'glavy-intro',
+        extra_html=extra,
+        skip_href='#top',
+        skip_label='Пропустить интерактивный обзор глав — перейти к лонгриду',
     )
     panel_lead = (
         'Манифест — это не правила, а разговор о том, как близким оставаться рядом.'
@@ -272,7 +320,10 @@ def render_chapters_manifesto(inline_fn, img_picture_fn, detail_store: list):
         f'<aside class="chapters-panel">'
         f'<div class="chapters-panel__mobile" data-chapters-mobile>'
         f'<span data-chapters-mobile-range>01–04 / 20</span>'
-        f'<strong data-chapters-mobile-title>{html.escape(chapters[0]["title"])}</strong></div>'
+        f'<strong data-chapters-mobile-title>{html.escape(chapters[0]["title"])}</strong>'
+        f'<span class="scroll-stage-hint scroll-stage-hint--desktop">Крутите страницу вниз</span>'
+        f'<span class="scroll-stage-hint scroll-stage-hint--mobile">Листайте вбок</span>'
+        f'</div>'
         f'<div class="chapters-panel__heading">'
         f'<p>{html.escape(panel_lead)}</p>'
         f'<h2 id="chapters-title">Главы</h2>'
