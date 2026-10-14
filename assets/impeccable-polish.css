@@ -820,7 +820,7 @@
   }
 
   .carelink-page .bundle-card {
-    flex: 0 0 min(22rem, calc((100vw - clamp(18rem, 22vw, 27rem) - 2rem) * 0.42)) !important;
+    flex: 0 0 min(122rem, calc((100vw - clamp(18rem, 22vw, 27rem) - 2rem) * 0.42)) !important;
     max-width: 100%;
   }
 

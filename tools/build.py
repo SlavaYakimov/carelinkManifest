@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""ARTICLE.md -> index.html (без внешних зависимостей). Запуск: python3 tools/build.py"""
+"""ARTICLE.md -> site content. Предпочтительно: npm run build (React). HTML index: python3 tools/build.py (deprecated) [--emit-json PATH] [--skip-html]"""
+import argparse
 import re, html, pathlib, json, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -168,6 +169,7 @@ def inline(t):
 
 FINALE_CARD_IMAGE = 'images/family-hearth.jpg'
 landing_card_store: list[str] = []
+landing_cards_data: list[dict] = []
 
 
 def teaser_from_text(text: str) -> str:
@@ -380,6 +382,9 @@ def stash_landing_card(card_id: str, kicker: str, title: str, body_html: str):
         f'<article class="landing-card-source" id="{html.escape(card_id)}" '
         f'data-kicker="{html.escape(kicker)}" data-title="{html.escape(title)}">'
         f'<div class="landing-card-modal-body landing-drawer-content">{body_html}</div></article>'
+    )
+    landing_cards_data.append(
+        {'id': card_id, 'kicker': kicker, 'title': title, 'bodyHtml': body_html}
     )
 
 
@@ -1356,7 +1361,92 @@ page = f'''<!doctype html>
 </body>
 </html>
 '''
-(ROOT / 'index.html').write_text(page, encoding='utf-8')
+_build_args = argparse.ArgumentParser(add_help=False)
+_build_args.add_argument('--emit-json', dest='emit_json', default=None)
+_build_args.add_argument('--skip-html', dest='skip_html', action='store_true')
+_cli, _unknown = _build_args.parse_known_args(sys.argv[1:])
+
+def _tools_json(name):
+    return json.loads((ROOT / 'tools' / name).read_text(encoding='utf-8'))
+
+
+if _cli.emit_json:
+    emit_path = pathlib.Path(_cli.emit_json)
+    if not emit_path.is_absolute():
+        emit_path = ROOT / emit_path
+    emit_path.parent.mkdir(parents=True, exist_ok=True)
+    editorial = _tools_json('landing-editorial.json')
+    toc_items = [{'n': n, 'title': name} for _sid, n, name in toc]
+    hero_tabs = [
+        {
+            'id': 'hero-tab-0',
+            'label': 'Данные семьи остаются в России',
+            'selected': True,
+            'panelText': 'Всё, что семья хранит в Carelink, остаётся на серверах в России.',
+        },
+        {
+            'id': 'hero-tab-1',
+            'label': 'Общий дом для близких',
+            'selected': False,
+            'panelText': 'Одно пространство, где у каждого в семье своё место и общая картина.',
+        },
+        {
+            'id': 'hero-tab-2',
+            'label': 'Идея, которую строим вместе',
+            'selected': False,
+            'panelText': 'Манифест открыт: мы собираем Carelink вместе с теми, кто рядом.',
+        },
+    ]
+    site_payload = {
+        'meta': {
+            'title': title,
+            'stand': stand,
+            'words': words,
+            'numChapters': NUM_CHAPTERS,
+            'h1Html': H1,
+            'metaChipsHtml': meta_html,
+            'ogImage': 'images/hero-family-table.jpg',
+        },
+        'brandOwlHtml': BRAND_OWL,
+        'sections': {
+            'challengesLegacy': challenges_legacy_html,
+            'chapterIndexLegacy': chapter_index_legacy_html,
+            'development': development_html,
+            'productArch': product_arch_html,
+            'finaleLegacy': finale_legacy_html,
+        },
+        'article': {
+            'introHtml': intro_html,
+            'chapterHtml': chapter_html,
+            'sourcesHtml': sources_html,
+        },
+        'landingCards': landing_cards_data,
+        'structured': {
+            'hero': {
+                'image': 'images/hero-family-table.jpg',
+                'imageAlt': 'Вся семья за вечерним чаем',
+                'tabs': hero_tabs,
+            },
+            'truth': editorial['truth_layer'],
+            'glossary': editorial['glossary'],
+            'chaptersIntroNote': editorial.get('chapters_intro_note', ''),
+            'agenda': _tools_json('agenda-bundles.json'),
+            'chaptersLanding': _tools_json('manifesto-chapters-landing.json'),
+            'values': _tools_json('site-values.json'),
+            'skills': _tools_json('skills-section.json'),
+            'development': DEV_DATA,
+            'productArch': ARCH_DATA,
+            'challenges': CHALLENGES_DATA,
+            'article': {'tocItems': toc_items},
+        },
+    }
+    payload_text = json.dumps(site_payload, ensure_ascii=False, indent=2)
+    emit_path.parent.mkdir(parents=True, exist_ok=True)
+    emit_path.write_text(payload_text, encoding='utf-8')
+    print('emit-json', emit_path)
+
+if not _cli.skip_html:
+    (ROOT / 'index.html').write_text(page, encoding='utf-8')
 (ROOT / 'tools' / 'section-types.json').write_text(json.dumps(section_log, ensure_ascii=False, indent=2), encoding='utf-8')
 (ROOT / 'tools' / 'chapter-blocks-report.json').write_text(json.dumps(blocks_report, ensure_ascii=False, indent=2), encoding='utf-8')
 (ROOT / 'tools' / 'chapter-source-report.json').write_text(json.dumps(source_report, ensure_ascii=False, indent=2), encoding='utf-8')

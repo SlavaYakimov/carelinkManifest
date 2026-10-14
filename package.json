@@ -1,0 +1,10 @@
+{
+  "name": "carelink-manifest",
+  "private": true,
+  "scripts": {
+    "compile:content": "node scripts/compile-content.mjs",
+    "build": "npm run compile:content && npm run build --prefix web",
+    "dev": "npm run compile:content && npm run dev --prefix web",
+    "preview": "npm run preview --prefix web"
+  }
+}

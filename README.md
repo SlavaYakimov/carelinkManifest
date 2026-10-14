@@ -22,8 +22,10 @@
 ## Как обновлять
 
 ```bash
-# 1. правим ARTICLE.md
-python3 tools/build.py          # 2. пересобираем index.html
+# 1. правим ARTICLE.md и JSON в tools/
+npm run build                   # compile:content + Vite → dist/ (GitHub Pages)
+# или только HTML-лонгрид без React:
+python3 tools/build.py          # index.html в корне
 ```
 
 Соглашения в Markdown, которые понимает генератор:

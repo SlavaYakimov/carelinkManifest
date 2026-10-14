@@ -106,7 +106,7 @@ def _bundle_mini(
     )
     return (
         f'<article class="bundle-mini">'
-        f'<img src="{_img_src(image)}" alt="{html.escape(title)}" loading="lazy" width="640" height="480">'
+        f'<img src="{_img_src(image)}" alt="{html.escape(title)}" loading="lazy" width="1640" height="480">'
         f'<div class="bundle-mini__wash" aria-hidden="true"></div>'
         f'<button type="button" aria-label="Открыть карточку: {html.escape(title)}" '
         f'data-detail-open="{html.escape(card_id)}">→</button>'

@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "Carelink",
+    "stand": "Запустите npm run compile:content",
+    "words": 0,
+    "numChapters": 0,
+    "h1Html": "",
+    "metaChipsHtml": "",
+    "ogImage": "images/hero-family-table.jpg"
+  },
+  "brandOwlHtml": "",
+  "sections": {
+    "challengesLegacy": "",
+    "chapterIndexLegacy": "",
+    "development": "",
+    "productArch": "",
+    "finaleLegacy": ""
+  },
+  "article": {
+    "introHtml": "",
+    "chapterHtml": "",
+    "sourcesHtml": ""
+  },
+  "landingCards": [],
+  "structured": {
+    "hero": {
+      "image": "images/hero-family-table.jpg",
+      "imageAlt": "",
+      "tabs": []
+    },
+    "truth": {
+      "heading": "",
+      "body": ""
+    },
+    "glossary": [],
+    "chaptersIntroNote": "",
+    "agenda": {
+      "intro_h2": "",
+      "intro_text": "",
+      "bundles": []
+    },
+    "chaptersLanding": {
+      "intro_h2": "",
+      "intro_text": "",
+      "chapters": []
+    },
+    "values": {
+      "title": "",
+      "items": []
+    },
+    "skills": {
+      "title": "",
+      "items": []
+    },
+    "development": {},
+    "productArch": {},
+    "challenges": {},
+    "article": {
+      "tocItems": []
+    }
+  }
+}

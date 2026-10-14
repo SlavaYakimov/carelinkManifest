@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static site: `ARTICLE.md` (source) → `python3 tools/build.py` → `index.html` for GitHub Pages (`gh-pages`). CSS in `assets/` (Make parity, manifesto overrides, `impeccable-polish.css`). Client JS in `assets/manifesto.js`. No bundler; Python 3 only for generation. Local preview: any static server (e.g. `python3 -m http.server`).
+Static site: **Vite + React** in [`web/`](web/) → `dist/index.html` for GitHub Pages (Actions → `dist/`). Content compile: `ARTICLE.md` + `tools/*.json` → `web/public/site.json` via `python3 tools/build.py --emit-json` (invoked by `npm run compile:content`). Global CSS remains in [`assets/`](assets/) (Make parity, manifesto overrides, `impeccable-polish.css`). Scroll-stage and modals: TypeScript in [`web/src/interactivity/`](web/src/interactivity/) (ported from `assets/manifesto.js`, `chapters.js`, etc.), initialized via [`useSiteInteractivity`](web/src/hooks/useSiteInteractivity.ts). Local dev: `npm run compile:content` then `npm run dev` (repo root). Preview production: `npm run preview`.
 
 ## Users
 
@@ -28,11 +28,11 @@ Unlike a feature list or pitch deck, this repo is a **journalistic investigation
 
 ## Operating Context
 
-- **Edit loop:** Change `ARTICLE.md` and/or `tools/manifesto_sections.py`, run `tools/build.py`, commit `index.html` and assets, push `gh-pages`.
-- **Deploy:** GitHub Pages from `gh-pages`; `.nojekyll` for raw static files.
+- **Edit loop:** Change `ARTICLE.md`, `tools/manifesto_sections.py`, or JSON in `tools/`, then `npm run build`. Commit `web/public/site.json` when content changed (or rely on CI compile). UI/React: `web/src/`.
+- **Deploy:** GitHub Actions workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes `dist/` (enable Pages → source: GitHub Actions). `.nojekyll` in `web/public/`. Legacy one-shot HTML: `python3 tools/build.py` still writes root `index.html` unless `--skip-html`.
 - **Design iteration:** Neo Mirai / impeccable polish passes on CSS and JS; reference screenshots under `reference/polish-shots/`.
-- **QA:** `node tools/audit-live-ui.mjs` against a local or deployed URL.
-- **Live browser:** Impeccable live mode targets `index.html` (see `.impeccable/live/config.json`); re-run build after structural HTML changes from Python.
+- **QA:** `node scripts/parity-gate.mjs` after compile; `node tools/audit-live-ui.mjs` against `npm run preview` URL (default port 4173).
+- **Live browser:** Impeccable live mode — point at Vite dev URL or `dist/index.html` after build; re-run `npm run compile:content` after structural/content changes in Python sources.
 
 ## Capabilities and Constraints
 
