@@ -571,3 +571,111 @@
   background: rgba(247, 250, 248, 0.55) !important;
   border-left-color: rgba(31, 92, 74, 0.2) !important;
 }
+
+/* --- Agenda polish (shipping pass) --- */
+
+.carelink-page .bundle-panel__heading > p {
+  font-family: var(--font-label) !important;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase;
+  color: var(--bronze) !important;
+  margin: 0 0 0.55rem !important;
+}
+
+.carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] {
+  font-family: var(--font-label) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  color: var(--bronze);
+}
+
+.carelink-page .bundle-panel__heading > div[data-bundle-desktop-counter] i {
+  background: rgba(138, 106, 59, 0.38) !important;
+}
+
+.carelink-page .bundle-panel__mobile {
+  font-family: var(--font-label) !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.08em;
+  color: var(--mut);
+}
+
+.carelink-page .bundle-panel__mobile strong {
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.06em;
+}
+
+.carelink-page .bundle-panel {
+  min-height: 0;
+}
+
+.carelink-page .bundle-panel nav {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.carelink-page .bundle-panel nav ol {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 106, 59, 0.42) rgba(247, 250, 248, 0.5);
+}
+
+.carelink-page .bundle-panel li.is-active .bundle-panel__chain {
+  padding-block: 0.2rem;
+}
+
+.carelink-page .bundle-mini__copy p {
+  font-family: var(--font-label) !important;
+  font-size: clamp(0.58rem, 0.72vw, 0.68rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  color: var(--bronze) !important;
+}
+
+.carelink-page .bundle-progress {
+  height: 4px;
+  background: rgba(247, 250, 248, 0.85) !important;
+  border: 1px solid var(--mirai-hairline);
+  border-radius: 999px;
+}
+
+.carelink-page .bundle-progress i {
+  background: var(--bronze) !important;
+  border-radius: 999px;
+  transition: width 0.2s var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+@media (max-width: 760px) {
+  .carelink-page .bundle-viewport {
+    padding-inline: 1rem;
+    scroll-padding-inline: 1rem;
+  }
+
+  .carelink-page .bundle-mini__copy {
+    left: clamp(0.8rem, 3.5vw, 1.05rem) !important;
+    right: clamp(2.85rem, 10vw, 3.35rem) !important;
+    padding-bottom: 0.15rem;
+  }
+
+  .carelink-page .bundle-mini__copy h3 {
+    font-size: clamp(0.92rem, 4.2vw, 1.05rem) !important;
+    line-height: 1.15 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carelink-page .bundle-progress i {
+    transition: none !important;
+  }
+}

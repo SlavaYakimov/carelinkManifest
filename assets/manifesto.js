@@ -74,6 +74,17 @@
         var spans = desktopCounter.querySelectorAll('span');
         if (spans[0]) spans[0].textContent = String(i + 1).padStart(2, '0');
       }
+      if (!mqMobile.matches) {
+        var activeLi = navItems.filter(function (li) {
+          return parseInt(li.getAttribute('data-bundle-nav'), 10) === i + 1;
+        })[0];
+        if (activeLi && typeof activeLi.scrollIntoView === 'function') {
+          activeLi.scrollIntoView({
+            block: 'nearest',
+            behavior: mqReduce.matches ? 'auto' : 'smooth',
+          });
+        }
+      }
     }
 
     function applyTransform() {
